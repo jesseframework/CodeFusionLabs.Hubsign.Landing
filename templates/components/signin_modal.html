@@ -71,14 +71,14 @@
                 Back
             </button>
             <div class="modal-header">
-                <h2 class="modal-title">Enter your company domain</h2>
+                <h2 class="modal-title">Enter your company subdomain</h2>
                 <p class="modal-subtitle">We'll find your workspace</p>
             </div>
             <form class="modal-form" onsubmit="goToStep2(event)">
                 <div class="form-group">
-                    <label for="domain" class="form-label">Company Domain</label>
+                    <label for="domain" class="form-label">Your Subdomain</label>
                     <div class="input-wrapper">
-                        <input type="text" id="domain" class="form-input" placeholder="yourcompany.com" required autocomplete="organization">
+                        <input type="text" id="domain" class="form-input" placeholder="example.hubsign.io" required autocomplete="organization">
                         <span class="input-icon">
                             <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
                                 <circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5"/>
@@ -88,6 +88,7 @@
                             </svg>
                         </span>
                     </div>
+                    <p class="form-hint">Enter your company's HubSign subdomain</p>
                     <span class="form-hint">Enter your company's domain (e.g., acme.com)</span>
                 </div>
                 <button type="submit" class="btn btn-primary btn-full btn-lg">

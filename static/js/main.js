@@ -98,6 +98,15 @@ const SignInModal = {
     
     open() {
         if (!this.overlay) return;
+        
+        // Check cache for returning users
+        const cached = this.loadSubdomainFromCache();
+        if (cached && cached.subdomain) {
+            // Auto-redirect to their subdomain
+            window.location.href = `https://${cached.subdomain}.hubsign.io`;
+            return;
+        }
+        
         this.overlay.classList.add('active');
         document.body.style.overflow = 'hidden';
         this.reset();
@@ -187,55 +196,95 @@ const SignInModal = {
     async submitDomain(event) {
         event.preventDefault();
         
-        const domain = this.inputs.domain?.value.trim();
-        if (!domain) {
+        const input = this.inputs.domain?.value.trim().toLowerCase();
+        if (!input) {
             this.inputs.domain?.focus();
             return;
         }
         
-        // Validate domain format
-        const domainRegex = /^[a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9]?\.[a-zA-Z]{2,}$/;
-        if (!domainRegex.test(domain)) {
-            this.showError('domain', 'Please enter a valid domain (e.g., yourcompany.com)');
+        // Extract subdomain from input
+        let subdomain = input;
+        
+        // Handle different input formats:
+        // 1. "example.hubsign.io" -> extract "example"
+        // 2. "example" -> use as-is
+        if (input.includes('.')) {
+            // Has dots - extract the first part
+            subdomain = input.split('.')[0];
+        }
+        
+        // Validate subdomain format (alphanumeric and hyphens only)
+        const subdomainRegex = /^[a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9]?$/;
+        if (!subdomainRegex.test(subdomain)) {
+            this.showError('domain', 'Please enter a valid subdomain (e.g., example.hubsign.io)');
             return;
         }
         
-        // Look up tenant via API
+        // Show loading state
+        const continueBtn = event.target.querySelector('button[type="submit"]');
+        const originalText = continueBtn?.innerHTML;
+        if (continueBtn) {
+            continueBtn.disabled = true;
+            continueBtn.innerHTML = '<span>Validating...</span>';
+        }
+        
+        // Validate subdomain via API
         try {
-            const response = await this.lookupTenant(domain);
+            const response = await this.validateSubdomain(subdomain);
             
-            if (response.found) {
-                // Tenant has dedicated instance - redirect or continue
-                this.currentDomain = response.subdomain || domain;
+            if (response.exists && response.subdomain) {
+                // Valid subdomain - save to cache and redirect
+                this.saveSubdomainToCache(response.subdomain, `${subdomain}.hubsign.io`);
+                this.currentDomain = `${subdomain}.hubsign.io`;
+                
+                // Show success message briefly then redirect
+                this.showSuccessMessage(`Redirecting to ${response.subdomain}.hubsign.io...`);
+                
+                setTimeout(() => {
+                    window.location.href = `https://${response.subdomain}.hubsign.io`;
+                }, 1500);
+                
+            } else if (response.exists === false) {
+                // Subdomain doesn't exist - show error
+                if (continueBtn) {
+                    continueBtn.disabled = false;
+                    continueBtn.innerHTML = originalText;
+                }
+                this.showError('domain', `Subdomain "${subdomain}" is not registered. Please check your company subdomain or contact support.`);
+                
             } else {
-                // No dedicated instance - use shared
-                this.currentDomain = domain;
+                // Unknown response - continue to email step
+                this.currentDomain = `${subdomain}.hubsign.io`;
+                const displayDomain = document.getElementById('displayDomain');
+                if (displayDomain) {
+                    displayDomain.textContent = this.currentDomain;
+                }
+                
+                if (continueBtn) {
+                    continueBtn.disabled = false;
+                    continueBtn.innerHTML = originalText;
+                }
+                
+                this.showStep('email');
+                setTimeout(() => this.inputs.email?.focus(), 100);
             }
-            
-            // Update display and proceed
-            const displayDomain = document.getElementById('displayDomain');
-            if (displayDomain) {
-                displayDomain.textContent = this.currentDomain;
-            }
-            
-            this.showStep('email');
-            setTimeout(() => this.inputs.email?.focus(), 100);
             
         } catch (error) {
-            console.error('Tenant lookup failed:', error);
-            // Continue anyway with the domain
-            this.currentDomain = domain;
-            const displayDomain = document.getElementById('displayDomain');
-            if (displayDomain) {
-                displayDomain.textContent = domain;
+            console.error('Subdomain validation failed:', error);
+            
+            // Reset button state
+            if (continueBtn) {
+                continueBtn.disabled = false;
+                continueBtn.innerHTML = originalText;
             }
-            this.showStep('email');
-            setTimeout(() => this.inputs.email?.focus(), 100);
+            
+            // Show error or continue based on error type
+            this.showError('domain', 'Unable to validate domain. Please try again or use "Sign in to shared instance".');
         }
     },
     
-    async lookupTenant(domain) {
-        const response = await fetch('/api/auth/lookup/', {
+    async validateSubdomain(domain) {
+        const response = await fetch('/api/v1/tenant/validate/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -244,8 +293,90 @@ const SignInModal = {
             body: JSON.stringify({ domain }),
         });
         
+        if (!response.ok) {
+            throw new Error(`Validation failed: ${response.status}`);
+        }
+        
         return response.json();
     },
+    
+    saveSubdomainToCache(subdomain, domain) {
+        try {
+            const cacheData = {
+                subdomain: subdomain,
+                domain: domain,
+                timestamp: Date.now(),
+            };
+            localStorage.setItem('hubsign_subdomain', JSON.stringify(cacheData));
+        } catch (error) {
+            console.error('Failed to save subdomain to cache:', error);
+        }
+    },
+    
+    loadSubdomainFromCache() {
+        try {
+            const cached = localStorage.getItem('hubsign_subdomain');
+            if (cached) {
+                const data = JSON.parse(cached);
+                // Cache valid for 30 days
+                const cacheAge = Date.now() - data.timestamp;
+                const thirtyDays = 30 * 24 * 60 * 60 * 1000;
+                
+                if (cacheAge < thirtyDays) {
+                    return data;
+                } else {
+                    // Clear old cache
+                    localStorage.removeItem('hubsign_subdomain');
+                }
+            }
+        } catch (error) {
+            console.error('Failed to load subdomain from cache:', error);
+        }
+        return null;
+    },
+    
+    showSuccessMessage(message) {
+        const messageEl = document.createElement('div');
+        messageEl.className = 'success-message';
+        messageEl.textContent = message;
+        messageEl.style.cssText = 'padding: 12px; background: #d1fae5; color: #065f46; border-radius: 8px; margin: 16px 0; text-align: center; font-size: 0.875rem;';
+        
+        const form = this.steps.domain?.querySelector('.modal-form');
+        if (form) {
+            form.insertBefore(messageEl, form.firstChild);
+        }
+    },
+    
+    showError(inputName, message) {
+        const input = this.inputs[inputName];
+        if (!input) return;
+        
+        // Remove existing error
+        const existingError = input.parentElement?.querySelector('.error-message');
+        if (existingError) {
+            existingError.remove();
+        }
+        
+        // Add error message
+        const errorEl = document.createElement('div');
+        errorEl.className = 'error-message';
+        errorEl.textContent = message;
+        errorEl.style.cssText = 'color: #dc2626; font-size: 0.75rem; margin-top: 4px;';
+        
+        input.parentElement?.appendChild(errorEl);
+        input.focus();
+        
+        // Add error styling to input
+        input.style.borderColor = '#dc2626';
+        
+        // Remove error on input
+        input.addEventListener('input', function removeError() {
+            errorEl.remove();
+            input.style.borderColor = '';
+            input.removeEventListener('input', removeError);
+        }, { once: true });
+    },
+
     
     async submitEmail(event) {
         event.preventDefault();
@@ -265,7 +396,7 @@ const SignInModal = {
         
         // Submit sign-in request
         try {
-            const response = await fetch('/api/auth/signin/', {
+            const response = await fetch('/api/v1/auth/magic-link/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -280,7 +411,7 @@ const SignInModal = {
             
             const result = await response.json();
             
-            if (result.success) {
+            if (result.success || response.ok) {
                 // Show success
                 const displayEmail = document.getElementById('displayEmail');
                 if (displayEmail) {
@@ -299,29 +430,6 @@ const SignInModal = {
             }
             this.showStep('success');
         }
-    },
-    
-    showError(field, message) {
-        // Find or create error element
-        const input = this.inputs[field];
-        if (!input) return;
-        
-        let errorEl = input.parentElement.querySelector('.form-error');
-        if (!errorEl) {
-            errorEl = document.createElement('span');
-            errorEl.className = 'form-error';
-            errorEl.style.cssText = 'color: #ef4444; font-size: 0.75rem; margin-top: 4px; display: block;';
-            input.parentElement.appendChild(errorEl);
-        }
-        
-        errorEl.textContent = message;
-        input.style.borderColor = '#ef4444';
-        
-        // Clear error on input
-        input.addEventListener('input', () => {
-            errorEl.textContent = '';
-            input.style.borderColor = '';
-        }, { once: true });
     },
     
     getCSRFToken() {

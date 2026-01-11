@@ -3,6 +3,7 @@ Django>=4.2,<5.0
 django-environ>=0.11.2
 django-cors-headers>=4.3.1
 django-csp>=3.8
+django-browser-reload>=1.12.1
 
 # API
 djangorestframework>=3.14.0
