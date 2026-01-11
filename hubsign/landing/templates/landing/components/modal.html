@@ -1,0 +1,181 @@
+<!-- Sign In Modal with Subdomain/Shared Instance Selection -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModalOnOverlay(event)">
+    <div class="modal" role="dialog" aria-labelledby="modalTitle">
+        <button class="modal-close" onclick="closeModal()" aria-label="Close modal">
+            {% include "landing/icons/close.html" %}
+        </button>
+        
+        <!-- Step 0: Choose Sign-in Type -->
+        <div class="modal-content" id="modalStep0">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modalTitle">Sign in to HubSign</h2>
+                <p class="modal-subtitle">Choose how you want to sign in</p>
+            </div>
+            <div class="signin-options">
+                <button class="signin-option" onclick="goToSubdomainStep()">
+                    <div class="signin-option-icon">
+                        {% include "landing/icons/building.html" %}
+                    </div>
+                    <div class="signin-option-content">
+                        <h3>Company Instance</h3>
+                        <p>Sign in to your organization's dedicated HubSign</p>
+                    </div>
+                    {% include "landing/icons/chevron-right.html" %}
+                </button>
+                <button class="signin-option" onclick="goToSharedStep()">
+                    <div class="signin-option-icon shared">
+                        {% include "landing/icons/globe.html" %}
+                    </div>
+                    <div class="signin-option-content">
+                        <h3>Shared Instance</h3>
+                        <p>Use the public HubSign platform</p>
+                    </div>
+                    {% include "landing/icons/chevron-right.html" %}
+                </button>
+            </div>
+            <div class="modal-divider">
+                <span>New to HubSign?</span>
+            </div>
+            <button class="btn btn-outline btn-full" onclick="goToSignupStep()">
+                Create an Account
+            </button>
+        </div>
+
+        <!-- Step 1: Subdomain Entry -->
+        <div class="modal-content hidden" id="modalStep1">
+            <button class="modal-back" onclick="goToStep0()">
+                {% include "landing/icons/arrow-left.html" %}
+                Back
+            </button>
+            <div class="modal-header">
+                <h2 class="modal-title">Enter your company domain</h2>
+                <p class="modal-subtitle">We'll take you to your organization's HubSign</p>
+            </div>
+            <form class="modal-form" id="subdomainForm" onsubmit="submitSubdomain(event)">
+                <div class="form-group">
+                    <label for="subdomain" class="form-label">Company Subdomain</label>
+                    <div class="input-wrapper subdomain-input">
+                        <input type="text" id="subdomain" class="form-input" placeholder="yourcompany" required pattern="^[a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]$" minlength="2">
+                        <span class="subdomain-suffix">.hubsign.io</span>
+                    </div>
+                    <span class="form-hint">Enter your organization's subdomain</span>
+                </div>
+                <button type="submit" class="btn btn-primary btn-full btn-lg" id="subdomainSubmit">
+                    Continue
+                    {% include "landing/icons/arrow-right.html" %}
+                </button>
+                <p class="form-note">
+                    {% include "landing/icons/info.html" %}
+                    Don't know your subdomain? Contact your IT administrator.
+                </p>
+            </form>
+        </div>
+
+        <!-- Step 2: Shared Instance Email Entry -->
+        <div class="modal-content hidden" id="modalStep2">
+            <button class="modal-back" onclick="goToStep0()">
+                {% include "landing/icons/arrow-left.html" %}
+                Back
+            </button>
+            <div class="modal-header">
+                <h2 class="modal-title">Sign in to HubSign</h2>
+                <p class="modal-subtitle">Enter your email to continue</p>
+            </div>
+            <form class="modal-form" id="sharedLoginForm" onsubmit="submitSharedLogin(event)">
+                <div class="form-group">
+                    <label for="sharedEmail" class="form-label">Email Address</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">
+                            {% include "landing/icons/email-input.html" %}
+                        </span>
+                        <input type="email" id="sharedEmail" class="form-input" placeholder="you@example.com" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-full btn-lg">
+                    Send Sign-In Link
+                </button>
+                <p class="form-note">
+                    {% include "landing/icons/info.html" %}
+                    We'll send a secure sign-in link. No password needed.
+                </p>
+            </form>
+        </div>
+
+        <!-- Step 3: Signup -->
+        <div class="modal-content hidden" id="modalStep3">
+            <button class="modal-back" onclick="goToStep0()">
+                {% include "landing/icons/arrow-left.html" %}
+                Back
+            </button>
+            <div class="modal-header">
+                <h2 class="modal-title">Create your account</h2>
+                <p class="modal-subtitle">Get started with HubSign for free</p>
+            </div>
+            <form class="modal-form" id="signupForm" onsubmit="submitSignup(event)">
+                <div class="form-group">
+                    <label for="signupEmail" class="form-label">Work Email</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">
+                            {% include "landing/icons/email-input.html" %}
+                        </span>
+                        <input type="email" id="signupEmail" class="form-input" placeholder="you@yourcompany.com" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="signupName" class="form-label">Full Name</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">
+                            {% include "landing/icons/user.html" %}
+                        </span>
+                        <input type="text" id="signupName" class="form-input" placeholder="John Doe" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="signupCompany" class="form-label">Company Name</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">
+                            {% include "landing/icons/building-input.html" %}
+                        </span>
+                        <input type="text" id="signupCompany" class="form-input" placeholder="Acme Inc">
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-full btn-lg">
+                    Create Account
+                </button>
+                <p class="form-terms">
+                    By signing up, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
+                </p>
+            </form>
+        </div>
+
+        <!-- Step 4: Success -->
+        <div class="modal-content hidden" id="modalStep4">
+            <div class="modal-success">
+                <div class="success-icon">
+                    {% include "landing/icons/check-circle.html" %}
+                </div>
+                <h2 class="modal-title">Check your email</h2>
+                <p class="modal-subtitle">
+                    We've sent a sign-in link to<br>
+                    <strong id="displayEmail"></strong>
+                </p>
+                <p class="success-note">Click the link in the email to access HubSign.</p>
+                <button class="btn btn-ghost" onclick="closeModal()">Done</button>
+            </div>
+        </div>
+
+        <!-- Step 5: Redirecting to Subdomain -->
+        <div class="modal-content hidden" id="modalStep5">
+            <div class="modal-success">
+                <div class="success-icon redirecting">
+                    <div class="spinner"></div>
+                </div>
+                <h2 class="modal-title">Redirecting...</h2>
+                <p class="modal-subtitle">
+                    Taking you to<br>
+                    <strong id="displaySubdomain"></strong>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

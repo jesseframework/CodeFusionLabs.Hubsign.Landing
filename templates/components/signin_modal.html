@@ -1,0 +1,155 @@
+<!-- Sign In Modal with Subdomain/Shared Instance Selection -->
+<div class="modal-overlay" id="modalOverlay">
+    <div class="modal" role="dialog" aria-labelledby="modalTitle">
+        <button class="modal-close" onclick="closeModal()" aria-label="Close">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2"/>
+            </svg>
+        </button>
+        
+        <!-- Step: Select Sign-In Type -->
+        <div class="modal-content" id="modalStepSelect">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modalTitle">Sign in to HubSign</h2>
+                <p class="modal-subtitle">Choose how you'd like to sign in</p>
+            </div>
+            
+            <div class="signin-options">
+                <div class="signin-option" data-signin-type="subdomain" onclick="selectSignInType('subdomain')" tabindex="0" role="button">
+                    <div class="signin-option-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                            <path d="M12 2C12 2 8 6 8 12C8 18 12 22 12 22" stroke="currentColor" stroke-width="2"/>
+                            <path d="M12 2C12 2 16 6 16 12C16 18 12 22 12 22" stroke="currentColor" stroke-width="2"/>
+                            <path d="M2 12H22" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                    </div>
+                    <div class="signin-option-text">
+                        <span class="signin-option-title">Company Subdomain</span>
+                        <span class="signin-option-desc">Sign in with your company's dedicated instance</span>
+                    </div>
+                    <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
+                        <path d="M8 5L13 10L8 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                
+                <div class="signin-option" data-signin-type="shared" onclick="selectSignInType('shared')" tabindex="0" role="button">
+                    <div class="signin-option-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                            <path d="M17 21V19C17 17.9391 16.5786 16.9217 15.8284 16.1716C15.0783 15.4214 14.0609 15 13 15H5C3.93913 15 2.92172 15.4214 2.17157 16.1716C1.42143 16.9217 1 17.9391 1 19V21" stroke="currentColor" stroke-width="2"/>
+                            <circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2"/>
+                            <path d="M23 21V19C22.9993 18.1137 22.7044 17.2528 22.1614 16.5523C21.6184 15.8519 20.8581 15.3516 20 15.13" stroke="currentColor" stroke-width="2"/>
+                            <path d="M16 3.13C16.8604 3.35031 17.623 3.85071 18.1676 4.55232C18.7122 5.25392 19.0078 6.11683 19.0078 7.005C19.0078 7.89318 18.7122 8.75608 18.1676 9.45769C17.623 10.1593 16.8604 10.6597 16 10.88" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                    </div>
+                    <div class="signin-option-text">
+                        <span class="signin-option-title">Shared Instance</span>
+                        <span class="signin-option-desc">Use HubSign's shared platform (app.hubsign.io)</span>
+                    </div>
+                    <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
+                        <path d="M8 5L13 10L8 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+            </div>
+            
+            <p class="form-note">
+                <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+                    <path d="M8 14C11.3137 14 14 11.3137 14 8C14 4.68629 11.3137 2 8 2C4.68629 2 2 4.68629 2 8C2 11.3137 4.68629 14 8 14Z" stroke="currentColor" stroke-width="1.5"/>
+                    <path d="M8 5.33334V8.00001" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                    <circle cx="8" cy="10.6667" r="0.5" fill="currentColor" stroke="currentColor"/>
+                </svg>
+                Not sure? Contact your IT administrator or choose Shared Instance.
+            </p>
+        </div>
+        
+        <!-- Step 1: Enter Domain -->
+        <div class="modal-content hidden" id="modalStep1">
+            <button class="modal-back" onclick="goToSelect()">
+                <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
+                    <path d="M16 10H4M4 10L9 5M4 10L9 15" stroke="currentColor" stroke-width="2"/>
+                </svg>
+                Back
+            </button>
+            <div class="modal-header">
+                <h2 class="modal-title">Enter your company domain</h2>
+                <p class="modal-subtitle">We'll find your workspace</p>
+            </div>
+            <form class="modal-form" onsubmit="goToStep2(event)">
+                <div class="form-group">
+                    <label for="domain" class="form-label">Company Domain</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="domain" class="form-input" placeholder="yourcompany.com" required autocomplete="organization">
+                        <span class="input-icon">
+                            <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
+                                <circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5"/>
+                                <path d="M10 2C10 2 6 5 6 10C6 15 10 18 10 18" stroke="currentColor" stroke-width="1.5"/>
+                                <path d="M10 2C10 2 14 5 14 10C14 15 10 18 10 18" stroke="currentColor" stroke-width="1.5"/>
+                                <path d="M2.5 10H17.5" stroke="currentColor" stroke-width="1.5"/>
+                            </svg>
+                        </span>
+                    </div>
+                    <span class="form-hint">Enter your company's domain (e.g., acme.com)</span>
+                </div>
+                <button type="submit" class="btn btn-primary btn-full btn-lg">
+                    Continue 
+                    <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
+                        <path d="M4 10H16M16 10L11 5M16 10L11 15" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                </button>
+            </form>
+        </div>
+        
+        <!-- Step 2: Enter Email -->
+        <div class="modal-content hidden" id="modalStep2">
+            <button class="modal-back" onclick="goToStep1()">
+                <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
+                    <path d="M16 10H4M4 10L9 5M4 10L9 15" stroke="currentColor" stroke-width="2"/>
+                </svg>
+                Back
+            </button>
+            <div class="modal-header">
+                <h2 class="modal-title">Enter your email</h2>
+                <p class="modal-subtitle">Signing in to <strong id="displayDomain"></strong></p>
+            </div>
+            <form class="modal-form" onsubmit="submitLogin(event)">
+                <div class="form-group">
+                    <label for="email" class="form-label">Work Email</label>
+                    <div class="input-wrapper">
+                        <input type="email" id="email" class="form-input" placeholder="you@yourcompany.com" required autocomplete="email">
+                        <span class="input-icon">
+                            <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
+                                <path d="M3.33334 5.83334L10 10.8333L16.6667 5.83334" stroke="currentColor" stroke-width="1.5"/>
+                                <path d="M3.33334 5.83334V14.1667C3.33334 14.6087 3.50894 15.0326 3.82149 15.3452C4.13405 15.6577 4.55798 15.8333 5.00001 15.8333H15C15.442 15.8333 15.866 15.6577 16.1785 15.3452C16.4911 15.0326 16.6667 14.6087 16.6667 14.1667V5.83334C16.6667 5.39131 16.4911 4.96739 16.1785 4.65483C15.866 4.34227 15.442 4.16667 15 4.16667H5.00001C4.55798 4.16667 4.13405 4.34227 3.82149 4.65483C3.50894 4.96739 3.33334 5.39131 3.33334 5.83334Z" stroke="currentColor" stroke-width="1.5"/>
+                            </svg>
+                        </span>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-full btn-lg">Send Sign-In Link</button>
+                <p class="form-note">
+                    <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+                        <path d="M8 14C11.3137 14 14 11.3137 14 8C14 4.68629 11.3137 2 8 2C4.68629 2 2 4.68629 2 8C2 11.3137 4.68629 14 8 14Z" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M8 5.33334V8.00001" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                        <circle cx="8" cy="10.6667" r="0.5" fill="currentColor" stroke="currentColor"/>
+                    </svg>
+                    We'll send a secure sign-in link. No password needed.
+                </p>
+            </form>
+        </div>
+        
+        <!-- Step 3: Success -->
+        <div class="modal-content hidden" id="modalStep3">
+            <div class="modal-success">
+                <div class="success-icon">
+                    <svg width="36" height="36" viewBox="0 0 48 48" fill="none">
+                        <circle cx="24" cy="24" r="20" stroke="currentColor" stroke-width="3"/>
+                        <path d="M15 24L21 30L33 18" stroke="currentColor" stroke-width="3"/>
+                    </svg>
+                </div>
+                <h2 class="modal-title">Check your email</h2>
+                <p class="modal-subtitle">We've sent a sign-in link to<br><strong id="displayEmail"></strong></p>
+                <p class="success-note">Click the link to access your workspace.</p>
+                <button class="btn btn-ghost" onclick="closeModal()">Done</button>
+            </div>
+        </div>
+    </div>
+</div>

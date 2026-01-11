@@ -1,0 +1,105 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}HubSign – Enterprise E-Signatures Made Simple{% endblock %}</title>
+    <meta name="description" content="{% block meta_description %}Fully compliant digital signatures for teams and businesses. Fast, secure, and beautifully simple document signing.{% endblock %}">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    {% block extra_css %}{% endblock %}
+    
+    <!-- CSRF Token for JavaScript -->
+    <meta name="csrf-token" content="{{ csrf_token }}">
+</head>
+<body>
+    <header class="header">
+        <nav class="nav container">
+            <a href="{% url 'landing:index' %}" class="logo">
+                <img src="{% static 'images/hubsign_logo.png' %}" alt="HubSign">
+            </a>
+            <div class="nav-links">
+                <a href="#features">Features</a>
+                <a href="#how-it-works">How It Works</a>
+                <a href="#pricing">Pricing</a>
+                <a href="#compliance">Compliance</a>
+            </div>
+            <div class="nav-actions">
+                <button class="btn btn-ghost" onclick="openModal()">Sign In</button>
+                <button class="btn btn-primary" onclick="openModal()">Get Started</button>
+            </div>
+            <button class="mobile-menu-btn" aria-label="Menu" onclick="toggleMobileMenu()">
+                <span></span><span></span><span></span>
+            </button>
+        </nav>
+        <div class="mobile-menu" id="mobileMenu">
+            <a href="#features" onclick="toggleMobileMenu()">Features</a>
+            <a href="#how-it-works" onclick="toggleMobileMenu()">How It Works</a>
+            <a href="#pricing" onclick="toggleMobileMenu()">Pricing</a>
+            <a href="#compliance" onclick="toggleMobileMenu()">Compliance</a>
+            <button class="btn btn-ghost btn-full" onclick="openModal(); toggleMobileMenu();">Sign In</button>
+            <button class="btn btn-primary btn-full" onclick="openModal(); toggleMobileMenu();">Get Started</button>
+        </div>
+    </header>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <img src="{% static 'images/hubsign_logo.png' %}" alt="HubSign" class="footer-logo">
+                    <p class="footer-tagline">Enterprise-grade e-signatures made simple.</p>
+                    <div class="footer-powered">
+                        <span class="footer-powered-text">Powered by</span>
+                        <img src="{% static 'images/fepro_logo.png' %}" alt="Future Edge Technology Inc" class="footer-powered-logo">
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h4>Product</h4>
+                    <a href="#features">Features</a>
+                    <a href="#how-it-works">How It Works</a>
+                    <a href="#pricing">Pricing</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Company</h4>
+                    <a href="mailto:support@hubsign.io">Contact</a>
+                    <a href="#">Privacy</a>
+                    <a href="#">Terms</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Contact</h4>
+                    <div class="footer-contact-item">
+                        {% include "components/icons/phone.svg" %}
+                        +1-810-626-EDGE
+                    </div>
+                    <div class="footer-contact-item">
+                        {% include "components/icons/email.svg" %}
+                        support@hubsign.io
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; {% now "Y" %} HubSign. All rights reserved.</p>
+                <p>A product of Future Edge Technology Inc.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Sign In Modal -->
+    {% include "components/signin_modal.html" %}
+
+    <!-- Scripts -->
+    <script src="{% static 'js/main.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,397 @@
+{% extends "landing/base.html" %}
+{% load static %}
+
+{% block content %}
+<!-- Hero with Slider -->
+<section class="hero">
+    <div class="hero-bg">
+        <div class="hero-gradient"></div>
+        <div class="hero-gradient-2"></div>
+    </div>
+    <div class="container">
+        <div class="hero-slider">
+            <div class="hero-slides" id="heroSlides">
+                <!-- Slide 1 -->
+                <div class="hero-slide">
+                    <div class="hero-text">
+                        <div class="hero-label">
+                            <span class="hero-label-dot"></span>
+                            Enterprise-ready e-signatures
+                        </div>
+                        <h1 class="hero-title">Digital Signing<br><span class="hero-title-accent">Made Simple</span></h1>
+                        <p class="hero-subtitle">Fully compliant signatures out of the box. Create, send, and sign documents with an intuitive experience your team will love.</p>
+                        <div class="hero-actions">
+                            <button class="btn btn-primary btn-lg" onclick="openModal()">
+                                Get Started Free
+                                {% include "landing/icons/arrow-right.html" %}
+                            </button>
+                            <button class="btn btn-outline btn-lg" onclick="openModal()">Sign In</button>
+                        </div>
+                        <div class="hero-note">
+                            {% include "landing/icons/check.html" %}
+                            No credit card required • Start signing in minutes
+                        </div>
+                    </div>
+                    <div class="hero-visual">
+                        <div class="doc-preview">
+                            <div class="doc-header">
+                                <div class="doc-icon">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M14 2H6C5.46957 2 4.96086 2.21071 4.58579 2.58579C4.21071 2.96086 4 3.46957 4 4V20C4 20.5304 4.21071 21.0391 4.58579 21.4142C4.96086 21.7893 5.46957 22 6 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V8L14 2Z" stroke="currentColor" stroke-width="2"/><path d="M14 2V8H20" stroke="currentColor" stroke-width="2"/></svg>
+                                </div>
+                                <div class="doc-info">
+                                    <span class="doc-name">Service_Agreement.pdf</span>
+                                    <span class="doc-meta">2 signers • Template</span>
+                                </div>
+                                <span class="doc-status">Ready</span>
+                            </div>
+                            <div class="doc-body">
+                                <div class="doc-line doc-line-title"></div>
+                                <div class="doc-line doc-line-sm"></div>
+                                <div class="doc-line"></div>
+                                <div class="doc-line doc-line-lg"></div>
+                                <div class="doc-spacer"></div>
+                                <div class="doc-line doc-line-md"></div>
+                            </div>
+                            <div class="doc-signature">
+                                <div class="signature-field">
+                                    <span class="signature-label">Your Signature</span>
+                                    <div class="signature-box">
+                                        <svg class="signature-svg" viewBox="0 0 200 60" fill="none">
+                                            <path d="M10 45 Q30 20 50 40 T90 35 T130 42 T170 30 Q180 25 190 35" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+                                        </svg>
+                                    </div>
+                                </div>
+                                <button class="btn btn-primary btn-sm">Sign</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 2 -->
+                <div class="hero-slide">
+                    <div class="hero-text">
+                        <div class="hero-label">
+                            <span class="hero-label-dot"></span>
+                            Templates & Automation
+                        </div>
+                        <h1 class="hero-title">Send Documents<br><span class="hero-title-accent">In Seconds</span></h1>
+                        <p class="hero-subtitle">Create reusable templates with pre-defined fields. Automate your signing workflows and save hours.</p>
+                        <div class="hero-actions">
+                            <button class="btn btn-primary btn-lg" onclick="openModal()">
+                                Try Templates
+                                {% include "landing/icons/arrow-right.html" %}
+                            </button>
+                            <button class="btn btn-outline btn-lg" onclick="openModal()">Learn More</button>
+                        </div>
+                        <div class="hero-note">
+                            {% include "landing/icons/check.html" %}
+                            Unlimited templates on paid plans
+                        </div>
+                    </div>
+                    <div class="hero-visual">
+                        <div class="doc-preview">
+                            <div class="doc-header">
+                                <div class="doc-icon" style="background: var(--green-100); color: var(--green-500);">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M14 2H6C5.46957 2 4.96086 2.21071 4.58579 2.58579C4.21071 2.96086 4 3.46957 4 4V20C4 20.5304 4.21071 21.0391 4.58579 21.4142C4.96086 21.7893 5.46957 22 6 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V8L14 2Z" stroke="currentColor" stroke-width="2"/><path d="M14 2V8H20" stroke="currentColor" stroke-width="2"/></svg>
+                                </div>
+                                <div class="doc-info">
+                                    <span class="doc-name">NDA_Template.pdf</span>
+                                    <span class="doc-meta">Reusable template</span>
+                                </div>
+                                <span class="doc-status" style="background: var(--purple-100); color: var(--primary);">Template</span>
+                            </div>
+                            <div class="doc-body">
+                                <div class="doc-line doc-line-title"></div>
+                                <div class="doc-line"></div>
+                                <div class="doc-line doc-line-lg"></div>
+                                <div class="doc-spacer"></div>
+                                <div class="doc-line doc-line-md"></div>
+                                <div class="doc-line doc-line-sm"></div>
+                            </div>
+                            <div class="doc-signature">
+                                <div class="signature-field">
+                                    <span class="signature-label">Signature Field</span>
+                                    <div class="signature-box" style="border-color: var(--green-500); background: var(--green-100);">
+                                        <span style="font-size: 0.625rem; color: var(--green-500);">Click to sign</span>
+                                    </div>
+                                </div>
+                                <button class="btn btn-primary btn-sm" style="background: var(--green-500);">Use</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 3 -->
+                <div class="hero-slide">
+                    <div class="hero-text">
+                        <div class="hero-label">
+                            <span class="hero-label-dot"></span>
+                            Team Collaboration
+                        </div>
+                        <h1 class="hero-title">Built for<br><span class="hero-title-accent">Teams</span></h1>
+                        <p class="hero-subtitle">Collaborate with your team. Manage permissions, share templates, and track document activity.</p>
+                        <div class="hero-actions">
+                            <button class="btn btn-primary btn-lg" onclick="openModal()">
+                                Start Team Trial
+                                {% include "landing/icons/arrow-right.html" %}
+                            </button>
+                            <a href="#pricing" class="btn btn-outline btn-lg">View Pricing</a>
+                        </div>
+                        <div class="hero-note">
+                            {% include "landing/icons/check.html" %}
+                            Add members for $8/user/month
+                        </div>
+                    </div>
+                    <div class="hero-visual">
+                        <div class="doc-preview">
+                            <div class="doc-header">
+                                <div class="doc-icon" style="background: #fef3c7; color: #f59e0b;">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M17 21V19C17 17.9391 16.5786 16.9217 15.8284 16.1716C15.0783 15.4214 14.0609 15 13 15H5C3.93913 15 2.92172 15.4214 2.17157 16.1716C1.42143 16.9217 1 17.9391 1 19V21" stroke="currentColor" stroke-width="2"/><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2"/><path d="M23 21V19C22.9993 18.1137 22.7044 17.2528 22.1614 16.5523C21.6184 15.8519 20.8581 15.3516 20 15.13" stroke="currentColor" stroke-width="2"/><path d="M16 3.13C16.8604 3.35031 17.623 3.85071 18.1676 4.55232C18.7122 5.25392 19.0078 6.11683 19.0078 7.005C19.0078 7.89318 18.7122 8.75608 18.1676 9.45769C17.623 10.1593 16.8604 10.6597 16 10.88" stroke="currentColor" stroke-width="2"/></svg>
+                                </div>
+                                <div class="doc-info">
+                                    <span class="doc-name">Team Workspace</span>
+                                    <span class="doc-meta">5 members • 12 docs</span>
+                                </div>
+                                <span class="doc-status" style="background: #fef3c7; color: #f59e0b;">Team</span>
+                            </div>
+                            <div class="doc-body" style="padding: 12px;">
+                                <div style="display: flex; gap: 6px; margin-bottom: 8px;">
+                                    <div style="width: 28px; height: 28px; border-radius: 50%; background: var(--primary-light);"></div>
+                                    <div style="width: 28px; height: 28px; border-radius: 50%; background: var(--green-100);"></div>
+                                    <div style="width: 28px; height: 28px; border-radius: 50%; background: #fef3c7;"></div>
+                                    <div style="width: 28px; height: 28px; border-radius: 50%; background: var(--gray-200); display: flex; align-items: center; justify-content: center; font-size: 0.5rem; color: var(--text-muted);">+2</div>
+                                </div>
+                                <div class="doc-line doc-line-lg"></div>
+                                <div class="doc-line doc-line-md"></div>
+                                <div class="doc-spacer"></div>
+                                <div class="doc-line"></div>
+                            </div>
+                            <div class="doc-signature" style="background: #fef3c7;">
+                                <div style="flex: 1; font-size: 0.625rem; color: #92400e;">
+                                    <strong>3 pending</strong> signatures
+                                </div>
+                                <button class="btn btn-primary btn-sm" style="background: #f59e0b;">View</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="slider-controls">
+            <button class="slider-arrow" onclick="prevSlide()">
+                <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M12 15L7 10L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <div class="slider-dots">
+                <div class="slider-dot active" onclick="goToSlide(0)"></div>
+                <div class="slider-dot" onclick="goToSlide(1)"></div>
+                <div class="slider-dot" onclick="goToSlide(2)"></div>
+            </div>
+            <button class="slider-arrow" onclick="nextSlide()">
+                <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M8 5L13 10L8 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+        </div>
+    </div>
+</section>
+
+<!-- Features -->
+<section class="section features" id="features">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-label">Features</span>
+            <h2 class="section-title">Everything you need to sign at scale</h2>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M17 3C17.2626 2.73735 17.5744 2.52901 17.9176 2.38687C18.2608 2.24473 18.6286 2.17157 19 2.17157C19.3714 2.17157 19.7392 2.24473 20.0824 2.38687C20.4256 2.52901 20.7374 2.73735 21 3C21.2626 3.26264 21.471 3.57444 21.6131 3.91762C21.7553 4.2608 21.8284 4.62856 21.8284 5C21.8284 5.37143 21.7553 5.73919 21.6131 6.08237C21.471 6.42555 21.2626 6.73735 21 7L7.5 20.5L2 22L3.5 16.5L17 3Z" stroke="currentColor" stroke-width="2"/></svg>
+                </div>
+                <h3 class="feature-title">Easy Signing</h3>
+                <p class="feature-desc">Sign documents in seconds with draw, type, or upload.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M14 2H6C5.46957 2 4.96086 2.21071 4.58579 2.58579C4.21071 2.96086 4 3.46957 4 4V20C4 20.5304 4.21071 21.0391 4.58579 21.4142C4.96086 21.7893 5.46957 22 6 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V8L14 2Z" stroke="currentColor" stroke-width="2"/><path d="M14 2V8H20" stroke="currentColor" stroke-width="2"/><path d="M12 18V12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M9 15L12 12L15 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+                <h3 class="feature-title">Templates</h3>
+                <p class="feature-desc">Create reusable templates with one-click workflows.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M17 21V19C17 17.9391 16.5786 16.9217 15.8284 16.1716C15.0783 15.4214 14.0609 15 13 15H5C3.93913 15 2.92172 15.4214 2.17157 16.1716C1.42143 16.9217 1 17.9391 1 19V21" stroke="currentColor" stroke-width="2"/><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2"/><path d="M23 21V19C22.9993 18.1137 22.7044 17.2528 22.1614 16.5523C21.6184 15.8519 20.8581 15.3516 20 15.13" stroke="currentColor" stroke-width="2"/><path d="M16 3.13C16.8604 3.35031 17.623 3.85071 18.1676 4.55232C18.7122 5.25392 19.0078 6.11683 19.0078 7.005C19.0078 7.89318 18.7122 8.75608 18.1676 9.45769C17.623 10.1593 16.8604 10.6597 16 10.88" stroke="currentColor" stroke-width="2"/></svg>
+                </div>
+                <h3 class="feature-title">Teams</h3>
+                <p class="feature-desc">Collaborate and manage permissions securely.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M10 13C10.4295 13.5741 10.9774 14.0491 11.6066 14.3929C12.2357 14.7367 12.9315 14.9411 13.6467 14.9923C14.3618 15.0435 15.0796 14.9403 15.7513 14.6897C16.4231 14.4392 17.0331 14.047 17.54 13.54L20.54 10.54C21.4508 9.59695 21.9548 8.33394 21.9434 7.02296C21.932 5.71198 21.4061 4.45791 20.479 3.53087C19.5519 2.60383 18.2979 2.07799 16.9869 2.0666C15.6759 2.0552 14.4129 2.55918 13.47 3.47L11.75 5.18" stroke="currentColor" stroke-width="2"/><path d="M14 11C13.5705 10.4259 13.0226 9.9508 12.3934 9.60704C11.7642 9.26328 11.0684 9.05886 10.3533 9.00765C9.63816 8.95643 8.92037 9.05963 8.24861 9.3102C7.57685 9.56077 6.96684 9.95296 6.45996 10.46L3.45996 13.46C2.54917 14.403 2.04519 15.666 2.05659 16.977C2.06798 18.288 2.59382 19.542 3.52086 20.4691C4.4479 21.3961 5.70197 21.922 7.01295 21.9334C8.32393 21.9448 9.58694 21.4408 10.53 20.53L12.24 18.82" stroke="currentColor" stroke-width="2"/></svg>
+                </div>
+                <h3 class="feature-title">Direct Links</h3>
+                <p class="feature-desc">Share signing links without account creation.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="11" width="18" height="11" rx="2" stroke="currentColor" stroke-width="2"/><path d="M7 11V7C7 5.67392 7.52678 4.40215 8.46447 3.46447C9.40215 2.52678 10.6739 2 12 2C13.3261 2 14.5979 2.52678 15.5355 3.46447C16.4732 4.40215 17 5.67392 17 7V11" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="16" r="1" fill="currentColor"/></svg>
+                </div>
+                <h3 class="feature-title">Secure</h3>
+                <p class="feature-desc">256-bit encryption with complete audit trails.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2"/><path d="M12 6V12L16 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                </div>
+                <h3 class="feature-title">Lightning Fast</h3>
+                <p class="feature-desc">Send and receive signed documents in seconds.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works -->
+<section class="section" id="how-it-works">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-label">How It Works</span>
+            <h2 class="section-title">Three steps. That's it.</h2>
+        </div>
+        <div class="steps">
+            <div class="step">
+                <div class="step-number">1</div>
+                <h3 class="step-title">Upload</h3>
+                <p class="step-desc">Drag and drop your document or use a template.</p>
+            </div>
+            <div class="step-connector">
+                <svg width="32" height="10" viewBox="0 0 48 12" fill="none"><path d="M0 6H44M44 6L38 1M44 6L38 11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="step">
+                <div class="step-number">2</div>
+                <h3 class="step-title">Sign</h3>
+                <p class="step-desc">Add fields and invite signers from any device.</p>
+            </div>
+            <div class="step-connector">
+                <svg width="32" height="10" viewBox="0 0 48 12" fill="none"><path d="M0 6H44M44 6L38 1M44 6L38 11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <h3 class="step-title">Done</h3>
+                <p class="step-desc">Everyone gets a signed copy with full audit trail.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Pricing -->
+<section class="section pricing" id="pricing">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-label">Pricing</span>
+            <h2 class="section-title">Simple, transparent pricing</h2>
+        </div>
+        <div class="pricing-toggle">
+            <span class="active">Monthly</span>
+            <div class="toggle-switch"></div>
+            <span>Annually</span>
+        </div>
+        <div class="pricing-grid">
+            <div class="pricing-card">
+                <span class="pricing-tier">Personal</span>
+                <div class="pricing-price">
+                    <span class="pricing-amount">Free</span>
+                </div>
+                <p class="pricing-desc">For casual signers. Free forever.</p>
+                <ul class="pricing-features">
+                    <li>{% include "landing/icons/check.html" %} Up to 3 docs/month</li>
+                    <li>{% include "landing/icons/check.html" %} Unlimited recipients</li>
+                    <li>{% include "landing/icons/check.html" %} No credit card</li>
+                </ul>
+                <button class="btn btn-outline btn-full" onclick="openModal()">Get Started</button>
+            </div>
+            <div class="pricing-card featured">
+                <span class="pricing-tier">Individual</span>
+                <div class="pricing-price">
+                    <span class="pricing-amount" data-plan="individual">$15</span>
+                    <span class="pricing-period">/mo</span>
+                </div>
+                <p class="pricing-desc">Unlimited signing for individuals.</p>
+                <ul class="pricing-features">
+                    <li>{% include "landing/icons/check.html" %} Unlimited documents</li>
+                    <li>{% include "landing/icons/check.html" %} API access</li>
+                    <li>{% include "landing/icons/check.html" %} Email support</li>
+                </ul>
+                <button class="btn btn-primary btn-full" onclick="openModal()">Get Started</button>
+            </div>
+            <div class="pricing-card">
+                <span class="pricing-tier">Business</span>
+                <div class="pricing-price">
+                    <span class="pricing-amount" data-plan="business">$60</span>
+                    <span class="pricing-period">/mo</span>
+                </div>
+                <p class="pricing-desc">Shared workspace for 5 users.</p>
+                <ul class="pricing-features">
+                    <li>{% include "landing/icons/check.html" %} +$8/user for more</li>
+                    <li>{% include "landing/icons/check.html" %} API + Automation</li>
+                    <li>{% include "landing/icons/check.html" %} Embedding</li>
+                </ul>
+                <button class="btn btn-outline btn-full" onclick="openModal()">Get Started</button>
+            </div>
+            <div class="pricing-card">
+                <span class="pricing-tier">Enterprise</span>
+                <div class="pricing-price">
+                    <span class="pricing-amount" data-plan="enterprise">$200</span>
+                    <span class="pricing-period">/mo</span>
+                </div>
+                <p class="pricing-desc">Dedicated for your business.</p>
+                <ul class="pricing-features">
+                    <li>{% include "landing/icons/check.html" %} Custom domain</li>
+                    <li>{% include "landing/icons/check.html" %} Unlimited teams</li>
+                    <li>{% include "landing/icons/check.html" %} SMTP + OAuth</li>
+                </ul>
+                <button class="btn btn-outline btn-full" onclick="openModal()">Get Started</button>
+            </div>
+        </div>
+        <p class="pricing-contact">Large team? <a href="mailto:sales@hubsign.io">Contact us</a> for enterprise options.</p>
+    </div>
+</section>
+
+<!-- Compliance -->
+<section class="section" id="compliance">
+    <div class="container">
+        <div class="compliance-content">
+            <div class="compliance-text">
+                <span class="section-label">Compliance</span>
+                <h2 class="section-title">Fully compliant. Out of the box.</h2>
+                <p class="compliance-desc">Your signatures are legally binding and audit-ready from day one.</p>
+                <div class="compliance-badges">
+                    <div class="compliance-badge">{% include "landing/icons/check.html" %} ESIGN Act</div>
+                    <div class="compliance-badge">{% include "landing/icons/check.html" %} UETA</div>
+                    <div class="compliance-badge">{% include "landing/icons/check.html" %} eIDAS</div>
+                    <div class="compliance-badge">{% include "landing/icons/check.html" %} Audit Trails</div>
+                </div>
+            </div>
+            <div class="compliance-visual">
+                <div class="compliance-card">
+                    <div class="compliance-card-icon">
+                        <svg width="28" height="28" viewBox="0 0 36 36" fill="none"><path d="M18 3L4.5 9V16.5C4.5 24.825 10.26 32.565 18 34.5C25.74 32.565 31.5 24.825 31.5 16.5V9L18 3Z" stroke="currentColor" stroke-width="2.5"/><path d="M12.75 18L16.5 21.75L23.25 15" stroke="currentColor" stroke-width="2.5"/></svg>
+                    </div>
+                    <span class="compliance-card-label">Enterprise Security</span>
+                    <span class="compliance-card-value">256-bit Encryption</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="section cta">
+    <div class="container">
+        <div class="cta-content">
+            <h2 class="cta-title">Ready to simplify document signing?</h2>
+            <p class="cta-subtitle">Join teams using effortless, compliant e-signatures.</p>
+            <button class="btn btn-white btn-lg" onclick="openModal()">
+                Get Started Free
+                {% include "landing/icons/arrow-right.html" %}
+            </button>
+        </div>
+    </div>
+</section>
+{% endblock %}

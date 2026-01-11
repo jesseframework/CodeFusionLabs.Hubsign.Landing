@@ -1,0 +1,28 @@
+<header class="header">
+    <nav class="nav container">
+        <a href="/" class="logo">
+            <img src="{% static 'images/hubsign_logo.png' %}" alt="HubSign">
+        </a>
+        <div class="nav-links">
+            <a href="#features">Features</a>
+            <a href="#how-it-works">How It Works</a>
+            <a href="#pricing">Pricing</a>
+            <a href="#compliance">Compliance</a>
+        </div>
+        <div class="nav-actions">
+            <button class="btn btn-ghost" onclick="openModal()">Sign In</button>
+            <button class="btn btn-primary" onclick="openModal()">Get Started</button>
+        </div>
+        <button class="mobile-menu-btn" aria-label="Menu" onclick="toggleMobileMenu()">
+            <span></span><span></span><span></span>
+        </button>
+    </nav>
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="#features" onclick="toggleMobileMenu()">Features</a>
+        <a href="#how-it-works" onclick="toggleMobileMenu()">How It Works</a>
+        <a href="#pricing" onclick="toggleMobileMenu()">Pricing</a>
+        <a href="#compliance" onclick="toggleMobileMenu()">Compliance</a>
+        <button class="btn btn-ghost btn-full" onclick="openModal(); toggleMobileMenu();">Sign In</button>
+        <button class="btn btn-primary btn-full" onclick="openModal(); toggleMobileMenu();">Get Started</button>
+    </div>
+</header>

@@ -1,0 +1,41 @@
+<footer class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <img src="{% static 'images/hubsign_logo.png' %}" alt="HubSign" class="footer-logo">
+                <p class="footer-tagline">Enterprise-grade e-signatures made simple.</p>
+                <div class="footer-powered">
+                    <span class="footer-powered-text">Powered by</span>
+                    <img src="{% static 'images/fepro_logo.png' %}" alt="Future Edge Technology Inc" class="footer-powered-logo">
+                </div>
+            </div>
+            <div class="footer-column">
+                <h4>Product</h4>
+                <a href="#features">Features</a>
+                <a href="#how-it-works">How It Works</a>
+                <a href="#pricing">Pricing</a>
+            </div>
+            <div class="footer-column">
+                <h4>Company</h4>
+                <a href="mailto:support@hubsign.io">Contact</a>
+                <a href="#">Privacy</a>
+                <a href="#">Terms</a>
+            </div>
+            <div class="footer-column">
+                <h4>Contact</h4>
+                <div class="footer-contact-item">
+                    {% include "landing/icons/phone.html" %}
+                    +1-810-626-EDGE
+                </div>
+                <div class="footer-contact-item">
+                    {% include "landing/icons/email.html" %}
+                    support@hubsign.io
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; {% now "Y" %} HubSign. All rights reserved.</p>
+            <p>A product of Future Edge Technology Inc.</p>
+        </div>
+    </div>
+</footer>

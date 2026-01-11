@@ -1,0 +1,60 @@
+# Docker ignore patterns
+.git
+.gitignore
+.github/
+.vscode/
+*.md
+!README.md
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+
+# Django
+*.log
+db.sqlite3
+db.sqlite3-journal
+/staticfiles
+/media
+
+# Environment
+.env
+.env.local
+.env.production
+venv/
+env/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Testing
+.coverage
+htmlcov/
+.pytest_cache/
+.tox/
+
+# Development
+/node_modules
+npm-debug.log
+
+# Original files
+index.html
+setup.sh
+SETUP.md
+CONVERSION_COMPLETE.md
+FONTS_GUIDE.md
