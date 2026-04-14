@@ -69,11 +69,13 @@ const SignInModal = {
             select: document.getElementById('modalStepSelect'),
             domain: document.getElementById('modalStep1'),
             email: document.getElementById('modalStep2'),
+            shared: document.getElementById('modalStepShared'),
             success: document.getElementById('modalStep3'),
         };
         this.inputs = {
             domain: document.getElementById('domain'),
             email: document.getElementById('email'),
+            sharedEmail: document.getElementById('sharedEmail'),
         };
         
         // Set up event listeners
@@ -166,10 +168,10 @@ const SignInModal = {
             this.showStep('domain');
             setTimeout(() => this.inputs.domain?.focus(), 100);
         } else {
-            // Shared instance - go directly to email
+            // Shared instance - show email + password step
             this.currentDomain = 'app.hubsign.io';
-            this.showStep('email');
-            setTimeout(() => this.inputs.email?.focus(), 100);
+            this.showStep('shared');
+            setTimeout(() => this.inputs.sharedEmail?.focus(), 100);
         }
     },
     
@@ -477,6 +479,20 @@ function goToStep2(event) {
 
 function submitLogin(event) {
     SignInModal.submitEmail(event);
+}
+
+function submitSharedLogin(event) {
+    event.preventDefault();
+    const email = document.getElementById('sharedEmail')?.value.trim();
+    if (!email) return;
+
+    // Use localhost:3000 in dev, app.hubsign.io in production
+    const isDev = ['localhost', '127.0.0.1'].includes(window.location.hostname);
+    const appBase = isDev ? 'http://localhost:3000' : 'https://app.hubsign.io';
+
+    const url = new URL(appBase + '/signin');
+    url.searchParams.set('email', email);
+    window.location.href = url.toString();
 }
 
 // =============================================================================

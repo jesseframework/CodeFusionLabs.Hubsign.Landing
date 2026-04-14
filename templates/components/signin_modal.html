@@ -100,7 +100,7 @@
             </form>
         </div>
         
-        <!-- Step 2: Enter Email -->
+        <!-- Step 2: Enter Email (subdomain magic-link flow) -->
         <div class="modal-content hidden" id="modalStep2">
             <button class="modal-back" onclick="goToStep1()">
                 <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
@@ -133,6 +133,48 @@
                         <circle cx="8" cy="10.6667" r="0.5" fill="currentColor" stroke="currentColor"/>
                     </svg>
                     We'll send a secure sign-in link. No password needed.
+                </p>
+            </form>
+        </div>
+
+        <!-- Step: Shared Instance Sign-In (email + password) -->
+        <div class="modal-content hidden" id="modalStepShared">
+            <button class="modal-back" onclick="goToSelect()">
+                <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
+                    <path d="M16 10H4M4 10L9 5M4 10L9 15" stroke="currentColor" stroke-width="2"/>
+                </svg>
+                Back
+            </button>
+            <div class="modal-header">
+                <h2 class="modal-title">Sign in to HubSign</h2>
+                <p class="modal-subtitle">Shared platform &mdash; <strong>app.hubsign.io</strong></p>
+            </div>
+            <form class="modal-form" id="sharedSignInForm" onsubmit="submitSharedLogin(event)">
+                <div class="form-group">
+                    <label for="sharedEmail" class="form-label">Email</label>
+                    <div class="input-wrapper">
+                        <input type="email" id="sharedEmail" class="form-input" placeholder="you@yourcompany.com" required autocomplete="email">
+                        <span class="input-icon">
+                            <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
+                                <path d="M3.33334 5.83334L10 10.8333L16.6667 5.83334" stroke="currentColor" stroke-width="1.5"/>
+                                <path d="M3.33334 5.83334V14.1667C3.33334 14.6087 3.50894 15.0326 3.82149 15.3452C4.13405 15.6577 4.55798 15.8333 5.00001 15.8333H15C15.442 15.8333 15.866 15.6577 16.1785 15.3452C16.4911 15.0326 16.6667 14.6087 16.6667 14.1667V5.83334C16.6667 5.39131 16.4911 4.96739 16.1785 4.65483C15.866 4.34227 15.442 4.16667 15 4.16667H5.00001C4.55798 4.16667 4.13405 4.34227 3.82149 4.65483C3.50894 4.96739 3.33334 5.39131 3.33334 5.83334Z" stroke="currentColor" stroke-width="1.5"/>
+                            </svg>
+                        </span>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-full btn-lg">
+                    Continue to Sign In
+                    <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
+                        <path d="M4 10H16M16 10L11 5M16 10L11 15" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                </button>
+                <p class="form-note">
+                    <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+                        <path d="M8 14C11.3137 14 14 11.3137 14 8C14 4.68629 11.3137 2 8 2C4.68629 2 2 4.68629 2 8C2 11.3137 4.68629 14 8 14Z" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M8 5.33334V8.00001" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                        <circle cx="8" cy="10.6667" r="0.5" fill="currentColor" stroke="currentColor"/>
+                    </svg>
+                    You'll be taken to <strong>app.hubsign.io</strong> with your email pre-filled.
                 </p>
             </form>
         </div>
