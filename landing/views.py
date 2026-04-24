@@ -15,11 +15,11 @@ class IndexView(TemplateView):
         return context
     
     def get_pricing_tiers(self):
-        """Return pricing tier data matching Stripe products."""
+        """Return pricing tier data matching Stripe product metadata.plan values."""
         return [
             {
-                'id': 'community',
-                'name': 'HubSign Community',
+                'id': 'personal',
+                'name': 'Personal',
                 'price': 'Free',
                 'period': '',
                 'description': 'For casual signers. Free forever.',
@@ -28,8 +28,8 @@ class IndexView(TemplateView):
                 'cta': 'Get Started',
             },
             {
-                'id': 'team',
-                'name': 'HubSign Team',
+                'id': 'individual',
+                'name': 'Individual',
                 'price': '$15',
                 'period': '/mo',
                 'description': 'Unlimited signing for individuals.',
@@ -38,29 +38,19 @@ class IndexView(TemplateView):
                 'cta': 'Get Started',
             },
             {
-                'id': 'regular',
-                'name': 'HubSign Pro',
-                'price': '$25',
+                'id': 'business',
+                'name': 'Business',
+                'price': '$60',
                 'period': '/mo',
-                'description': 'For growing teams and professionals.',
-                'features': ['100 documents/month', '500 recipients', 'Priority support'],
-                'featured': False,
-                'cta': 'Get Started',
-            },
-            {
-                'id': 'platform',
-                'name': 'Hubsign Business',
-                'price': '$35',
-                'period': '/mo',
-                'description': 'Shared workspace for 5 users.',
+                'description': 'Shared workspace for growing teams.',
                 'features': ['+$8/user for more', 'API + Automation', 'Embedding'],
                 'featured': False,
                 'cta': 'Get Started',
             },
             {
                 'id': 'enterprise',
-                'name': 'HubSign Enterprise',
-                'price': '$40',
+                'name': 'Enterprise',
+                'price': '$200',
                 'period': '/mo',
                 'description': 'Dedicated for your business.',
                 'features': ['Custom domain', 'Unlimited teams', 'SMTP + OAuth'],

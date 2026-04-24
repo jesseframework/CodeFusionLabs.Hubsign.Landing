@@ -223,22 +223,20 @@ class PricingInfoView(APIView):
     permission_classes = [AllowAny]
 
     # Order in which tiers appear on the page (keyed by Stripe product metadata.plan)
-    _TIER_ORDER = ['community', 'team', 'regular', 'platform', 'enterprise']
-    _TIER_FEATURED = 'team'
+    _TIER_ORDER = ['personal', 'individual', 'business', 'enterprise']
+    _TIER_FEATURED = 'individual'
 
     _TIER_FEATURES = {
-        'community': ['Up to 3 docs/month', 'Unlimited recipients', 'No credit card'],
-        'team':      ['Unlimited documents', 'API access', 'Email support'],
-        'regular':   ['100 documents/month', '500 recipients', 'Priority support'],
-        'platform':  ['+$8/user for more', 'API + Automation', 'Embedding'],
+        'personal':   ['Up to 3 docs/month', 'Unlimited recipients', 'No credit card'],
+        'individual': ['Unlimited documents', 'API access', 'Email support'],
+        'business':   ['+$8/user for more', 'API + Automation', 'Embedding'],
         'enterprise': ['Custom domain', 'Unlimited teams', 'SMTP + OAuth'],
     }
 
     _TIER_DESCRIPTIONS = {
-        'community': 'For casual signers. Free forever.',
-        'team':      'Unlimited signing for individuals.',
-        'regular':   'For growing teams and professionals.',
-        'platform':  'Shared workspace for 5 users.',
+        'personal':   'For casual signers. Free forever.',
+        'individual': 'Unlimited signing for individuals.',
+        'business':   'Shared workspace for growing teams.',
         'enterprise': 'Dedicated for your business.',
     }
 
@@ -311,40 +309,32 @@ class PricingInfoView(APIView):
     def _fallback_tiers(self):
         return [
             {
-                'id': 'community', 'name': 'HubSign Community',
+                'id': 'personal', 'name': 'Personal',
                 'price_monthly': 0, 'price_annually': 0,
                 'price_id_monthly': None, 'price_id_annually': None,
                 'featured': False,
-                'features': self._TIER_FEATURES['community'],
-                'description': self._TIER_DESCRIPTIONS['community'],
+                'features': self._TIER_FEATURES['personal'],
+                'description': self._TIER_DESCRIPTIONS['personal'],
             },
             {
-                'id': 'team', 'name': 'HubSign Team',
+                'id': 'individual', 'name': 'Individual',
                 'price_monthly': 15, 'price_annually': 12,
                 'price_id_monthly': None, 'price_id_annually': None,
                 'featured': True,
-                'features': self._TIER_FEATURES['team'],
-                'description': self._TIER_DESCRIPTIONS['team'],
+                'features': self._TIER_FEATURES['individual'],
+                'description': self._TIER_DESCRIPTIONS['individual'],
             },
             {
-                'id': 'regular', 'name': 'HubSign Pro',
-                'price_monthly': 25, 'price_annually': 16,
+                'id': 'business', 'name': 'Business',
+                'price_monthly': 60, 'price_annually': 50,
                 'price_id_monthly': None, 'price_id_annually': None,
                 'featured': False,
-                'features': self._TIER_FEATURES['regular'],
-                'description': self._TIER_DESCRIPTIONS['regular'],
+                'features': self._TIER_FEATURES['business'],
+                'description': self._TIER_DESCRIPTIONS['business'],
             },
             {
-                'id': 'platform', 'name': 'Hubsign Business',
-                'price_monthly': 35, 'price_annually': 28,
-                'price_id_monthly': None, 'price_id_annually': None,
-                'featured': False,
-                'features': self._TIER_FEATURES['platform'],
-                'description': self._TIER_DESCRIPTIONS['platform'],
-            },
-            {
-                'id': 'enterprise', 'name': 'HubSign Enterprise',
-                'price_monthly': 40, 'price_annually': 40,
+                'id': 'enterprise', 'name': 'Enterprise',
+                'price_monthly': 200, 'price_annually': 180,
                 'price_id_monthly': None, 'price_id_annually': None,
                 'featured': False,
                 'features': self._TIER_FEATURES['enterprise'],
