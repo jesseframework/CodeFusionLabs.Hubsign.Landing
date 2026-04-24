@@ -219,47 +219,138 @@ class NewsletterSignupView(APIView):
 
 
 class PricingInfoView(APIView):
-    """Get current pricing information."""
+    """Get current pricing information, sourced from Stripe when billing is enabled."""
     permission_classes = [AllowAny]
-    
+
+    # Order in which tiers appear on the page (keyed by Stripe product metadata.plan)
+    _TIER_ORDER = ['community', 'team', 'regular', 'platform', 'enterprise']
+    _TIER_FEATURED = 'team'
+
+    _TIER_FEATURES = {
+        'community': ['Up to 3 docs/month', 'Unlimited recipients', 'No credit card'],
+        'team':      ['Unlimited documents', 'API access', 'Email support'],
+        'regular':   ['100 documents/month', '500 recipients', 'Priority support'],
+        'platform':  ['+$8/user for more', 'API + Automation', 'Embedding'],
+        'enterprise': ['Custom domain', 'Unlimited teams', 'SMTP + OAuth'],
+    }
+
+    _TIER_DESCRIPTIONS = {
+        'community': 'For casual signers. Free forever.',
+        'team':      'Unlimited signing for individuals.',
+        'regular':   'For growing teams and professionals.',
+        'platform':  'Shared workspace for 5 users.',
+        'enterprise': 'Dedicated for your business.',
+    }
+
     @extend_schema(
         responses={200: OpenApiResponse(description="Pricing data")}
     )
     def get(self, request):
-        """Return pricing tiers as JSON for dynamic updates."""
-        return Response({
-            'tiers': [
-                {
-                    'id': 'personal',
-                    'name': 'Personal',
-                    'price_monthly': 0,
-                    'price_annually': 0,
-                    'features': ['Up to 3 docs/month', 'Unlimited recipients', 'No credit card'],
-                },
-                {
-                    'id': 'individual',
-                    'name': 'Individual',
-                    'price_monthly': 15,
-                    'price_annually': 12,
-                    'features': ['Unlimited documents', 'API access', 'Email support'],
-                },
-                {
-                    'id': 'business',
-                    'name': 'Business',
-                    'price_monthly': 60,
-                    'price_annually': 50,
-                    'features': ['+$8/user for more', 'API + Automation', 'Embedding'],
-                },
-                {
-                    'id': 'enterprise',
-                    'name': 'Enterprise',
-                    'price_monthly': 200,
-                    'price_annually': 180,
-                    'features': ['Custom domain', 'Unlimited teams', 'SMTP + OAuth'],
-                },
-            ],
-            'currency': 'USD',
-        })
+        """Return pricing tiers as JSON, sourced from Stripe when billing is enabled."""
+        tiers = None
+        if settings.BILLING_ENABLED and settings.STRIPE_API_KEY:
+            tiers = self._fetch_from_stripe()
+        if not tiers:
+            tiers = self._fallback_tiers()
+        return Response({'tiers': tiers, 'currency': 'USD'})
+
+    def _fetch_from_stripe(self):
+        try:
+            import stripe
+            stripe.api_key = settings.STRIPE_API_KEY
+
+            prices = stripe.Price.list(active=True, expand=['data.product'], limit=100)
+
+            plan_data = {}
+            for price in prices.data:
+                d = price.to_dict()
+                product = d.get('product') or {}
+                if not isinstance(product, dict) or not product.get('active'):
+                    continue
+                recurring = d.get('recurring')
+                if not recurring:
+                    continue
+                plan = (product.get('metadata') or {}).get('plan')
+                if not plan or plan not in self._TIER_ORDER:
+                    continue
+
+                entry = plan_data.setdefault(plan, {'name': product['name']})
+                interval = recurring['interval']
+                if interval == 'month':
+                    entry['price_monthly'] = d['unit_amount'] // 100
+                    entry['price_id_monthly'] = d['id']
+                elif interval == 'year':
+                    entry['price_annually'] = round(d['unit_amount'] / 100 / 12)
+                    entry['price_id_annually'] = d['id']
+
+            if not plan_data:
+                return None
+
+            tiers = []
+            for plan in self._TIER_ORDER:
+                if plan not in plan_data:
+                    continue
+                entry = plan_data[plan]
+                monthly = entry.get('price_monthly', 0)
+                tiers.append({
+                    'id': plan,
+                    'name': entry['name'],
+                    'price_monthly': monthly,
+                    'price_annually': entry.get('price_annually', monthly),
+                    'price_id_monthly': entry.get('price_id_monthly'),
+                    'price_id_annually': entry.get('price_id_annually'),
+                    'featured': plan == self._TIER_FEATURED,
+                    'features': self._TIER_FEATURES.get(plan, []),
+                    'description': self._TIER_DESCRIPTIONS.get(plan, ''),
+                })
+            return tiers or None
+        except Exception as exc:
+            logger.error('[stripe] Failed to fetch prices: %s', exc)
+            return None
+
+    def _fallback_tiers(self):
+        return [
+            {
+                'id': 'community', 'name': 'HubSign Community',
+                'price_monthly': 0, 'price_annually': 0,
+                'price_id_monthly': None, 'price_id_annually': None,
+                'featured': False,
+                'features': self._TIER_FEATURES['community'],
+                'description': self._TIER_DESCRIPTIONS['community'],
+            },
+            {
+                'id': 'team', 'name': 'HubSign Team',
+                'price_monthly': 15, 'price_annually': 12,
+                'price_id_monthly': None, 'price_id_annually': None,
+                'featured': True,
+                'features': self._TIER_FEATURES['team'],
+                'description': self._TIER_DESCRIPTIONS['team'],
+            },
+            {
+                'id': 'regular', 'name': 'HubSign Pro',
+                'price_monthly': 25, 'price_annually': 16,
+                'price_id_monthly': None, 'price_id_annually': None,
+                'featured': False,
+                'features': self._TIER_FEATURES['regular'],
+                'description': self._TIER_DESCRIPTIONS['regular'],
+            },
+            {
+                'id': 'platform', 'name': 'Hubsign Business',
+                'price_monthly': 35, 'price_annually': 28,
+                'price_id_monthly': None, 'price_id_annually': None,
+                'featured': False,
+                'features': self._TIER_FEATURES['platform'],
+                'description': self._TIER_DESCRIPTIONS['platform'],
+            },
+            {
+                'id': 'enterprise', 'name': 'HubSign Enterprise',
+                'price_monthly': 40, 'price_annually': 40,
+                'price_id_monthly': None, 'price_id_annually': None,
+                'featured': False,
+                'features': self._TIER_FEATURES['enterprise'],
+                'description': self._TIER_DESCRIPTIONS['enterprise'],
+            },
+        ]
 
 
 class HealthCheckView(APIView):

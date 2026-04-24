@@ -25,7 +25,9 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: hubsign-web-prod
-    command: gunicorn --bind 0.0.0.0:8000 --workers 4 --timeout 60 --access-logfile - --error-logfile - hubsign.wsgi:application
+    command: >
+      sh -c "python manage.py collectstatic --noinput &&
+             gunicorn --bind 0.0.0.0:8000 --workers 4 --timeout 60 --access-logfile - --error-logfile - hubsign.wsgi:application"
     volumes:
       - ./staticfiles:/app/staticfiles
       - ./media:/app/media

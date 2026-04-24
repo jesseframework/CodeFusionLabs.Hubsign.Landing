@@ -328,7 +328,7 @@
         </div>
         <div class="pricing-grid">
             {% for tier in pricing_tiers %}
-            <div class="pricing-card{% if tier.featured %} featured{% endif %}">
+            <div class="pricing-card{% if tier.featured %} featured{% endif %}" data-tier="{{ tier.id }}">
                 <span class="pricing-tier">{{ tier.name }}</span>
                 <div class="pricing-price">
                     <span class="pricing-amount">{{ tier.price }}</span>
