@@ -18,6 +18,7 @@ class IndexView(TemplateView):
         """Return pricing tier data."""
         return [
             {
+                'id': 'personal',
                 'name': 'Personal',
                 'price': 'Free',
                 'period': '',
@@ -31,6 +32,7 @@ class IndexView(TemplateView):
                 'cta': 'Get Started',
             },
             {
+                'id': 'individual',
                 'name': 'Individual',
                 'price': '$15',
                 'period': '/mo',
@@ -44,6 +46,7 @@ class IndexView(TemplateView):
                 'cta': 'Get Started',
             },
             {
+                'id': 'business',
                 'name': 'Business',
                 'price': '$60',
                 'period': '/mo',
@@ -57,6 +60,7 @@ class IndexView(TemplateView):
                 'cta': 'Get Started',
             },
             {
+                'id': 'enterprise',
                 'name': 'Enterprise',
                 'price': '$200',
                 'period': '/mo',

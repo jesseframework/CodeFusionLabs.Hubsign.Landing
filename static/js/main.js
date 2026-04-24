@@ -565,20 +565,41 @@ function initHeaderScroll() {
 function initPricingToggle() {
     const toggle = document.querySelector('.toggle-switch');
     if (!toggle) return;
-    
+
+    let pricingTiers = null;
+
+    fetch('/api/pricing/')
+        .then(r => r.ok ? r.json() : null)
+        .then(data => { if (data) pricingTiers = data.tiers; })
+        .catch(() => {});
+
     toggle.addEventListener('click', function() {
         this.classList.toggle('annual');
-        
-        // Update pricing display
         const isAnnual = this.classList.contains('annual');
-        
-        // Update toggle labels
+
         const labels = document.querySelectorAll('.pricing-toggle span');
         labels.forEach((label, index) => {
             label.classList.toggle('active', (index === 0 && !isAnnual) || (index === 1 && isAnnual));
         });
-        
-        // TODO: Update pricing amounts based on annual/monthly
+
+        if (!pricingTiers) return;
+
+        pricingTiers.forEach(tier => {
+            const card = document.querySelector('[data-tier="' + tier.id + '"]');
+            if (!card) return;
+            const amountEl = card.querySelector('.pricing-amount');
+            const periodEl = card.querySelector('.pricing-period');
+            if (!amountEl) return;
+
+            const price = isAnnual ? tier.price_annually : tier.price_monthly;
+            if (price === 0) {
+                amountEl.textContent = 'Free';
+                if (periodEl) periodEl.textContent = '';
+            } else {
+                amountEl.textContent = '$' + price;
+                if (periodEl) periodEl.textContent = '/mo';
+            }
+        });
     });
 }
 

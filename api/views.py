@@ -221,45 +221,127 @@ class NewsletterSignupView(APIView):
 class PricingInfoView(APIView):
     """Get current pricing information."""
     permission_classes = [AllowAny]
-    
+
+    _FALLBACK_TIERS = [
+        {
+            'id': 'personal',
+            'name': 'Personal',
+            'price_monthly': 0,
+            'price_annually': 0,
+            'price_id_monthly': None,
+            'price_id_annually': None,
+            'features': ['Up to 3 docs/month', 'Unlimited recipients', 'No credit card'],
+        },
+        {
+            'id': 'individual',
+            'name': 'Individual',
+            'price_monthly': 15,
+            'price_annually': 12,
+            'price_id_monthly': None,
+            'price_id_annually': None,
+            'features': ['Unlimited documents', 'API access', 'Email support'],
+        },
+        {
+            'id': 'business',
+            'name': 'Business',
+            'price_monthly': 60,
+            'price_annually': 50,
+            'price_id_monthly': None,
+            'price_id_annually': None,
+            'features': ['+$8/user for more', 'API + Automation', 'Embedding'],
+        },
+        {
+            'id': 'enterprise',
+            'name': 'Enterprise',
+            'price_monthly': 200,
+            'price_annually': 180,
+            'price_id_monthly': None,
+            'price_id_annually': None,
+            'features': ['Custom domain', 'Unlimited teams', 'SMTP + OAuth'],
+        },
+    ]
+
+    _NAME_TO_TIER = {
+        'personal': 'personal',
+        'individual': 'individual',
+        'business': 'business',
+        'enterprise': 'enterprise',
+    }
+
     @extend_schema(
         responses={200: OpenApiResponse(description="Pricing data")}
     )
     def get(self, request):
-        """Return pricing tiers as JSON for dynamic updates."""
-        return Response({
-            'tiers': [
-                {
-                    'id': 'personal',
-                    'name': 'Personal',
-                    'price_monthly': 0,
-                    'price_annually': 0,
-                    'features': ['Up to 3 docs/month', 'Unlimited recipients', 'No credit card'],
-                },
-                {
-                    'id': 'individual',
-                    'name': 'Individual',
-                    'price_monthly': 15,
-                    'price_annually': 12,
-                    'features': ['Unlimited documents', 'API access', 'Email support'],
-                },
-                {
-                    'id': 'business',
-                    'name': 'Business',
-                    'price_monthly': 60,
-                    'price_annually': 50,
-                    'features': ['+$8/user for more', 'API + Automation', 'Embedding'],
-                },
-                {
-                    'id': 'enterprise',
-                    'name': 'Enterprise',
-                    'price_monthly': 200,
-                    'price_annually': 180,
-                    'features': ['Custom domain', 'Unlimited teams', 'SMTP + OAuth'],
-                },
-            ],
-            'currency': 'USD',
-        })
+        """Return pricing tiers as JSON, sourced from Stripe when billing is enabled."""
+        tiers = self._fallback_tiers()
+
+        if settings.BILLING_ENABLED and settings.STRIPE_API_KEY:
+            stripe_data = self._fetch_stripe_prices()
+            if stripe_data:
+                tiers = self._merge_stripe_data(tiers, stripe_data)
+
+        return Response({'tiers': tiers, 'currency': 'USD'})
+
+    def _fallback_tiers(self):
+        import copy
+        return copy.deepcopy(self._FALLBACK_TIERS)
+
+    def _fetch_stripe_prices(self):
+        try:
+            import stripe
+            stripe.api_key = settings.STRIPE_API_KEY
+
+            prices = stripe.Price.list(active=True, expand=['data.product'], limit=100)
+
+            tier_prices = {}
+            for price in prices.data:
+                product = price.product
+                if not getattr(product, 'active', False):
+                    continue
+                if not price.recurring:
+                    continue
+
+                tier_id = (product.metadata or {}).get('tier_id')
+                if not tier_id:
+                    tier_id = self._NAME_TO_TIER.get(product.name.lower())
+                if not tier_id:
+                    continue
+
+                if tier_id not in tier_prices:
+                    tier_prices[tier_id] = {}
+
+                interval = price.recurring.interval
+                if interval == 'month':
+                    tier_prices[tier_id]['monthly'] = price
+                elif interval == 'year':
+                    tier_prices[tier_id]['annually'] = price
+
+            return tier_prices
+        except Exception as exc:
+            logger.error('[stripe] Failed to fetch prices: %s', exc)
+            return None
+
+    def _merge_stripe_data(self, tiers, stripe_data):
+        for tier in tiers:
+            tier_id = tier['id']
+            prices = stripe_data.get(tier_id, {})
+
+            monthly = prices.get('monthly')
+            annually = prices.get('annually')
+
+            if monthly:
+                tier['price_monthly'] = monthly.unit_amount // 100
+                tier['price_id_monthly'] = monthly.id
+
+            if annually:
+                # Store as monthly equivalent (annual amount / 12)
+                tier['price_annually'] = round(annually.unit_amount / 100 / 12)
+                tier['price_id_annually'] = annually.id
+            elif monthly:
+                # No annual price in Stripe — keep fallback annual amount
+                pass
+
+        return tiers
 
 
 class HealthCheckView(APIView):

@@ -20,5 +20,8 @@ bcrypt>=4.1.2
 gunicorn>=21.2.0
 whitenoise>=6.6.0
 
+# Billing
+stripe>=7.0.0
+
 # Development
 python-dotenv>=1.0.0

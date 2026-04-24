@@ -188,3 +188,11 @@ HUBSIGN_API_KEY = os.environ.get('HUBSIGN_API_KEY', '')
 
 # Shared instance configuration
 HUBSIGN_SHARED_INSTANCE = 'app.hubsign.io'
+
+# =============================================================================
+# BILLING / STRIPE CONFIGURATION
+# =============================================================================
+
+BILLING_ENABLED = os.environ.get('NEXT_PUBLIC_FEATURE_BILLING_ENABLED', 'false').lower() in ('true', '1', 'yes')
+STRIPE_API_KEY = os.environ.get('NEXT_PRIVATE_STRIPE_API_KEY', '')
+STRIPE_WEBHOOK_SECRET = os.environ.get('NEXT_PRIVATE_STRIPE_WEBHOOK_SECRET', '')
