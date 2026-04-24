@@ -351,33 +351,34 @@ function isValidEmail(email) {
 // ============================================
 function initPricingToggle() {
     const toggle = document.querySelector('.toggle-switch');
-    if (toggle) {
-        toggle.addEventListener('click', function() {
-            this.classList.toggle('annual');
-            updatePricing(this.classList.contains('annual'));
+    if (!toggle) return;
+    let pricingTiers = null;
+    fetch('/api/v1/pricing/')
+        .then(r => r.ok ? r.json() : null)
+        .then(data => { if (data) pricingTiers = data.tiers; })
+        .catch(() => {});
+    toggle.addEventListener('click', function() {
+        this.classList.toggle('annual');
+        const isAnnual = this.classList.contains('annual');
+        document.querySelectorAll('.pricing-toggle span').forEach((span, i) => {
+            span.classList.toggle('active', (i === 0 && !isAnnual) || (i === 1 && isAnnual));
         });
-    }
-}
-
-function updatePricing(isAnnual) {
-    const prices = {
-        individual: { monthly: 15, annual: 12 },
-        business: { monthly: 60, annual: 48 },
-        enterprise: { monthly: 200, annual: 160 }
-    };
-    
-    // Update displayed prices (if dynamic pricing elements exist)
-    document.querySelectorAll('[data-plan]').forEach(el => {
-        const plan = el.dataset.plan;
-        if (prices[plan]) {
-            const price = isAnnual ? prices[plan].annual : prices[plan].monthly;
-            el.textContent = `$${price}`;
-        }
-    });
-    
-    // Update toggle labels
-    document.querySelectorAll('.pricing-toggle span').forEach((span, i) => {
-        span.classList.toggle('active', (i === 0 && !isAnnual) || (i === 1 && isAnnual));
+        if (!pricingTiers) return;
+        pricingTiers.forEach(tier => {
+            const card = document.querySelector('[data-tier="' + tier.id + '"]');
+            if (!card) return;
+            const amountEl = card.querySelector('.pricing-amount');
+            const periodEl = card.querySelector('.pricing-period');
+            if (!amountEl) return;
+            const price = isAnnual ? tier.price_annually : tier.price_monthly;
+            if (price === 0) {
+                amountEl.textContent = 'Free';
+                if (periodEl) periodEl.textContent = '';
+            } else {
+                amountEl.textContent = '$' + price;
+                if (periodEl) periodEl.textContent = '/mo';
+            }
+        });
     });
 }
 
