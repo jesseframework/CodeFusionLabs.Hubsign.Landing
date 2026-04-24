@@ -562,6 +562,24 @@ function initHeaderScroll() {
 // PRICING TOGGLE
 // =============================================================================
 
+function applyPricingTiers(tiers, isAnnual) {
+    tiers.forEach(tier => {
+        const card = document.querySelector('[data-tier="' + tier.id + '"]');
+        if (!card) return;
+        const amountEl = card.querySelector('.pricing-amount');
+        const periodEl = card.querySelector('.pricing-period');
+        if (!amountEl) return;
+        const price = isAnnual ? tier.price_annually : tier.price_monthly;
+        if (price === 0) {
+            amountEl.textContent = 'Free';
+            if (periodEl) periodEl.textContent = '';
+        } else {
+            amountEl.textContent = '$' + price;
+            if (periodEl) periodEl.textContent = '/mo';
+        }
+    });
+}
+
 function initPricingToggle() {
     const toggle = document.querySelector('.toggle-switch');
     if (!toggle) return;
@@ -570,7 +588,12 @@ function initPricingToggle() {
 
     fetch('/api/pricing/')
         .then(r => r.ok ? r.json() : null)
-        .then(data => { if (data) pricingTiers = data.tiers; })
+        .then(data => {
+            if (!data) return;
+            pricingTiers = data.tiers;
+            // Apply Stripe prices immediately on load (monthly view is default)
+            applyPricingTiers(pricingTiers, false);
+        })
         .catch(() => {});
 
     toggle.addEventListener('click', function() {
@@ -583,23 +606,7 @@ function initPricingToggle() {
         });
 
         if (!pricingTiers) return;
-
-        pricingTiers.forEach(tier => {
-            const card = document.querySelector('[data-tier="' + tier.id + '"]');
-            if (!card) return;
-            const amountEl = card.querySelector('.pricing-amount');
-            const periodEl = card.querySelector('.pricing-period');
-            if (!amountEl) return;
-
-            const price = isAnnual ? tier.price_annually : tier.price_monthly;
-            if (price === 0) {
-                amountEl.textContent = 'Free';
-                if (periodEl) periodEl.textContent = '';
-            } else {
-                amountEl.textContent = '$' + price;
-                if (periodEl) periodEl.textContent = '/mo';
-            }
-        });
+        applyPricingTiers(pricingTiers, isAnnual);
     });
 }
 

@@ -21,6 +21,10 @@ COPY . .
 # Create static files directory
 RUN mkdir -p /app/staticfiles
 
+# Verify static assets exist before collecting (fails build if images are missing)
+RUN test -f /app/static/images/hubsign_logo.png || (echo "ERROR: hubsign_logo.png not found in build context" && exit 1)
+RUN test -f /app/static/images/fepro_logo.png   || (echo "ERROR: fepro_logo.png not found in build context" && exit 1)
+
 # Set build-time env so collectstatic runs in production mode
 ENV DJANGO_SETTINGS_MODULE=hubsign.settings \
     DEBUG=False \
