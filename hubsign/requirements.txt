@@ -12,5 +12,8 @@ django-cors-headers>=4.3.0
 gunicorn>=21.2.0
 whitenoise>=6.6.0
 
+# Stripe
+stripe>=5.0.0
+
 # Development
 django-debug-toolbar>=4.2.0

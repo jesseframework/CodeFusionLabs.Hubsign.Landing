@@ -207,3 +207,78 @@ def signup(request):
             'success': False,
             'message': 'Signup failed. Please try again.'
         }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def pricing_info(request):
+    """Return pricing tiers from Stripe when billing is enabled, else fallback."""
+    _TIER_ORDER = ['community', 'team', 'regular', 'platform', 'enterprise']
+    _TIER_FEATURED = 'team'
+    _FEATURES = {
+        'community': ['Up to 3 docs/month', 'Unlimited recipients', 'No credit card'],
+        'team':      ['Unlimited documents', 'API access', 'Email support'],
+        'regular':   ['100 documents/month', '500 recipients', 'Priority support'],
+        'platform':  ['+$8/user for more', 'API + Automation', 'Embedding'],
+        'enterprise': ['Custom domain', 'Unlimited teams', 'SMTP + OAuth'],
+    }
+    _DESCRIPTIONS = {
+        'community': 'For casual signers. Free forever.',
+        'team':      'Unlimited signing for individuals.',
+        'regular':   'For growing teams and professionals.',
+        'platform':  'Shared workspace for 5 users.',
+        'enterprise': 'Dedicated for your business.',
+    }
+
+    tiers = None
+    if getattr(settings, 'BILLING_ENABLED', False) and getattr(settings, 'STRIPE_API_KEY', ''):
+        try:
+            import stripe
+            stripe.api_key = settings.STRIPE_API_KEY
+            prices = stripe.Price.list(active=True, expand=['data.product'], limit=100)
+            plan_data = {}
+            for price in prices.data:
+                d = price.to_dict()
+                product = d.get('product') or {}
+                if not isinstance(product, dict) or not product.get('active'):
+                    continue
+                recurring = d.get('recurring')
+                if not recurring:
+                    continue
+                plan = (product.get('metadata') or {}).get('plan')
+                if not plan or plan not in _TIER_ORDER:
+                    continue
+                entry = plan_data.setdefault(plan, {'name': product['name']})
+                if recurring['interval'] == 'month':
+                    entry['price_monthly'] = d['unit_amount'] // 100
+                elif recurring['interval'] == 'year':
+                    entry['price_annually'] = round(d['unit_amount'] / 100 / 12)
+            if plan_data:
+                tiers = []
+                for plan in _TIER_ORDER:
+                    if plan not in plan_data:
+                        continue
+                    e = plan_data[plan]
+                    monthly = e.get('price_monthly', 0)
+                    tiers.append({
+                        'id': plan,
+                        'name': e['name'],
+                        'price_monthly': monthly,
+                        'price_annually': e.get('price_annually', monthly),
+                        'featured': plan == _TIER_FEATURED,
+                        'features': _FEATURES.get(plan, []),
+                        'description': _DESCRIPTIONS.get(plan, ''),
+                    })
+        except Exception as exc:
+            logger.error('[stripe] fetch failed: %s', exc)
+
+    if not tiers:
+        tiers = [
+            {'id': 'community', 'name': 'HubSign Community', 'price_monthly': 0,  'price_annually': 0,  'featured': False, 'features': _FEATURES['community'], 'description': _DESCRIPTIONS['community']},
+            {'id': 'team',      'name': 'HubSign Team',      'price_monthly': 15, 'price_annually': 12, 'featured': True,  'features': _FEATURES['team'],      'description': _DESCRIPTIONS['team']},
+            {'id': 'regular',   'name': 'HubSign Pro',       'price_monthly': 25, 'price_annually': 16, 'featured': False, 'features': _FEATURES['regular'],   'description': _DESCRIPTIONS['regular']},
+            {'id': 'platform',  'name': 'Hubsign Business',  'price_monthly': 35, 'price_annually': 28, 'featured': False, 'features': _FEATURES['platform'],  'description': _DESCRIPTIONS['platform']},
+            {'id': 'enterprise','name': 'HubSign Enterprise','price_monthly': 40, 'price_annually': 40, 'featured': False, 'features': _FEATURES['enterprise'],'description': _DESCRIPTIONS['enterprise']},
+        ]
+
+    return Response({'tiers': tiers, 'currency': 'USD'})

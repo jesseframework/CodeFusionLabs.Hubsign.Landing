@@ -293,7 +293,7 @@
             <span>Annually</span>
         </div>
         <div class="pricing-grid">
-            <div class="pricing-card">
+            <div class="pricing-card" data-tier="community">
                 <span class="pricing-tier">Personal</span>
                 <div class="pricing-price">
                     <span class="pricing-amount">Free</span>
@@ -306,10 +306,10 @@
                 </ul>
                 <button class="btn btn-outline btn-full" onclick="openModal()">Get Started</button>
             </div>
-            <div class="pricing-card featured">
+            <div class="pricing-card featured" data-tier="team">
                 <span class="pricing-tier">Individual</span>
                 <div class="pricing-price">
-                    <span class="pricing-amount" data-plan="individual">$15</span>
+                    <span class="pricing-amount">$15</span>
                     <span class="pricing-period">/mo</span>
                 </div>
                 <p class="pricing-desc">Unlimited signing for individuals.</p>
@@ -320,10 +320,24 @@
                 </ul>
                 <button class="btn btn-primary btn-full" onclick="openModal()">Get Started</button>
             </div>
-            <div class="pricing-card">
+            <div class="pricing-card" data-tier="regular">
+                <span class="pricing-tier">Pro</span>
+                <div class="pricing-price">
+                    <span class="pricing-amount">$25</span>
+                    <span class="pricing-period">/mo</span>
+                </div>
+                <p class="pricing-desc">For growing teams and professionals.</p>
+                <ul class="pricing-features">
+                    <li>{% include "landing/icons/check.html" %} 100 documents/month</li>
+                    <li>{% include "landing/icons/check.html" %} 500 recipients</li>
+                    <li>{% include "landing/icons/check.html" %} Priority support</li>
+                </ul>
+                <button class="btn btn-outline btn-full" onclick="openModal()">Get Started</button>
+            </div>
+            <div class="pricing-card" data-tier="platform">
                 <span class="pricing-tier">Business</span>
                 <div class="pricing-price">
-                    <span class="pricing-amount" data-plan="business">$60</span>
+                    <span class="pricing-amount">$35</span>
                     <span class="pricing-period">/mo</span>
                 </div>
                 <p class="pricing-desc">Shared workspace for 5 users.</p>
@@ -334,10 +348,10 @@
                 </ul>
                 <button class="btn btn-outline btn-full" onclick="openModal()">Get Started</button>
             </div>
-            <div class="pricing-card">
+            <div class="pricing-card" data-tier="enterprise">
                 <span class="pricing-tier">Enterprise</span>
                 <div class="pricing-price">
-                    <span class="pricing-amount" data-plan="enterprise">$200</span>
+                    <span class="pricing-amount">$40</span>
                     <span class="pricing-period">/mo</span>
                 </div>
                 <p class="pricing-desc">Dedicated for your business.</p>

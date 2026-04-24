@@ -13,4 +13,7 @@ urlpatterns = [
     # Authentication
     path('auth/magic-link/', views.send_magic_link, name='magic_link'),
     path('auth/signup/', views.signup, name='signup'),
+
+    # Pricing
+    path('pricing/', views.pricing_info, name='pricing'),
 ]
