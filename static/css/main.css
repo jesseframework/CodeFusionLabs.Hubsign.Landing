@@ -148,7 +148,7 @@ input {
 }
 
 .logo img {
-    height: 44px;
+    height: 4rem;
     width: auto;
 }
 
@@ -1108,7 +1108,7 @@ input {
 }
 
 .footer-logo {
-    height: 36px;
+    height: 4rem;
     width: auto;
     margin-bottom: 12px;
     filter: brightness(0) invert(1);
@@ -1136,7 +1136,7 @@ input {
 }
 
 .footer-powered-logo {
-    height: 32px;
+    height: 2.5rem;
     width: auto;
 }
 
