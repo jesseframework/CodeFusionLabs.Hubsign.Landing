@@ -21,8 +21,13 @@ COPY . .
 # Create static files directory
 RUN mkdir -p /app/staticfiles
 
+# Set build-time env so collectstatic runs in production mode
+ENV DJANGO_SETTINGS_MODULE=hubsign.settings \
+    DEBUG=False \
+    SECRET_KEY=build-time-placeholder-overridden-at-runtime
+
 # Collect static files
-RUN python manage.py collectstatic --noinput
+RUN python manage.py collectstatic --noinput --clear --verbosity 2
 
 # Create non-root user for security
 RUN useradd -m -u 1000 hubsign && \
