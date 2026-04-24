@@ -9,15 +9,15 @@ services:
     expose:
       - "8000"
     environment:
-      - DJANGO_SECRET_KEY=[[SECRET_KEY]]
-      - DJANGO_DEBUG=False
+      - SECRET_KEY=[[SECRET_KEY]]
+      - DEBUG=False
       - ALLOWED_HOSTS=[[ALLOWED_HOSTS]]
       - CSRF_TRUSTED_ORIGINS=[[CSRF_TRUSTED_ORIGINS]]
-      - BILLING_ENABLED=[[NEXT_PUBLIC_FEATURE_BILLING_ENABLED]]
-      - STRIPE_API_KEY=[[NEXT_PRIVATE_STRIPE_API_KEY]]
-      - STRIPE_WEBHOOK_SECRET=[[NEXT_PRIVATE_STRIPE_WEBHOOK_SECRET]]
+      - NEXT_PUBLIC_FEATURE_BILLING_ENABLED=[[NEXT_PUBLIC_FEATURE_BILLING_ENABLED]]
+      - NEXT_PRIVATE_STRIPE_API_KEY=[[NEXT_PRIVATE_STRIPE_API_KEY]]
+      - NEXT_PRIVATE_STRIPE_WEBHOOK_SECRET=[[NEXT_PRIVATE_STRIPE_WEBHOOK_SECRET]]
     healthcheck:
-      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/v1/health/')"]
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health/')"]
       interval: 30s
       timeout: 10s
       retries: 3
