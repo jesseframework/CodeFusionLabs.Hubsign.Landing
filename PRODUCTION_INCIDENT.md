@@ -1,4 +1,4 @@
-# Production Incident: Static Images 404 + Stripe Pricing Mismatch
+# Production Incident: Stale Static Files (Images 404, CSS Out of Date) + Stripe Pricing Mismatch
 
 **Date:** April 2026  
 **Status:** Resolved  
@@ -15,7 +15,7 @@ Static images (`hubsign_logo.png`, `fepro_logo.png`, favicons) were returning 40
 
 1. **Komodo uses a private Docker registry** at `172.16.15.51:5000`, not GitHub Actions or a local build on deploy. The image tag is `172.16.15.51:5000/futureedge/hubsign-landing:latest`.
 
-2. **The image in the registry was stale** — built before `static/images/` was committed to git. The images were added in commit `fe4d366` but the registry image predated it. Every deploy just re-ran this old image.
+2. **The image in the registry was stale** — built before `static/images/` was committed to git, and before subsequent CSS/JS changes. Every deploy just re-ran this old image. This affected all static files: images were missing entirely, and CSS was out of date (e.g. production served `.logo img { height: 44px }` while the current code has `height: 4rem`). Any code change to `static/` is invisible until a fresh **Build** is triggered in Komodo.
 
 3. **The Komodo `compose.yaml` runs `collectstatic` at container startup** (not a Dockerfile issue). Because the source files (`/app/static/images/`) didn't exist in the stale image, collectstatic had nothing to collect. It reported `0 static files copied, 156 unmodified` — the 156 are the stale CSS/JS that were baked in from an older build.
 
@@ -125,6 +125,8 @@ Container starts → collectstatic --clear → gunicorn
 ```
 
 **Redeploy alone is not enough after code changes.** You must trigger a **Build** first, then Deploy.
+
+> **This applies to ALL static file changes** — CSS, JS, and images alike. If you update a colour, font size, layout, or add a new image and just redeploy without rebuilding, the old static files from the stale registry image will continue to be served. The symptom is often subtle: the page loads but looks wrong, or new images are missing while existing ones still work.
 
 ### When Images or Static Files Break
 
