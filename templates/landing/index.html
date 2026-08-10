@@ -331,11 +331,23 @@
             <div class="pricing-card{% if tier.featured %} featured{% endif %}" data-tier="{{ tier.id }}">
                 <span class="pricing-tier">{{ tier.name }}</span>
                 <div class="pricing-price">
-                    <span class="pricing-amount">{{ tier.price }}</span>
-                    {% if tier.period %}<span class="pricing-period">{{ tier.period }}</span>{% endif %}
+                    <span class="pricing-amount">{% if tier.is_free %}Free{% else %}${{ tier.price_monthly }}{% endif %}</span>
+                    {% if not tier.is_free %}<span class="pricing-period">/mo</span>{% endif %}
+                </div>
+                <div class="pricing-billing">
+                    <span class="pricing-billing-amount"></span>
+                    <span class="pricing-save"></span>
                 </div>
                 <p class="pricing-desc">{{ tier.description }}</p>
                 <ul class="pricing-features">
+                    {% for addon in tier.addons %}
+                    <li class="pricing-addon">
+                        <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+                            <path d="M13.3333 4L6 11.3333L2.66667 8" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                        +{{ addon.name }}: <span class="pricing-addon-amount">${{ addon.price_monthly }}{{ addon.unit_suffix }}</span>
+                    </li>
+                    {% endfor %}
                     {% for feature in tier.features %}
                     <li>
                         <svg width="12" height="12" viewBox="0 0 16 16" fill="none">

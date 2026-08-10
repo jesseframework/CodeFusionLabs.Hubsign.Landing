@@ -568,15 +568,36 @@ function applyPricingTiers(tiers, isAnnual) {
         if (!card) return;
         const amountEl = card.querySelector('.pricing-amount');
         const periodEl = card.querySelector('.pricing-period');
+        const billingEl = card.querySelector('.pricing-billing-amount');
+        const saveEl = card.querySelector('.pricing-save');
+        const addonEls = card.querySelectorAll('.pricing-addon-amount');
         if (!amountEl) return;
         const price = isAnnual ? tier.price_annually : tier.price_monthly;
         if (price === 0) {
             amountEl.textContent = 'Free';
             if (periodEl) periodEl.textContent = '';
+            if (billingEl) billingEl.textContent = '';
+            if (saveEl) saveEl.textContent = '';
         } else {
             amountEl.textContent = '$' + price;
             if (periodEl) periodEl.textContent = '/mo';
+            if (isAnnual) {
+                if (billingEl) billingEl.textContent = 'Billed $' + (price * 12) + '/yr';
+                const savings = tier.price_monthly > 0
+                    ? Math.round((1 - tier.price_annually / tier.price_monthly) * 100)
+                    : 0;
+                if (saveEl) saveEl.textContent = savings > 0 ? 'Save ' + savings + '%' : '';
+            } else {
+                if (billingEl) billingEl.textContent = '';
+                if (saveEl) saveEl.textContent = '';
+            }
         }
+        addonEls.forEach((el, i) => {
+            const addon = tier.addons && tier.addons[i];
+            if (!addon) return;
+            const addonPrice = isAnnual ? addon.price_annually : addon.price_monthly;
+            el.textContent = '$' + addonPrice + addon.unit_suffix;
+        });
     });
 }
 

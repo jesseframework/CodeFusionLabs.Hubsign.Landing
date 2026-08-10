@@ -2,63 +2,20 @@ from django.shortcuts import render
 from django.views.generic import TemplateView
 from django.conf import settings
 
+from .pricing import get_pricing_tiers
+
 
 class IndexView(TemplateView):
     """Main landing page view."""
     template_name = 'landing/index.html'
-    
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['shared_instance'] = settings.HUBSIGN_SHARED_INSTANCE
-        context['pricing_tiers'] = self.get_pricing_tiers()
+        context['pricing_tiers'] = get_pricing_tiers()
         context['features'] = self.get_features()
         return context
-    
-    def get_pricing_tiers(self):
-        """Return pricing tier data matching Stripe product metadata.plan values."""
-        return [
-            {
-                'id': 'personal',
-                'name': 'Personal',
-                'price': 'Free',
-                'period': '',
-                'description': 'For casual signers. Free forever.',
-                'features': ['Up to 3 docs/month', 'Unlimited recipients', 'No credit card'],
-                'featured': False,
-                'cta': 'Get Started',
-            },
-            {
-                'id': 'individual',
-                'name': 'Individual',
-                'price': '$15',
-                'period': '/mo',
-                'description': 'Unlimited signing for individuals.',
-                'features': ['Unlimited documents', 'API access', 'Email support'],
-                'featured': True,
-                'cta': 'Get Started',
-            },
-            {
-                'id': 'business',
-                'name': 'Business',
-                'price': '$60',
-                'period': '/mo',
-                'description': 'Shared workspace for growing teams.',
-                'features': ['+$8/user for more', 'API + Automation', 'Embedding'],
-                'featured': False,
-                'cta': 'Get Started',
-            },
-            {
-                'id': 'enterprise',
-                'name': 'Enterprise',
-                'price': '$200',
-                'period': '/mo',
-                'description': 'Dedicated for your business.',
-                'features': ['Custom domain', 'Unlimited teams', 'SMTP + OAuth'],
-                'featured': False,
-                'cta': 'Get Started',
-            },
-        ]
-    
+
     def get_features(self):
         """Return feature list data."""
         return [
@@ -98,10 +55,10 @@ class IndexView(TemplateView):
 class PricingView(TemplateView):
     """Pricing page view."""
     template_name = 'landing/pricing.html'
-    
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['pricing_tiers'] = IndexView().get_pricing_tiers()
+        context['pricing_tiers'] = get_pricing_tiers()
         return context
 
 

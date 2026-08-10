@@ -866,7 +866,7 @@ input {
 
 .pricing-grid {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 12px;
 }
 
@@ -915,6 +915,34 @@ input {
     color: var(--text-muted);
 }
 
+.pricing-billing {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    min-height: 18px;
+    margin-bottom: 4px;
+}
+
+.pricing-billing-amount {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.pricing-save {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 100px;
+    background: var(--green-100);
+    color: #059669;
+}
+
+.pricing-billing-amount:empty,
+.pricing-save:empty {
+    display: none;
+}
+
 .pricing-desc {
     font-size: 0.75rem;
     color: var(--text-secondary);
@@ -950,6 +978,10 @@ input {
 
 .pricing-features li.disabled svg {
     color: var(--gray-300);
+}
+
+.pricing-addon-amount {
+    font-weight: 600;
 }
 
 .pricing-contact {
@@ -1468,7 +1500,7 @@ input {
     }
     
     .pricing-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(3, 1fr);
     }
     
     .compliance-content {
