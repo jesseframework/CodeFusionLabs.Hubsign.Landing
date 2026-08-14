@@ -187,9 +187,6 @@ SPECTACULAR_SETTINGS = {
 HUBSIGN_API_URL = os.environ.get('HUBSIGN_API_URL', 'https://api.hubsign.io')
 HUBSIGN_API_KEY = os.environ.get('HUBSIGN_API_KEY', '')
 
-# Shared instance configuration
-HUBSIGN_SHARED_INSTANCE = 'app.hubsign.io'
-
 # =============================================================================
 # BILLING / STRIPE CONFIGURATION
 # =============================================================================

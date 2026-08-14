@@ -36,7 +36,7 @@
                 <a href="#compliance">Compliance</a>
             </div>
             <div class="nav-actions">
-                <button class="btn btn-ghost" onclick="openModal()">Sign In</button>
+                <a href="https://app.hubsign.io/signin" class="btn btn-ghost">Sign In</a>
                 <a href="https://app.hubsign.io/signup" class="btn btn-primary">Get Started</a>
             </div>
             <button class="mobile-menu-btn" aria-label="Menu" onclick="toggleMobileMenu()">
@@ -48,7 +48,7 @@
             <a href="#how-it-works" onclick="toggleMobileMenu()">How It Works</a>
             <a href="#pricing" onclick="toggleMobileMenu()">Pricing</a>
             <a href="#compliance" onclick="toggleMobileMenu()">Compliance</a>
-            <button class="btn btn-ghost btn-full" onclick="openModal(); toggleMobileMenu();">Sign In</button>
+            <a href="https://app.hubsign.io/signin" class="btn btn-ghost btn-full">Sign In</a>
             <a href="https://app.hubsign.io/signup" class="btn btn-primary btn-full">Get Started</a>
         </div>
     </header>
@@ -98,9 +98,6 @@
             </div>
         </div>
     </footer>
-
-    <!-- Sign In Modal -->
-    {% include "components/signin_modal.html" %}
 
     <!-- Scripts -->
     <script src="{% static 'js/main.js' %}"></script>
