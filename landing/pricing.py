@@ -88,15 +88,16 @@ def _fetch_from_stripe() -> list[PricingTier] | None:
     business = _apply_price(
         fallback['business'], matches(type='org_seat', tier='BUSINESS'), 'Business',
     )
-    addon_matches = {
-        'doc_block': matches(type='org_doc_block', tier='BUSINESS'),
-        'dms': matches(type='org_dms', tier='BUSINESS'),
-    }
     business = replace(business, addons=[
-        _apply_addon(addon, addon_matches[addon.id]) for addon in business.addons
+        _apply_addon(business.addons[0], matches(type='org_doc_block', tier='BUSINESS')),
     ])
 
-    return [fallback['personal'], individual, business]
+    # TODO(pricing): Team and Enterprise (Shared) aren't wired to Stripe yet -- no
+    # confirmed metadata.plan/metadata.type convention exists for them (unlike
+    # personal/individual/business, which were confirmed the hard way -- see
+    # PRODUCTION_INCIDENT.md). Always sourced from fallback until Stripe products
+    # and metadata are set up for these two tiers.
+    return [fallback['free'], individual, fallback['team'], business, fallback['enterprise']]
 
 
 def _apply_price(tier: PricingTier, price_matches: list[dict], label: str) -> PricingTier:
@@ -138,41 +139,68 @@ def _resolve_interval_prices(price_matches: list[dict]):
 
 
 def _fallback_tiers() -> list[PricingTier]:
+    """See HubSign-Pricing-Plan.md Section 2 ("Proposed full ladder") and Section 4
+    ("Annual billing") for where these figures come from. DMS is included in
+    Business, not sold as a per-seat addon -- that was a live-site bug this ladder
+    fixes, not a simplification made here.
+    """
     return [
         PricingTier(
-            id='personal', name='Personal',
+            id='free', name='Free',
             description='For casual signers. Free forever.',
-            features=['Up to 3 docs/month', 'Unlimited recipients', 'No credit card'],
+            features=['3 signature requests/mo', '50 pages/mo Smart OCR', 'No credit card required'],
             featured=False, cta='Get Started',
             price_monthly=0, price_annually=0, is_free=True,
         ),
         PricingTier(
             id='individual', name='Individual',
-            description='Unlimited signing for individuals.',
-            features=['Unlimited documents', 'API access', 'Email support'],
-            featured=True, cta='Get Started',
+            description='For one person signing regularly.',
+            features=['15 signature requests/mo', '200 pages/mo Smart OCR', 'API access'],
+            featured=False, cta='Get Started',
             price_monthly=15, price_annually=12,
+        ),
+        PricingTier(
+            id='team', name='Team',
+            description='For small teams that have outgrown Individual.',
+            features=['Up to 20 users', '50 signature requests/mo', '500 pages/mo Smart OCR'],
+            featured=True, cta='Get Started',
+            price_monthly=59, price_annually=47,
+            addons=[
+                PricingAddon(
+                    id='team_request_block', name='Extra requests',
+                    price_monthly=25, price_annually=21, unit_suffix='/mo per +50 requests',
+                ),
+            ],
         ),
         PricingTier(
             id='business', name='Business',
             description='Shared workspace for growing teams.',
-            features=['Unlimited users', '150 docs/mo included', 'API + Automation', 'Embedding'],
+            features=[
+                'Unlimited users (min 2)', '150 signature requests/mo',
+                'Document Manager included', 'API + embedding',
+            ],
             featured=False, cta='Get Started',
-            # CONFIRMED $199/mo flat (not per-seat). No annual discount is documented
-            # anywhere -- price_annually intentionally == price_monthly.
-            # TODO(pricing): replace with real annual figures once Stripe test-mode
-            # Prices exist.
-            price_monthly=199, price_annually=199,
+            price_monthly=199, price_annually=165,
             addons=[
                 PricingAddon(
-                    id='doc_block', name='Extra docs',
-                    # CONFIRMED $45/mo per +100 docs. TODO(pricing): annual unconfirmed.
-                    price_monthly=45, price_annually=45, unit_suffix='/mo per +100 docs',
+                    id='doc_block', name='Extra requests',
+                    price_monthly=45, price_annually=37, unit_suffix='/mo per +100 requests',
                 ),
+            ],
+        ),
+        PricingTier(
+            id='enterprise', name='Enterprise',
+            description='High-volume signing on shared infrastructure.',
+            features=[
+                'Unlimited users (min 2)', '500 signature requests/mo',
+                'Document Manager + API included',
+            ],
+            featured=False, cta='Get Started',
+            price_monthly=300, price_annually=249,
+            addons=[
                 PricingAddon(
-                    id='dms', name='Document Manager',
-                    # CONFIRMED $15/seat/mo. TODO(pricing): annual unconfirmed.
-                    price_monthly=15, price_annually=15, unit_suffix='/seat/mo',
+                    id='enterprise_request_block', name='Extra requests',
+                    price_monthly=35, price_annually=29, unit_suffix='/mo per +250 requests',
                 ),
             ],
         ),
