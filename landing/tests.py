@@ -47,19 +47,19 @@ class PricingFallbackTests(TestCase):
         self.assertEqual(team.price_annually, 47)
         self.assertEqual([a.id for a in team.addons], ['team_request_block'])
         self.assertEqual(team.addons[0].price_monthly, 25)
-        self.assertEqual(team.addons[0].unit_suffix, '/mo per +50 requests')
+        self.assertEqual(team.addons[0].unit_suffix, '/mo per 50 requests')
 
         self.assertEqual(business.price_monthly, 199)
         self.assertEqual(business.price_annually, 165)
         self.assertEqual([a.id for a in business.addons], ['doc_block'])
         self.assertEqual(business.addons[0].price_monthly, 45)
-        self.assertEqual(business.addons[0].unit_suffix, '/mo per +100 requests')
+        self.assertEqual(business.addons[0].unit_suffix, '/mo per 100 requests')
 
         self.assertEqual(enterprise.price_monthly, 300)
         self.assertEqual(enterprise.price_annually, 249)
         self.assertEqual([a.id for a in enterprise.addons], ['enterprise_request_block'])
         self.assertEqual(enterprise.addons[0].price_monthly, 35)
-        self.assertEqual(enterprise.addons[0].unit_suffix, '/mo per +250 requests')
+        self.assertEqual(enterprise.addons[0].unit_suffix, '/mo per 250 requests')
 
 
 @override_settings(BILLING_ENABLED=True, STRIPE_API_KEY='sk_test_fake')
@@ -139,9 +139,14 @@ class PricingSSRTests(TestCase):
         self.assertIn('data-tier="enterprise"', content)
         self.assertIn('$199', content)
         self.assertIn('150 signature requests/mo', content)
-        self.assertIn('Unlimited users (min 2)', content)
-        self.assertIn('Extra requests', content)
+        self.assertIn('Unlimited users', content)
+        self.assertIn('1,500 pages/mo Smart OCR', content)
         self.assertIn('Document Manager', content)
+        self.assertIn('Popular', content)
+        self.assertIn('Get started', content)
+
+        # Enterprise is a full-width band, not a 5th grid card.
+        self.assertIn('pricing-banner', content)
 
         # Enterprise Dedicated is sales-assisted only -- no card, just the contact line.
         self.assertIn('Contact us', content)

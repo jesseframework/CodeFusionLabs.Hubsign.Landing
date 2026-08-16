@@ -322,11 +322,11 @@
             <span>Annually</span>
         </div>
         <div class="pricing-grid">
-            {% for tier in pricing_tiers %}
+            {% for tier in pricing_tiers|slice:":-1" %}
             <div class="pricing-card{% if tier.featured %} featured{% endif %}" data-tier="{{ tier.id }}">
-                <span class="pricing-tier">{{ tier.name }}</span>
+                <span class="pricing-tier">{{ tier.name }}{% if tier.featured %} <span class="pricing-badge">Popular</span>{% endif %}</span>
                 <div class="pricing-price">
-                    <span class="pricing-amount">{% if tier.is_free %}Free{% else %}${{ tier.price_monthly }}{% endif %}</span>
+                    <span class="pricing-amount">${{ tier.price_monthly }}</span>
                     {% if not tier.is_free %}<span class="pricing-period">/mo</span>{% endif %}
                 </div>
                 <div class="pricing-billing">
@@ -335,20 +335,20 @@
                 </div>
                 <p class="pricing-desc">{{ tier.description }}</p>
                 <ul class="pricing-features">
-                    {% for addon in tier.addons %}
-                    <li class="pricing-addon">
-                        <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
-                            <path d="M13.3333 4L6 11.3333L2.66667 8" stroke="currentColor" stroke-width="2"/>
-                        </svg>
-                        +{{ addon.name }}: <span class="pricing-addon-amount">${{ addon.price_monthly }}{{ addon.unit_suffix }}</span>
-                    </li>
-                    {% endfor %}
                     {% for feature in tier.features %}
                     <li>
                         <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
                             <path d="M13.3333 4L6 11.3333L2.66667 8" stroke="currentColor" stroke-width="2"/>
                         </svg>
                         {{ feature }}
+                    </li>
+                    {% endfor %}
+                    {% for addon in tier.addons %}
+                    <li class="pricing-addon">
+                        <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+                            <path d="M13.3333 4L6 11.3333L2.66667 8" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                        +<span class="pricing-addon-amount">${{ addon.price_monthly }}{{ addon.unit_suffix }}</span>
                     </li>
                     {% endfor %}
                 </ul>
@@ -358,7 +358,44 @@
             </div>
             {% endfor %}
         </div>
-        <p class="pricing-contact">Need a dedicated instance, custom domain, or SSO? <a href="mailto:sales@hubsign.io">Contact us</a> about Enterprise Dedicated.</p>
+        {% with tier=pricing_tiers|last %}
+        <div class="pricing-banner" data-tier="{{ tier.id }}">
+            <div class="pricing-banner-intro">
+                <span class="pricing-tier">{{ tier.name }}</span>
+                <div class="pricing-price">
+                    <span class="pricing-amount">${{ tier.price_monthly }}</span>
+                    <span class="pricing-period">/mo</span>
+                </div>
+                <div class="pricing-billing">
+                    <span class="pricing-billing-amount"></span>
+                    <span class="pricing-save"></span>
+                </div>
+                <p class="pricing-desc">{{ tier.description }}</p>
+            </div>
+            <ul class="pricing-features pricing-features--banner">
+                {% for feature in tier.features %}
+                <li>
+                    <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+                        <path d="M13.3333 4L6 11.3333L2.66667 8" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                    {{ feature }}
+                </li>
+                {% endfor %}
+                {% for addon in tier.addons %}
+                <li class="pricing-addon">
+                    <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+                        <path d="M13.3333 4L6 11.3333L2.66667 8" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                    +<span class="pricing-addon-amount">${{ addon.price_monthly }}{{ addon.unit_suffix }}</span>
+                </li>
+                {% endfor %}
+            </ul>
+            <a href="https://app.hubsign.io/signup?plan={{ tier.id }}" class="btn btn-outline">
+                {{ tier.cta }}
+            </a>
+        </div>
+        {% endwith %}
+        <p class="pricing-contact">Need a dedicated instance, custom domain, or SSO? <a href="mailto:sales@hubsign.io">Talk to sales</a></p>
     </div>
 </section>
 

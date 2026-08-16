@@ -131,7 +131,7 @@ function applyPricingTiers(tiers, isAnnual) {
         if (!amountEl) return;
         const price = isAnnual ? tier.price_annually : tier.price_monthly;
         if (price === 0) {
-            amountEl.textContent = 'Free';
+            amountEl.textContent = '$0';
             if (periodEl) periodEl.textContent = '';
             if (billingEl) billingEl.textContent = '';
             if (saveEl) saveEl.textContent = '';

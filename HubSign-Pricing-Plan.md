@@ -55,7 +55,7 @@ Six changes to the UAT ladder, agreed with the team.
 | 2 | Add **request blocks** to Business and Enterprise Shared | Without them, exceeding an allowance has no defined outcome |
 | 3 | Add a **Team tier at $59/mo, capped at 20 users** | $15 to $199 is a 13x jump with nothing in between |
 | 4 | **Annual plans receive the full allotment as a pool**; monthly plans keep a monthly cap | Gives seasonal customers a functional reason to prepay, beyond the discount |
-| 5 | Add **Smart OCR** as a metered add-on below Business | Machine-learning OCR has a real per-page compute cost that should be recovered |
+| 5 | Meter **Smart OCR** by page on every shared tier | Machine-learning OCR has a real per-page compute cost that should be recovered |
 | 6 | Restructure **support into four tiers** with ticket allowances | An unbounded response-time promise is the real risk, not the ticket volume |
 
 ### Proposed full ladder
@@ -73,12 +73,12 @@ Six changes to the UAT ladder, agreed with the team.
 
 | Tier | DMS | Smart OCR | API + embedding | Instance |
 |---|---|---|---|---|
-| Free | — | 50 pages/mo | — | Shared |
-| Individual | — | 200 pages/mo | API only | Shared |
-| Team | — | 500 pages/mo | — | Shared |
-| Business | Included | Included | Yes | Shared |
-| Enterprise Shared | Included | Included | Yes | Shared |
-| Enterprise Dedicated | Included | Included | Yes | Dedicated + custom domain, SSO, SMTP |
+| Free | — | 30 pages/mo | — | Shared |
+| Individual | — | 150 pages/mo | API only | Shared |
+| Team | — | 400 pages/mo | — | Shared |
+| Business | Included | 1,500 pages/mo | Yes | Shared |
+| Enterprise Shared | Included | 5,000 pages/mo | Yes | Shared |
+| Enterprise Dedicated | Included | Unlimited | Yes | Dedicated + custom domain, SSO, SMTP |
 
 Workflow Builder and Signature Inbox are not shown — Workflow Builder is currently unlimited on every tier, including Free. It is the only feature with no differentiation at all. Worth a deliberate decision rather than leaving it uniform by default: it is an obvious candidate for a Free → Individual or Team → Business fence if it is not free to run.
 
@@ -111,24 +111,50 @@ Once a tier hits its block limit, the customer must move up. Without ceilings, T
 
 **OCR cost scales with pages, not files.** A one-page consent form and a 40-page scanned contract are one document each, but the second costs roughly forty times more in compute. Metering documents means the customer scanning long files is subsidised by the customer scanning short ones — and you cannot predict which you will attract.
 
-**It also creates an obvious workaround:** if Individual gets five free documents, a user merges two hundred pages into one PDF and has the whole thing processed as a single unit. Not malicious, simply rational, and it breaks the cost model.
+**It also creates an obvious workaround:** if Individual were given a handful of free documents, a user merges two hundred pages into one PDF and has the whole thing processed as a single unit. Not malicious, simply rational, and it breaks the cost model.
 
-Pages is the honest unit because it is what you actually pay for, and it is how the underlying OCR services bill — so revenue and cost move together. The objection is that pages read as vaguer on a pricing card. The fix is to meter pages and display a document equivalent: "500 pages/mo — about 100 typical documents." This meter is separate from signature requests: Smart OCR counts pages processed, whether or not the file is ever sent for signature.
+Pages is the honest unit because it is what you actually pay for, and it is how the underlying OCR services bill — so revenue and cost move together. The objection is that pages read as vaguer on a pricing card. The fix is to meter pages and display a document equivalent: "400 pages/mo — about 80 typical documents." This meter is separate from signature requests: Smart OCR counts pages processed, whether or not the file is ever sent for signature.
 
 **The free allowance should be a trial, not a teaser.** A single free document teaches a user nothing about whether full-text search is worth paying for; they need to see search working across a small corpus. Monthly rather than one-time also means the value keeps re-presenting itself, which is what converts.
 
-| Tier | Smart OCR | Rationale |
-|---|---|---|
-| Free | 50 pages/mo | Enough to scan a handful of real documents and experience search |
-| Individual | 200 pages/mo | Meaningful for one person without substituting for a paid team plan |
-| Team | 500 pages/mo | Covers a small team's regular filing |
-| Business and above | Included | No meter — part of the platform |
+| Tier | Smart OCR | Pages per request | Rationale |
+|---|---|---|---|
+| Free | 30 pages/mo | 10 | About six typical documents — enough to experience search |
+| Individual | 150 pages/mo | 10 | Meaningful for one person without substituting for a paid team plan |
+| Team | 400 pages/mo | 8 | Covers a small team's regular filing |
+| Business | 1,500 pages/mo | 10 | Generous for a shared workspace; still bounded |
+| **Enterprise Shared** | **5,000 pages/mo** | **10** | **No practical limit — see below** |
+| Enterprise Dedicated | Unlimited | — | Isolated infrastructure, so exposure is priced into the tier |
+
+**The ladder holds a consistent ratio:** roughly ten OCR pages per included signature request across every tier (Team is slightly more generous at eight). That makes the numbers defensible if anyone asks how they were set, rather than looking arbitrary.
+
+**Enterprise Shared is capped at 5,000, not unlimited — and should not be sold as a cap.** Five thousand pages is roughly a thousand documents a month; a shared tenant running that volume has other reasons to be on a dedicated instance. The number exists to bound compute exposure on shared infrastructure, not to constrain anyone. In conversation it is "no practical limit". Unlimited on shared hardware would be the same uncapped liability that led to capping signature requests at 500 — and it would create a perverse incentive, where a heavy-OCR Business customer upgrades to remove the meter rather than buying capacity.
+
+**Decide what happens at the cap before someone writes the error message.** Three options: hard stop, queue until the next period, or keep working and raise an internal alert. For a threshold nobody should reach, the third is right — let it run, alert internally, and open a conversation with any customer consistently over. A hard stop on a tier described as effectively unlimited is the worst outcome for a number meant to be invisible.
 
 **Two things to settle before these numbers are final.** First, your actual cost per page. If OCR runs on existing Hyper-V capacity the marginal cost is near zero and the allowances should be far more generous — the meter exists to fence tiers, not to recover cost. If it calls a paid API, you are paying roughly $1–1.50 per thousand pages and the allowances above cost cents either way. Set the numbers from that figure, not from intuition.
 
 **Second, whether OCR runs automatically on upload or on demand.** Automatic is the better experience but burns allowance on documents nobody will ever search. On demand is more efficient and makes the meter feel fair. Automatic with a per-folder toggle is a reasonable middle.
 
 **Naming:** "BMS ML" is internal vocabulary. **Smart OCR** tells a customer what they are buying and is used throughout this document.
+
+---
+
+### Pricing page layout
+
+**Five tiers in a three-column grid produces 3 + 2 and an empty slot,** which is what reads as crowded — the eye expects a fourth card in the gap. Four self-serve cards across one row (Free, Individual, Team, Business) with Enterprise as a full-width band below fixes it, and the band lets Enterprise lay its features out horizontally rather than stacking six lines in a narrow column. It also puts visual distance between the self-serve tiers and the larger commitment.
+
+**Three content changes matter as much as the layout:**
+
+- **Allowances first, add-on rates last.** The current cards open with "+Extra requests: $45/mo per +100" — quoting the overage before the product. The included allowance should lead; the block rate is a footnote in muted type at the foot of the card.
+- **State the unit on add-on lines.** "+$25/mo per 50 requests", not "+$25/mo per 50". Without the noun the line reads as an incomplete sentence.
+- **Show user counts on every tier.** Free and Individual currently omit them, so Team's "up to 20 users" appears from nowhere. With them the ladder reads at a glance: 1 → 1 → 20 → unlimited.
+
+**Mark one tier as popular.** Five equal-weight cards give the eye nowhere to land. Team is the natural default as the self-serve on-ramp; Business is the arguable alternative if the aim is to push buyers further up.
+
+**Keep the cards short — three or four lines each — and put the detail in a comparison table below the grid,** where people go deliberately rather than having it crammed into the columns. Dedicated stays off the grid entirely: a "talk to sales" line beneath the band, consistent with section 5.
+
+**At narrower widths,** four across should reflow to two-by-two with the band underneath. Worth setting that breakpoint deliberately rather than letting the grid collapse to a single column.
 
 ---
 
@@ -368,4 +394,4 @@ Everything else in this plan is coherent. That screen is the last place the old 
 2. **Typical prospect send volume.** The live deployment ran 2,007 documents in seven months — about 287 requests/mo, which sits inside Business with two blocks. If that is representative, most of the pipeline never reaches Enterprise on volume alone, and the tiers above Business have to sell on capability.
 3. **Cost to close a Dedicated deal.** The setup fee and support tiers are sized by benchmark. Actual hours would let you price them properly.
 4. **Cost per page for Smart OCR.** Self-hosted on existing capacity or a paid API changes the allowances by an order of magnitude. Section 2 sets them from market intuition; they should be set from this number.
-5. **Smart OCR add-on price above the free allowance.** Still to be confirmed. It should follow from the cost-per-page figure and be quoted per page block, consistent with how the allowance is metered.
+5. **Smart OCR add-on price above the included allowance.** Still to be confirmed. It should follow from the cost-per-page figure and be quoted per page block, consistent with how the allowance is metered.

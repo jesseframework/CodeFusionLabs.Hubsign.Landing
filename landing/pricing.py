@@ -139,52 +139,57 @@ def _resolve_interval_prices(price_matches: list[dict]):
 
 
 def _fallback_tiers() -> list[PricingTier]:
-    """See HubSign-Pricing-Plan.md Section 2 ("Proposed full ladder") and Section 4
-    ("Annual billing") for where these figures come from. DMS is included in
+    """See HubSign-Pricing-Plan.md Section 2 ("Proposed full ladder", "Feature
+    differentiation", "Pricing page layout") and Section 4 ("Annual billing") for
+    where these figures and the card copy rules come from. DMS is included in
     Business, not sold as a per-seat addon -- that was a live-site bug this ladder
     fixes, not a simplification made here.
+
+    Card copy follows the doc's "Pricing page layout" rules: allowances first,
+    add-on rate last as a muted footnote; user counts shown on every tier; cards
+    kept to 3-4 lines (Business's DMS/API+embedding facts live in the comparison
+    table below the grid -- not yet built -- rather than on the card itself).
+    Enterprise is the exception: it renders as a full-width band, not a card, so
+    it has room to show DMS/API+embedding inline.
     """
     return [
         PricingTier(
             id='free', name='Free',
-            description='For casual signers. Free forever.',
-            features=['3 signature requests/mo', '50 pages/mo Smart OCR', 'No credit card required'],
-            featured=False, cta='Get Started',
+            description='For casual signers.',
+            features=['1 user', '3 signature requests/mo', '30 pages/mo Smart OCR'],
+            featured=False, cta='Get started',
             price_monthly=0, price_annually=0, is_free=True,
         ),
         PricingTier(
             id='individual', name='Individual',
             description='For one person signing regularly.',
-            features=['15 signature requests/mo', '200 pages/mo Smart OCR', 'API access'],
-            featured=False, cta='Get Started',
+            features=['1 user', '15 signature requests/mo', '150 pages/mo Smart OCR', 'API access'],
+            featured=False, cta='Get started',
             price_monthly=15, price_annually=12,
         ),
         PricingTier(
             id='team', name='Team',
-            description='For small teams that have outgrown Individual.',
-            features=['Up to 20 users', '50 signature requests/mo', '500 pages/mo Smart OCR'],
-            featured=True, cta='Get Started',
+            description='For small teams that outgrew Individual.',
+            features=['Up to 20 users', '50 signature requests/mo', '400 pages/mo Smart OCR'],
+            featured=True, cta='Get started',
             price_monthly=59, price_annually=47,
             addons=[
                 PricingAddon(
                     id='team_request_block', name='Extra requests',
-                    price_monthly=25, price_annually=21, unit_suffix='/mo per +50 requests',
+                    price_monthly=25, price_annually=21, unit_suffix='/mo per 50 requests',
                 ),
             ],
         ),
         PricingTier(
             id='business', name='Business',
             description='Shared workspace for growing teams.',
-            features=[
-                'Unlimited users (min 2)', '150 signature requests/mo',
-                'Document Manager included', 'API + embedding',
-            ],
-            featured=False, cta='Get Started',
+            features=['Unlimited users', '150 signature requests/mo', '1,500 pages/mo Smart OCR'],
+            featured=False, cta='Get started',
             price_monthly=199, price_annually=165,
             addons=[
                 PricingAddon(
                     id='doc_block', name='Extra requests',
-                    price_monthly=45, price_annually=37, unit_suffix='/mo per +100 requests',
+                    price_monthly=45, price_annually=37, unit_suffix='/mo per 100 requests',
                 ),
             ],
         ),
@@ -192,15 +197,15 @@ def _fallback_tiers() -> list[PricingTier]:
             id='enterprise', name='Enterprise',
             description='High-volume signing on shared infrastructure.',
             features=[
-                'Unlimited users (min 2)', '500 signature requests/mo',
-                'Document Manager + API included',
+                'Unlimited users', '500 signature requests/mo', '5,000 pages/mo Smart OCR',
+                'Document Manager included', 'API + embedding',
             ],
-            featured=False, cta='Get Started',
+            featured=False, cta='Get started',
             price_monthly=300, price_annually=249,
             addons=[
                 PricingAddon(
                     id='enterprise_request_block', name='Extra requests',
-                    price_monthly=35, price_annually=29, unit_suffix='/mo per +250 requests',
+                    price_monthly=35, price_annually=29, unit_suffix='/mo per 250 requests',
                 ),
             ],
         ),
