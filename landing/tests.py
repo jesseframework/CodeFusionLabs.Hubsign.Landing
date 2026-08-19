@@ -55,8 +55,8 @@ class PricingFallbackTests(TestCase):
         self.assertEqual(business.addons[0].price_monthly, 45)
         self.assertEqual(business.addons[0].unit_suffix, '/mo per 100 requests')
 
-        self.assertEqual(enterprise.price_monthly, 300)
-        self.assertEqual(enterprise.price_annually, 249)
+        self.assertEqual(enterprise.price_monthly, 500)
+        self.assertEqual(enterprise.price_annually, 415)
         self.assertEqual([a.id for a in enterprise.addons], ['enterprise_request_block'])
         self.assertEqual(enterprise.addons[0].price_monthly, 35)
         self.assertEqual(enterprise.addons[0].unit_suffix, '/mo per 250 requests')
@@ -91,7 +91,7 @@ class PricingStripeTests(TestCase):
         # Not wired to Stripe yet -- always fallback values.
         self.assertEqual(team.price_monthly, 59)
         self.assertIsNone(team.price_id_monthly)
-        self.assertEqual(enterprise.price_monthly, 300)
+        self.assertEqual(enterprise.price_monthly, 500)
         self.assertIsNone(enterprise.price_id_monthly)
 
     @patch('landing.pricing.stripe.Price.search')
@@ -149,5 +149,5 @@ class PricingSSRTests(TestCase):
         self.assertIn('pricing-banner', content)
 
         # Enterprise Dedicated is sales-assisted only -- no card, just the contact line.
-        self.assertIn('Contact us', content)
-        self.assertIn('Enterprise Dedicated', content)
+        self.assertIn('Need a dedicated instance, custom domain, or SSO?', content)
+        self.assertIn('Talk to sales', content)

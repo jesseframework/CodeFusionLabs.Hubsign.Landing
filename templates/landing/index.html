@@ -47,8 +47,8 @@
             <!-- Stats bar -->
             <div class="hero-stats">
                 <div class="hero-stat">
-                    <span class="hero-stat-value">10M+</span>
-                    <span class="hero-stat-label">Documents signed</span>
+                    <span class="hero-stat-value">11</span>
+                    <span class="hero-stat-label">Field types</span>
                 </div>
                 <div class="hero-stat-divider"></div>
                 <div class="hero-stat">
@@ -57,8 +57,8 @@
                 </div>
                 <div class="hero-stat-divider"></div>
                 <div class="hero-stat">
-                    <span class="hero-stat-value">150+</span>
-                    <span class="hero-stat-label">Countries</span>
+                    <span class="hero-stat-value">5</span>
+                    <span class="hero-stat-label">Recipient roles</span>
                 </div>
             </div>
 
@@ -69,21 +69,34 @@
 <!-- Features Section -->
 <section class="section features" id="features">
     <div class="container">
-        <div class="section-header">
-            <span class="section-label">Features</span>
-            <h2 class="section-title">Everything you need to sign at scale</h2>
-        </div>
-        <div class="features-grid">
-            {% for feature in features %}
-            <div class="feature-card">
-                <div class="feature-icon">
-                    {% include "components/icons/"|add:feature.icon|add:".svg" %}
-                </div>
-                <h3 class="feature-title">{{ feature.title }}</h3>
-                <p class="feature-desc">{{ feature.description }}</p>
+        {% for band in feature_bands %}
+        <div class="features-band">
+            <div class="section-header">
+                <span class="section-label">{{ band.label }}</span>
+                <h2 class="section-title">{{ band.title }}</h2>
             </div>
-            {% endfor %}
+            <div class="features-grid{% if band.columns == 2 %} features-grid--2col{% endif %}">
+                {% for card in band.cards %}
+                <div class="feature-card{% if card.featured %} featured{% endif %}">
+                    <div class="feature-icon">
+                        {% include "components/icons/"|add:card.icon|add:".svg" %}
+                    </div>
+                    <div class="feature-card-header">
+                        <h3 class="feature-title">{{ card.title }}</h3>
+                        {% if card.badge %}<span class="feature-badge">{{ card.badge }}</span>{% endif %}
+                    </div>
+                    <p class="feature-desc">{{ card.description }}</p>
+                </div>
+                {% endfor %}
+            </div>
+            {% if band.banner %}
+            <div class="features-banner">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M13.3333 4L6 11.3333L2.66667 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <p>{{ band.banner }}</p>
+            </div>
+            {% endif %}
         </div>
+        {% endfor %}
     </div>
 </section>
 
@@ -151,7 +164,7 @@
                         </div>
                         <div>
                             <strong>OCR Processing</strong>
-                            <p>Scanned PDFs and images are automatically processed so their content is fully searchable.</p>
+                            <p>Scanned PDFs and images are OCR-processed — with a monthly page allowance included on every plan — so their content becomes searchable.</p>
                         </div>
                     </li>
                 </ul>

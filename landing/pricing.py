@@ -197,11 +197,11 @@ def _fallback_tiers() -> list[PricingTier]:
             id='enterprise', name='Enterprise',
             description='High-volume signing on shared infrastructure.',
             features=[
-                'Unlimited users', '500 signature requests/mo', '5,000 pages/mo Smart OCR',
+                'Unlimited users', '1,000 signature requests/mo', '10,000 pages/mo Smart OCR',
                 'Document Manager included', 'API + embedding',
             ],
             featured=False, cta='Get started',
-            price_monthly=300, price_annually=249,
+            price_monthly=500, price_annually=415,
             addons=[
                 PricingAddon(
                     id='enterprise_request_block', name='Extra requests',

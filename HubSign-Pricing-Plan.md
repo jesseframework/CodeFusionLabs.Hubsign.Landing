@@ -47,16 +47,17 @@ The one field still to set is Enterprise Shared's signature request allowance. E
 
 ## 2. Recommended additions
 
-Six changes to the UAT ladder, agreed with the team.
+Seven changes to the UAT ladder, agreed with the team.
 
 | # | Change | Why |
 |---|---|---|
-| 1 | Set **Enterprise Shared at 500 requests/mo** (6,000/yr) | Shared infrastructure; unlimited is an uncapped storage and OCR liability |
+| 1 | Reprice **Enterprise Shared to $500/mo with 1,000 requests/mo** (12,000/yr) | Shared infrastructure; unlimited is an uncapped storage and OCR liability, and the higher allowance is what the price rise buys |
 | 2 | Add **request blocks** to Business and Enterprise Shared | Without them, exceeding an allowance has no defined outcome |
 | 3 | Add a **Team tier at $59/mo, capped at 20 users** | $15 to $199 is a 13x jump with nothing in between |
 | 4 | **Annual plans receive the full allotment as a pool**; monthly plans keep a monthly cap | Gives seasonal customers a functional reason to prepay, beyond the discount |
 | 5 | Meter **Smart OCR** by page on every shared tier | Machine-learning OCR has a real per-page compute cost that should be recovered |
 | 6 | Restructure **support into four tiers** with ticket allowances | An unbounded response-time promise is the real risk, not the ticket volume |
+| 7 | Move **Enterprise Dedicated to $750/mo** and raise Business's block ceiling to 6 | Keeps a meaningful step above Shared and closes the gap in the middle of the ladder |
 
 ### Proposed full ladder
 
@@ -65,9 +66,9 @@ Six changes to the UAT ladder, agreed with the team.
 | Free | $0 | 1 session | 3 | 36 | — | — | — | — | Shared |
 | Individual | $15/mo | 1 session | 15 | 180 | — | — | — | API only | Shared |
 | **Team** | **$59/mo** | Up to 20 | 50 | 600 | +$25/mo per +50/mo | 2 | — | — | Shared |
-| Business | $199/mo | Unlimited (min 2) | 150 | 1,800 | +$45/mo per +100/mo | 3 | Included | Yes | Shared |
-| Enterprise Shared | $300/mo | Unlimited (min 2) | **500** | **6,000** | +$35/mo per +250/mo | 4 | Included | Yes | Shared |
-| Enterprise Dedicated | $400/mo + setup | Unlimited (min 2) | Unlimited | Unlimited | — | — | Included | Yes | Dedicated + domain, SSO, SMTP |
+| Business | $199/mo | Unlimited (min 2) | 150 | 1,800 | +$45/mo per +100/mo | 6 | Included | Yes | Shared |
+| Enterprise Shared | **$500/mo** | Unlimited (min 2) | **1,000** | **12,000** | +$35/mo per +250/mo | 4 | Included | Yes | Shared |
+| Enterprise Dedicated | **$750/mo** + setup | Unlimited (min 2) | Unlimited | Unlimited | — | — | Included | Yes | Dedicated + domain, SSO, SMTP |
 
 ### Feature differentiation
 
@@ -77,7 +78,7 @@ Six changes to the UAT ladder, agreed with the team.
 | Individual | — | 150 pages/mo | API only | Shared |
 | Team | — | 400 pages/mo | — | Shared |
 | Business | Included | 1,500 pages/mo | Yes | Shared |
-| Enterprise Shared | Included | 5,000 pages/mo | Yes | Shared |
+| Enterprise Shared | Included | 10,000 pages/mo | Yes | Shared |
 | Enterprise Dedicated | Included | Unlimited | Yes | Dedicated + custom domain, SSO, SMTP |
 
 Workflow Builder and Signature Inbox are not shown — Workflow Builder is currently unlimited on every tier, including Free. It is the only feature with no differentiation at all. Worth a deliberate decision rather than leaving it uniform by default: it is an obvious candidate for a Free → Individual or Team → Business fence if it is not free to run.
@@ -89,6 +90,16 @@ Free is 3 requests/month, Individual is one person, and then it is $199. A four-
 Team at $59 with up to 20 users and 50 requests/mo fills that hole without threatening Business: the block ceiling caps Team at 150 requests/mo, exactly Business's included allowance, so the fence between them becomes **DMS, API and embedding** rather than volume.
 
 **On the 20-user cap.** With Team also capped at 50 requests/mo and two blocks, the user limit is unlikely to bind in practice — it is a guardrail, not a meter, and it does not reintroduce per-seat billing. Phrase it on the pricing page as *"up to 20 users"* rather than "20 seats": the first reads as a limit, the second implies seats are being counted for billing.
+
+### Why Enterprise Shared moved from $300 to $500
+
+**The price rise had to buy something, or it creates a dead zone.** At $500 for the original 500 requests, Business plus blocks would have stayed cheaper up to roughly 800 requests/mo — but Business's ceiling capped it at 450. A customer hitting that wall would face a jump from $334 to $500 with no extra headroom, which is the shape most likely to lose an account. Doubling the allowance to 1,000 requests/mo closes it: the upgrade now delivers real capacity, and effective cost falls from $1.33 to $0.50 per request.
+
+**Raising Business's block ceiling from 3 to 6 keeps the ladder continuous.** Business now runs to 750 requests/mo at $469, so the step to Enterprise Shared at $500 is $31 for 250 more requests and a cheaper marginal rate. Nobody is forced up by a wall; they move because the arithmetic says so.
+
+**Dedicated moved to $750 to preserve the fence.** At $400 against a $500 Shared tier, an isolated instance with custom domain, SSO, SMTP and unlimited requests would have cost less than the shared option — making Enterprise Shared a decoy and putting every customer back on dedicated infrastructure, which is the margin problem the tier exists to avoid. A $250 step reads as a genuine upgrade, and it is closer to what provisioning and running a dedicated instance actually warrants.
+
+**Against Adobe, the position holds.** Acrobat Pro for teams is $23.99/user/mo, so $500 matches Adobe at about 21 users — over three years at 25 users that is $18,000 against Adobe's $21,591, and the gap widens with every seat. The crossover moved up from roughly 13 seats to 21, so the seat-count argument is weaker than it was; the case now rests more on what is included — unlimited users, document management, Smart OCR, API and embedding — than on price alone.
 
 ### Annual allotment is pooled; monthly is capped
 
@@ -123,14 +134,30 @@ Pages is the honest unit because it is what you actually pay for, and it is how 
 | Individual | 150 pages/mo | 10 | Meaningful for one person without substituting for a paid team plan |
 | Team | 400 pages/mo | 8 | Covers a small team's regular filing |
 | Business | 1,500 pages/mo | 10 | Generous for a shared workspace; still bounded |
-| **Enterprise Shared** | **5,000 pages/mo** | **10** | **No practical limit — see below** |
+| **Enterprise Shared** | **10,000 pages/mo** | **10** | **No practical limit — see below** |
 | Enterprise Dedicated | Unlimited | — | Isolated infrastructure, so exposure is priced into the tier |
 
 **The ladder holds a consistent ratio:** roughly ten OCR pages per included signature request across every tier (Team is slightly more generous at eight). That makes the numbers defensible if anyone asks how they were set, rather than looking arbitrary.
 
-**Enterprise Shared is capped at 5,000, not unlimited — and should not be sold as a cap.** Five thousand pages is roughly a thousand documents a month; a shared tenant running that volume has other reasons to be on a dedicated instance. The number exists to bound compute exposure on shared infrastructure, not to constrain anyone. In conversation it is "no practical limit". Unlimited on shared hardware would be the same uncapped liability that led to capping signature requests at 500 — and it would create a perverse incentive, where a heavy-OCR Business customer upgrades to remove the meter rather than buying capacity.
+**Enterprise Shared is capped at 10,000, not unlimited — and should not be sold as a cap.** Ten thousand pages is roughly two thousand documents a month; a shared tenant running that volume has other reasons to be on a dedicated instance. The number exists to bound compute exposure on shared infrastructure, not to constrain anyone. In conversation it is "no practical limit". Unlimited on shared hardware would be the same uncapped liability that led to capping signature requests at 1,000 — and it would create a perverse incentive, where a heavy-OCR Business customer upgrades to remove the meter rather than buying capacity.
 
 **Decide what happens at the cap before someone writes the error message.** Three options: hard stop, queue until the next period, or keep working and raise an internal alert. For a threshold nobody should reach, the third is right — let it run, alert internally, and open a conversation with any customer consistently over. A hard stop on a tier described as effectively unlimited is the worst outcome for a number meant to be invisible.
+
+### Cap behaviour on the tighter tiers
+
+**The 10,000 threshold above is not a fence, so it behaves differently from the caps that are.** Free at 30, Individual at 150, Team at 400 and Business at 1,500 are real limits that customers will reach, and they need a defined behaviour.
+
+**Soft stop, not hard stop.** When the allowance is exhausted, OCR pauses. Nothing else breaks — signing still works, existing search still works, documents still upload and file. The user sees an inline notice on the affected document — "Smart OCR paused — 0 pages left this month" — with two actions: buy pages, or upgrade.
+
+**The reasoning is that OCR is an enrichment step, not a path-blocking one.** A document that has not been processed is still a perfectly good signed document; it simply is not full-text searchable yet. There is no case for blocking the core workflow when the enrichment budget runs out. Signature requests are the opposite — hitting that cap stops the primary action — which is why the two meters warrant different treatment.
+
+**Three details make the soft stop work:**
+
+- **Queue rather than discard.** Unprocessed documents go into a pending queue and process automatically when the allowance resets or the customer buys pages. Discarding means the customer has to find and re-trigger them manually, and they will not — they will conclude search is unreliable.
+- **Warn at 80%.** One in-app notice at 80% consumed and one at 100%. Not per-document nagging. The 80% warning is what converts to a page purchase; the 100% notice arrives too late to feel like a choice.
+- **Let them buy pages without changing tier.** If the only remedy is upgrading, a customer needing 200 extra pages once has to move up a whole tier or wait a month. A page block — priced from the cost-per-page figure once it is known — is the proportionate answer, and it mirrors how request blocks already work.
+
+**Free is the one tier worth treating differently.** Its cap is doing conversion work rather than cost recovery, and a queue that never drains is a poor experience. Still queue it, but surface the upgrade prompt more prominently there than on the paid tiers.
 
 **Two things to settle before these numbers are final.** First, your actual cost per page. If OCR runs on existing Hyper-V capacity the marginal cost is near zero and the allowances should be far more generous — the meter exists to fence tiers, not to recover cost. If it calls a paid API, you are paying roughly $1–1.50 per thousand pages and the allowances above cost cents either way. Set the numbers from that figure, not from intuition.
 
@@ -162,20 +189,20 @@ Pages is the honest unit because it is what you actually pay for, and it is how 
 
 | Requests/mo | Requests/yr | Business | Enterprise Shared |
 |---|---|---|---|
-| 150 | 1,800 | $199 | $300 |
-| 250 | 3,000 | $244 | $300 |
-| 350 | 4,200 | $289 | $300 |
-| 450 | 5,400 | $334 | $300 |
-| 500 | 6,000 | $379 | $300 |
+| 150 | 1,800 | $199 | $500 |
+| 350 | 4,200 | $289 | $500 |
+| 550 | 6,600 | $379 | $500 |
+| 750 | 9,000 | $469 (ceiling) | $500 |
+| 1,000 | 12,000 | — | $500 |
 
-**Enterprise Shared wins above roughly 380 requests/mo (4,600/yr).**
+**Business runs to its ceiling at 750 requests/mo for $469; Enterprise Shared takes over at $500 with a third more capacity and a cheaper marginal rate.**
 
 | Step | Trigger | Driver |
 |---|---|---|
 | Individual → Team | 2nd concurrent user | Concurrency |
 | Team → Business | 150 requests/mo (block ceiling), or API / embedding | Feature, then ceiling |
-| Business → Enterprise Shared | ~380 requests/mo | Price |
-| Enterprise Shared → Dedicated | ~1,250 requests/mo, or isolation / custom domain / SSO | Capability, then price |
+| Business → Enterprise Shared | 750 requests/mo (block ceiling) | Ceiling, then price |
+| Enterprise Shared → Dedicated | 2,000 requests/mo (block ceiling), or isolation / custom domain / SSO | Capability, then ceiling |
 
 ### Effective cost per signature request
 
@@ -184,12 +211,12 @@ Pages is the honest unit because it is what you actually pay for, and it is how 
 | Individual | $1.00 | — |
 | Team | $1.18 | $0.50 |
 | Business | $1.33 | $0.45 |
-| Enterprise Shared | $0.60 | $0.14 |
+| Enterprise Shared | $0.50 | $0.14 |
 | Enterprise Dedicated | No allowance — falls with volume | — |
 
 Marginal cost falls as customers climb. That is a fact, not a slogan, and it is the line to sell.
 
-**Dedicated has no included allowance**, so it has no fixed rate — the flat $400 simply divides across whatever volume the customer runs. At 200 requests/mo that is $2.00 a request; at 500 it is $0.80; at 1,000 it is $0.40; at 2,000 it is $0.20. This is the strongest version of the flat-rate argument: the price never moves, so the unit cost only ever falls.
+**Dedicated has no included allowance**, so it has no fixed rate — the flat $750 simply divides across whatever volume the customer runs. At 500 requests/mo that is $1.50 a request; at 1,000 it is $0.75; at 2,000 it is $0.38; at 5,000 it is $0.15. This is the strongest version of the flat-rate argument: the price never moves, so the unit cost only ever falls.
 
 ---
 
@@ -202,8 +229,8 @@ Framed as **two months free** — instantly checkable, and what buyers compare a
 | Individual | $15 | 20% | $12/mo | $144 | $36 |
 | Team | $59 | 20% | $47/mo | $566 | $142 |
 | Business | $199 | 17% | $165/mo | $1,983 | $405 |
-| Enterprise Shared | $300 | 17% | $249/mo | $2,988 | $612 |
-| Enterprise Dedicated | $400 | 17% | $332/mo | $3,984 | $816 |
+| Enterprise Shared | $500 | 17% | $415/mo | $4,980 | $1,020 |
+| Enterprise Dedicated | $750 | 17% | $623/mo | $7,476 | $1,524 |
 
 Blocks discount at the same rate: $45 → $37, $35 → $29, $25 → $21.
 
@@ -215,17 +242,17 @@ Blocks discount at the same rate: $45 → $37, $35 → $29, $25 → $21.
 
 | Term | Discount | Rate | Total |
 |---|---|---|---|
-| 1 year | 17% | $332/mo | $3,984 |
-| 2 years | 20% | $320/mo | $7,680 |
-| 3 years | 25% | $300/mo | $10,800 |
+| 1 year | 17% | $623/mo | $7,476 |
+| 2 years | 20% | $600/mo | $14,400 |
+| 3 years | 25% | $563/mo | $20,268 |
 
-**$10,800 over three years against DocuSign Business Pro's $40,500** — and still $2,450 ahead if the prospect negotiates DocuSign down 30%. Include a price-lock clause.
+**$20,268 over three years against DocuSign Business Pro's $40,500** — half the cost, and still ahead if the prospect negotiates DocuSign down 30% to $28,350. Include a price-lock clause.
 
 ---
 
 ## 5. Sell Enterprise Shared self-serve; gate only Dedicated
 
-Enterprise Shared runs on the same infrastructure as Business. Provisioning is automatic, so a sales call in front of it is cost with no added value — at $3,600 ARR, six to eight hours of sales time is a significant share of first-year revenue.
+Enterprise Shared runs on the same infrastructure as Business. Provisioning is automatic, so a sales call in front of it is cost with no added value — at $6,000 ARR, six to eight hours of sales time is still a significant share of first-year revenue.
 
 Dedicated is different: standing up an instance, custom domain, SSO and SMTP is scoped onboarding work. That warrants a conversation, and it warrants being paid for.
 
@@ -242,9 +269,9 @@ Dedicated is different: standing up an instance, custom domain, SSO and SMTP is 
 
 **The ticket allowance is what bounds the risk.** Standard includes 15 tickets a year at next-business-day response. Beyond fifteen, the customer either buys a ticket pack (five for $50) or upgrades — a pack is a cleaner answer than a hard stop. Critically, Standard's response time must stay slower than Priority's: if Standard already answered within four hours, Priority would have no market.
 
-**Why Dedicated is $750, not $400.** A named contact at one-hour response is an on-call commitment. The 24/7 answering service costs roughly $80 a month across the whole customer base, so the answering layer is effectively free — but the escalation is not. Someone genuinely reachable overnight is a real imposition on whoever holds the phone, and it should be compensated whether or not the phone rings. The gap between $400 and $750 is the jump from "fast during working hours" to "someone's phone rings at 3am", and it should feel like a different purchase.
+**Why Dedicated support is $750, not $400.** A named contact at one-hour response is an on-call commitment. The 24/7 answering service costs roughly $80 a month across the whole customer base, so the answering layer is effectively free — but the escalation is not. Someone genuinely reachable overnight is a real imposition on whoever holds the phone, and it should be compensated whether or not the phone rings. The gap between $400 and $750 is the jump from "fast during working hours" to "someone's phone rings at 3am", and it should feel like a different purchase.
 
-**Year-one Dedicated deal value:** $3,984 (annual) + $2,000 setup + $1,800 optional Priority support = **$7,784**, against $4,800 for platform alone. That is a deal worth running a sales process on. With Dedicated support instead of Priority, the same deal is **$14,984**.
+**Year-one Dedicated deal value:** $7,476 (annual) + $2,000 setup + $1,800 optional Priority support = **$11,276**, against $9,000 for platform alone. With Dedicated support instead of Priority, the same deal is **$18,476**.
 
 ### Severity definitions
 
@@ -290,9 +317,9 @@ A customer may cancel at any time. Unused months are refunded, calculated at the
 | Scenario | Paid | Months used | Used at list | Refunded |
 |---|---|---|---|---|
 | Business annual, cancels month 4 | $1,983 | 4 | $796 | $1,187 |
-| Ent. Shared annual, cancels month 7 | $2,988 | 7 | $2,100 | $888 |
+| Ent. Shared annual, cancels month 7 | $4,980 | 7 | $3,500 | $1,480 |
 | Team annual, cancels month 3 | $566 | 3 | $177 | $389 |
-| Dedicated 3-year, cancels month 14 | $10,800 | 14 | $5,600 | $5,200 |
+| Dedicated 3-year, cancels month 14 | $20,268 | 14 | $10,500 | $9,768 |
 
 The customer does not keep an annual discount for a partial year of service, but is not punished either — they revert to list for the period actually used. It cannot be gamed: cancelling early is always marginally worse than having chosen monthly, so prepaying never becomes a free option.
 
@@ -363,20 +390,20 @@ This varies by jurisdiction and by whether the buyer is a consumer or a business
 
 ## 7. Executive brief implications
 
-**The deck's modelled customer now buys Business, not Enterprise.** Slide 4 models 25 users and 2,400 documents per year — 200 requests a month. On the UAT ladder that is Business plus one block — **$244/month, or $2,928 a year** — against the $400 Enterprise Dedicated the deck is selling. A prospect who reads the brief and then opens the pricing page will notice.
+**The deck's modelled customer now buys Business, not Enterprise.** Slide 4 models 25 users and 2,400 documents per year — 200 requests a month. On the UAT ladder that is Business plus one block — **$244/month, or $2,928 a year** — against the $750 Enterprise Dedicated the deck is selling. A prospect who reads the brief and then opens the pricing page will notice.
 
 Two ways to close that gap, and they are not mutually exclusive:
 
-- **Raise the modelled volume.** At 500 requests/mo (6,000/yr) the scenario lands naturally on Enterprise Shared, and above that on Dedicated.
-- **Sell Enterprise on isolation, not volume.** Dedicated instance, custom domain, SSO and SMTP are the reasons a 2,400-request customer would pay $400. That argument is already on slide 6 — it just is not on slide 3 or 4.
+- **Raise the modelled volume.** At 1,000 requests/mo (12,000/yr) the scenario lands naturally on Enterprise Shared, and above that on Dedicated.
+- **Sell Enterprise on isolation, not volume.** Dedicated instance, custom domain, SSO and SMTP are the reasons a 2,400-request customer would pay $750. That argument is already on slide 6 — it just is not on slide 3 or 4.
 
 Other edits:
 
 - **Slide 3** — column header should read "HubSign **Enterprise**", not "HubSign". "Unlimited" sending is an Enterprise Dedicated property.
 - **Slide 4** — "$0 in envelope overages" is Enterprise-only; Business and Enterprise Shared both meter.
-- **Slide 4 figures** — the deck models $400/mo. If Dedicated closes annually at $332, the three-year figure drops from $14,400 to $11,952 and the saving versus DocuSign rises from $26,100 to **$28,548**.
+- **Slide 4 figures** — the deck models $400/mo, which is no longer a price. Dedicated at $750 monthly is $27,000 over three years, or $22,428 on annual billing at $623 — against DocuSign Business Pro's $40,500. The saving falls from $26,100 to roughly **$18,000**, so the chart and every stat card on slides 3 and 4 need rebuilding from the new numbers.
 
-The $200 and $300 deck variants no longer map to purchasable tiers. The $300 version in particular claims a dedicated instance and custom domain that belong to the $400 tier.
+The $200, $300 and $400 deck variants no longer map to purchasable tiers — Dedicated is now $750. All three need rebuilding or retiring before use.
 
 ---
 
@@ -390,7 +417,7 @@ Everything else in this plan is coherent. That screen is the last place the old 
 
 ## 9. Open questions
 
-1. **Per-tenant hosting cost for a dedicated instance.** Sets the floor under $400 and decides whether the $100 step from Enterprise Shared covers its own cost. If it runs cheap on existing Hyper-V capacity, $400 is generous.
+1. **Per-tenant hosting cost for a dedicated instance.** Sets the floor under $750 and confirms whether the $250 step from Enterprise Shared covers provisioning and running the instance.
 2. **Typical prospect send volume.** The live deployment ran 2,007 documents in seven months — about 287 requests/mo, which sits inside Business with two blocks. If that is representative, most of the pipeline never reaches Enterprise on volume alone, and the tiers above Business have to sell on capability.
 3. **Cost to close a Dedicated deal.** The setup fee and support tiers are sized by benchmark. Actual hours would let you price them properly.
 4. **Cost per page for Smart OCR.** Self-hosted on existing capacity or a paid API changes the allowances by an order of magnitude. Section 2 sets them from market intuition; they should be set from this number.
