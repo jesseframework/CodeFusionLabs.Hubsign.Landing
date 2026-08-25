@@ -166,12 +166,15 @@
                         </div>
                         <div class="sealed-visual-body">
                             <span class="skeleton-bar skeleton-bar--dark full"></span>
-                            <span class="skeleton-bar" style="width:45%"></span>
-                            <span class="skeleton-bar" style="width:38%"></span>
-                            <span class="skeleton-bar" style="width:42%"></span>
+                            <div class="sealed-visual-row"><span class="skeleton-bar" style="width:45%"></span><span class="skeleton-bar" style="width:15%"></span></div>
+                            <div class="sealed-visual-row"><span class="skeleton-bar" style="width:38%"></span><span class="skeleton-bar" style="width:15%"></span></div>
+                            <div class="sealed-visual-row"><span class="skeleton-bar" style="width:42%"></span><span class="skeleton-bar" style="width:15%"></span></div>
+                            <div class="sealed-visual-spacer"></div>
+                            <span class="skeleton-bar skeleton-bar--total"></span>
                         </div>
                         <div class="sealed-visual-footer">
                             <svg width="46" height="16" viewBox="0 0 64 22" fill="none"><path d="M2 16c3-10 6 9 10-3 3-9 6 11 10-2 3-8 6 10 10-3 3-8 6 10 10-2 3-7 6 8 10-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg>
+                            <span class="skeleton-bar" style="width:60px;"></span>
                         </div>
                     </div>
                 </div>
@@ -208,10 +211,273 @@
         </div>
         <div class="showcase-frame-wrap">
             <div class="showcase-frame">
-                {% for step in showcase_steps %}
-                <div class="showcase-panel showcase-panel--{{ step.theme }}{% if forloop.first %} active{% endif %}"
-                     data-step="{{ forloop.counter0 }}" data-title="{{ step.title }}" data-blurb="{{ step.blurb }}"></div>
-                {% endfor %}
+
+                <!-- Step 1: Signature Inbox -->
+                <div class="showcase-panel active" data-step="0"
+                     data-title="Signature Inbox" data-blurb="Every vendor invoice lands here, already read by OCR before anyone opens it.">
+                    <div class="sc-sidebar">
+                        <div class="sc-sidebar-logo"></div>
+                        <div class="sc-sidebar-item active"></div>
+                        <div class="sc-sidebar-item"></div>
+                        <div class="sc-sidebar-item"></div>
+                        <div class="sc-sidebar-item"></div>
+                    </div>
+                    <div class="sc-content">
+                        <div class="sc-full-bar"></div>
+                        <div class="sc-queue-row sc-queue-row--highlight">
+                            <div class="sc-queue-main">
+                                <div class="skeleton-bar" style="width:48%;height:6px;background:var(--gray-500);"></div>
+                                <div class="skeleton-bar" style="width:30%;height:5px;background:var(--gray-300);"></div>
+                            </div>
+                            <div class="skeleton-bar" style="width:60px;height:6px;background:var(--gray-300);"></div>
+                            <div class="sc-queue-badge" style="background:var(--warning);opacity:0.5;"></div>
+                        </div>
+                        <div class="sc-queue-row">
+                            <div class="sc-queue-main">
+                                <div class="skeleton-bar" style="width:52%;height:6px;background:var(--gray-400);"></div>
+                                <div class="skeleton-bar" style="width:34%;height:5px;"></div>
+                            </div>
+                            <div class="skeleton-bar" style="width:60px;height:6px;background:var(--gray-300);"></div>
+                            <div class="sc-queue-badge" style="background:var(--purple-100);"></div>
+                        </div>
+                        <div class="sc-queue-row">
+                            <div class="sc-queue-main">
+                                <div class="skeleton-bar" style="width:44%;height:6px;background:var(--gray-400);"></div>
+                                <div class="skeleton-bar" style="width:28%;height:5px;"></div>
+                            </div>
+                            <div class="skeleton-bar" style="width:60px;height:6px;background:var(--gray-300);"></div>
+                            <div class="sc-queue-badge" style="background:var(--purple-100);"></div>
+                        </div>
+                        <div class="sc-queue-row">
+                            <div class="sc-queue-main">
+                                <div class="skeleton-bar" style="width:50%;height:6px;background:var(--gray-400);"></div>
+                                <div class="skeleton-bar" style="width:32%;height:5px;"></div>
+                            </div>
+                            <div class="skeleton-bar" style="width:60px;height:6px;background:var(--gray-300);"></div>
+                            <div style="width:14px;height:14px;background:var(--success);opacity:0.5;border-radius:50%;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2: Document Review -->
+                <div class="showcase-panel" data-step="1"
+                     data-title="Document Review" data-blurb="Extracted data opens beside the original — correct what OCR missed, then send.">
+                    <div class="sc-sidebar">
+                        <div class="sc-sidebar-logo"></div>
+                        <div class="sc-sidebar-item"></div>
+                        <div class="sc-sidebar-item active"></div>
+                        <div class="sc-sidebar-item"></div>
+                        <div class="sc-sidebar-item"></div>
+                    </div>
+                    <div class="sc-content sc-content--row">
+                        <div class="sc-field-list">
+                            <div class="skeleton-bar" style="width:55%;height:8px;background:var(--gray-400);margin-bottom:2px;"></div>
+                            <div class="skeleton-bar" style="width:100%;height:6px;background:var(--purple-200);margin-bottom:6px;"></div>
+                            <div class="sc-field-row"><div class="skeleton-bar" style="width:28%;height:5px;background:var(--gray-300);"></div><div class="skeleton-bar" style="width:45%;height:5px;"></div><div class="sc-status-dot" style="background:var(--success);"></div></div>
+                            <div class="sc-field-row"><div class="skeleton-bar" style="width:28%;height:5px;background:var(--gray-300);"></div><div class="skeleton-bar" style="width:38%;height:5px;"></div><div class="sc-status-dot" style="background:var(--success);"></div></div>
+                            <div class="sc-field-row"><div class="skeleton-bar" style="width:28%;height:5px;background:var(--gray-300);"></div><div class="skeleton-bar" style="width:50%;height:5px;"></div><div class="sc-status-dot" style="background:var(--warning);"></div></div>
+                            <div class="sc-field-row"><div class="skeleton-bar" style="width:28%;height:5px;background:var(--gray-300);"></div><div class="skeleton-bar" style="width:42%;height:5px;"></div><div class="sc-status-dot" style="background:var(--success);"></div></div>
+                        </div>
+                        <div style="flex:1;display:flex;flex-direction:column;gap:9px;">
+                            <div class="sc-banner-success"><div class="skeleton-bar" style="width:65%;height:5px;background:var(--success);opacity:0.6;"></div></div>
+                            <div class="sc-note-card">
+                                <div class="sc-note-row"><div class="sc-status-dot" style="background:var(--purple-400);"></div><div class="skeleton-bar" style="width:60%;"></div></div>
+                                <div class="sc-note-row"><div class="sc-status-dot" style="background:var(--gray-300);"></div><div class="skeleton-bar" style="width:50%;"></div></div>
+                                <div class="sc-note-row"><div class="sc-status-dot" style="background:var(--gray-300);"></div><div class="skeleton-bar" style="width:55%;"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3: E-Sign -->
+                <div class="showcase-panel" data-step="2"
+                     data-title="E-Sign" data-blurb="Every document, by state: draft, out for signature, or completed.">
+                    <div class="sc-sidebar">
+                        <div class="sc-sidebar-logo"></div>
+                        <div class="sc-sidebar-item"></div>
+                        <div class="sc-sidebar-item"></div>
+                        <div class="sc-sidebar-item active"></div>
+                        <div class="sc-sidebar-item"></div>
+                    </div>
+                    <div class="sc-content">
+                        <div class="sc-toolbar">
+                            <div class="sc-stat-card"><div class="sc-stat-bar" style="width:40%;background:var(--purple-500);opacity:0.8;"></div><div class="skeleton-bar" style="width:65%;height:4px;"></div></div>
+                            <div class="sc-stat-card"><div class="sc-stat-bar" style="width:35%;background:var(--gray-400);"></div><div class="skeleton-bar" style="width:60%;height:4px;"></div></div>
+                            <div class="sc-stat-card"><div class="sc-stat-bar" style="width:38%;background:var(--warning);opacity:0.7;"></div><div class="skeleton-bar" style="width:55%;height:4px;"></div></div>
+                            <div class="sc-stat-card"><div class="sc-stat-bar" style="width:42%;background:var(--success);opacity:0.7;"></div><div class="skeleton-bar" style="width:65%;height:4px;"></div></div>
+                        </div>
+                        <div class="sc-table-card">
+                            <div class="sc-table-row"><div class="skeleton-bar" style="width:40%;height:6px;background:var(--gray-400);"></div><div class="skeleton-bar" style="width:15%;height:6px;background:var(--gray-300);"></div><div class="sc-table-pill" style="background:var(--success-light);"></div></div>
+                            <div class="sc-table-row"><div class="skeleton-bar" style="width:35%;height:6px;background:var(--gray-400);"></div><div class="skeleton-bar" style="width:15%;height:6px;background:var(--gray-300);"></div><div class="sc-table-pill" style="background:var(--warning-light);"></div></div>
+                            <div class="sc-table-row"><div class="skeleton-bar" style="width:44%;height:6px;background:var(--gray-400);"></div><div class="skeleton-bar" style="width:15%;height:6px;background:var(--gray-300);"></div><div class="sc-table-pill" style="background:var(--gray-100);"></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 4: Signing -->
+                <div class="showcase-panel" data-step="3"
+                     data-title="Signing" data-blurb="The signer sees this vendor's spend against their limit before they sign.">
+                    <div class="hero-chrome-body" style="flex:1;">
+                        <div class="hero-chrome-doc">
+                            <div class="hero-chrome-doc-header">
+                                <div class="skeleton-bar" style="width:34%;height:7px;background:var(--gray-300);"></div>
+                                <div class="skeleton-bar" style="width:22%;height:11px;background:var(--gray-800);"></div>
+                            </div>
+                            <div style="width:100%;height:1px;background:var(--border);margin-bottom:10px;"></div>
+                            <div class="skeleton-bar" style="width:80%;"></div>
+                            <div class="skeleton-bar" style="width:65%;"></div>
+                            <div class="skeleton-bar" style="width:70%;"></div>
+                            <div style="flex:1;"></div>
+                            <svg width="58" height="20" viewBox="0 0 64 22" fill="none" style="align-self:flex-end;"><path d="M2 16c3-10 6 9 10-3 3-9 6 11 10-2 3-8 6 10 10-3 3-8 6 10 10-2 3-7 6 8 10-4" stroke="var(--gray-500)" stroke-width="1.6" stroke-linecap="round"></path></svg>
+                        </div>
+                        <div class="hero-chrome-side">
+                            <div class="hero-chrome-progress"><div class="skeleton-bar" style="width:65%;"></div><div class="progress-track"><div class="progress-fill" style="width:74%"></div></div></div>
+                            <div class="hero-chrome-note"><div class="skeleton-bar" style="width:30%;"></div><div class="skeleton-bar" style="width:80%;"></div></div>
+                            <div class="hero-chrome-placeholder"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 5: Sealed record -->
+                <div class="showcase-panel" data-step="4"
+                     data-title="Sealed record" data-blurb="Signature, timestamp and reference burned onto the page itself.">
+                    <div class="sc-centered">
+                        <div class="sealed-visual-doc" style="width:56%;">
+                            <div class="sealed-visual-doc-header">
+                                <div class="sealed-visual-doc-lines">
+                                    <div class="skeleton-bar" style="width:70%;"></div>
+                                    <div class="skeleton-bar" style="width:50%;height:4px;"></div>
+                                    <div class="skeleton-bar" style="width:55%;height:4px;"></div>
+                                </div>
+                                <div class="sealed-visual-stamp">
+                                    <div class="skeleton-bar skeleton-bar--stamp" style="width:70%;"></div>
+                                    <div class="skeleton-bar skeleton-bar--stamp" style="width:50%;height:4px;"></div>
+                                </div>
+                            </div>
+                            <div class="sealed-visual-body">
+                                <div class="skeleton-bar skeleton-bar--dark full"></div>
+                                <div class="sealed-visual-row"><div class="skeleton-bar" style="width:45%;height:4px;"></div><div class="skeleton-bar" style="width:15%;height:4px;"></div></div>
+                                <div class="sealed-visual-row"><div class="skeleton-bar" style="width:38%;height:4px;"></div><div class="skeleton-bar" style="width:15%;height:4px;"></div></div>
+                                <div class="sealed-visual-row"><div class="skeleton-bar" style="width:42%;height:4px;"></div><div class="skeleton-bar" style="width:15%;height:4px;"></div></div>
+                                <div class="sealed-visual-spacer"></div>
+                                <div class="skeleton-bar skeleton-bar--total"></div>
+                            </div>
+                            <div class="sealed-visual-footer">
+                                <svg width="46" height="16" viewBox="0 0 64 22" fill="none"><path d="M2 16c3-10 6 9 10-3 3-9 6 11 10-2 3-8 6 10 10-3 3-8 6 10 10-2 3-7 6 8 10-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg>
+                                <div class="skeleton-bar" style="width:60px;height:4px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 6: Notification -->
+                <div class="showcase-panel" data-step="5"
+                     data-title="Notification" data-blurb="The signed PDF lands back in the inbox automatically.">
+                    <div class="sc-centered">
+                        <div style="width:72%;background:#fff;border:1px solid var(--border);border-radius:10px;box-shadow:var(--shadow-sm);overflow:hidden;">
+                            <div style="padding:12px 14px;border-bottom:1px solid var(--gray-100);"><div class="skeleton-bar" style="width:65%;height:8px;background:var(--gray-400);"></div></div>
+                            <div style="padding:11px 14px;display:flex;align-items:center;gap:9px;border-bottom:1px solid var(--gray-100);">
+                                <div class="sc-avatar"></div>
+                                <div style="flex:1;display:flex;flex-direction:column;gap:4px;"><div class="skeleton-bar" style="width:38%;height:5px;"></div><div class="skeleton-bar" style="width:55%;height:4px;"></div></div>
+                            </div>
+                            <div style="padding:11px 14px;">
+                                <div class="sc-attachment-row">
+                                    <div class="sc-attachment-icon"></div>
+                                    <div class="skeleton-bar" style="width:45%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 7: Tracking -->
+                <div class="showcase-panel" data-step="6"
+                     data-title="Tracking" data-blurb="Volume, status and signature ageing, for the whole workspace, live.">
+                    <div class="sc-sidebar">
+                        <div class="sc-sidebar-logo"></div>
+                        <div class="sc-sidebar-item"></div>
+                        <div class="sc-sidebar-item"></div>
+                        <div class="sc-sidebar-item"></div>
+                        <div class="sc-sidebar-item active"></div>
+                    </div>
+                    <div class="sc-content">
+                        <div class="sc-toolbar">
+                            <div class="sc-toolbar-card"><div class="sc-toolbar-bar" style="width:50%;"></div></div>
+                            <div class="sc-toolbar-card"><div class="sc-toolbar-bar" style="width:45%;"></div></div>
+                            <div class="sc-toolbar-card"><div class="sc-toolbar-bar" style="width:55%;"></div></div>
+                            <div class="sc-toolbar-card"><div class="sc-toolbar-bar" style="width:40%;"></div></div>
+                        </div>
+                        <div class="sc-chart-grid">
+                            <div class="sc-chart-card"><div class="sc-donut" style="background:conic-gradient(var(--success) 0% 52%, var(--gray-200) 52% 100%);"></div></div>
+                            <div class="sc-chart-card sc-bars-mini">
+                                <div class="sc-bar-mini" style="height:14px;background:var(--purple-200);"></div>
+                                <div class="sc-bar-mini" style="height:22px;background:var(--purple-300);"></div>
+                                <div class="sc-bar-mini" style="height:12px;background:var(--purple-200);"></div>
+                                <div class="sc-bar-mini" style="height:30px;background:var(--purple-500);"></div>
+                                <div class="sc-bar-mini" style="height:20px;background:var(--purple-300);"></div>
+                            </div>
+                            <div class="sc-chart-card"><div class="sc-donut" style="background:conic-gradient(var(--purple-400) 0% 35%, var(--purple-200) 35% 70%, var(--gray-200) 70% 100%);"></div></div>
+                            <div class="sc-chart-card"><div class="sc-donut" style="background:conic-gradient(var(--purple-500) 0% 100%);"></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 8: SLA -->
+                <div class="showcase-panel" data-step="7"
+                     data-title="SLA" data-blurb="Turnaround measured against target — internal time separated from end-to-end.">
+                    <div class="sc-sidebar">
+                        <div class="sc-sidebar-logo"></div>
+                        <div class="sc-sidebar-item"></div>
+                        <div class="sc-sidebar-item"></div>
+                        <div class="sc-sidebar-item"></div>
+                        <div class="sc-sidebar-item"></div>
+                    </div>
+                    <div class="sc-content">
+                        <div style="display:flex;gap:14px;align-items:center;">
+                            <div class="sc-ring-wrap">
+                                <div class="sc-ring" style="background:conic-gradient(var(--error) 0% 49%, var(--gray-100) 49% 100%);"></div>
+                                <div class="sc-ring-hole"></div>
+                            </div>
+                            <div style="flex:1;display:flex;gap:10px;">
+                                <div class="sc-stat-card"><div class="sc-stat-bar" style="width:35%;height:11px;background:var(--error);opacity:0.7;"></div><div class="skeleton-bar" style="width:60%;height:4px;"></div></div>
+                                <div class="sc-stat-card"><div class="sc-stat-bar" style="width:30%;height:11px;background:var(--gray-400);"></div><div class="skeleton-bar" style="width:55%;height:4px;"></div></div>
+                            </div>
+                        </div>
+                        <div class="sc-bigbar-card">
+                            <div class="sc-bigbar" style="height:30%;background:var(--gray-200);"></div>
+                            <div class="sc-bigbar" style="height:45%;background:var(--gray-200);"></div>
+                            <div class="sc-bigbar" style="height:38%;background:var(--gray-200);"></div>
+                            <div class="sc-bigbar" style="height:55%;background:var(--gray-200);"></div>
+                            <div class="sc-bigbar" style="height:90%;background:var(--error);opacity:0.75;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 9: Reports -->
+                <div class="showcase-panel" data-step="8"
+                     data-title="Reports" data-blurb="Spend by vendor, checked against the limit shown at signing.">
+                    <div class="sc-sidebar">
+                        <div class="sc-sidebar-logo"></div>
+                        <div class="sc-sidebar-item"></div>
+                        <div class="sc-sidebar-item"></div>
+                        <div class="sc-sidebar-item"></div>
+                        <div class="sc-sidebar-item"></div>
+                    </div>
+                    <div class="sc-content">
+                        <div class="sc-toolbar">
+                            <div class="sc-toolbar-card"><div class="sc-toolbar-bar" style="width:60%;"></div></div>
+                            <div class="sc-toolbar-card"><div class="sc-toolbar-bar" style="width:45%;"></div></div>
+                            <div class="sc-toolbar-card"><div class="sc-toolbar-bar" style="width:50%;"></div></div>
+                            <div class="sc-toolbar-card"><div class="sc-toolbar-bar" style="width:55%;background:var(--error);opacity:0.7;"></div></div>
+                        </div>
+                        <div class="sc-progress-rows">
+                            <div class="sc-progress-row"><div class="sc-progress-label"></div><div class="progress-track" style="flex:1;height:9px;"><div class="progress-fill" style="width:88%;background:var(--error);opacity:0.75;"></div></div><div class="sc-progress-value"></div></div>
+                            <div class="sc-progress-row"><div class="sc-progress-label"></div><div class="progress-track" style="flex:1;height:9px;"><div class="progress-fill" style="width:65%;background:var(--warning);opacity:0.75;"></div></div><div class="sc-progress-value"></div></div>
+                            <div class="sc-progress-row"><div class="sc-progress-label"></div><div class="progress-track" style="flex:1;height:9px;"><div class="progress-fill" style="width:45%;background:var(--purple-400);"></div></div><div class="sc-progress-value"></div></div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
             <button type="button" class="showcase-nav showcase-nav--prev" aria-label="Previous screen">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
@@ -221,14 +487,20 @@
             </button>
         </div>
         <div class="showcase-dots">
-            {% for step in showcase_steps %}
-            <button type="button" class="showcase-dot{% if forloop.first %} active{% endif %}" data-step="{{ forloop.counter0 }}" aria-label="Go to screen {{ forloop.counter }}"></button>
-            {% endfor %}
+            <button type="button" class="showcase-dot active" data-step="0" aria-label="Go to screen 1"></button>
+            <button type="button" class="showcase-dot" data-step="1" aria-label="Go to screen 2"></button>
+            <button type="button" class="showcase-dot" data-step="2" aria-label="Go to screen 3"></button>
+            <button type="button" class="showcase-dot" data-step="3" aria-label="Go to screen 4"></button>
+            <button type="button" class="showcase-dot" data-step="4" aria-label="Go to screen 5"></button>
+            <button type="button" class="showcase-dot" data-step="5" aria-label="Go to screen 6"></button>
+            <button type="button" class="showcase-dot" data-step="6" aria-label="Go to screen 7"></button>
+            <button type="button" class="showcase-dot" data-step="7" aria-label="Go to screen 8"></button>
+            <button type="button" class="showcase-dot" data-step="8" aria-label="Go to screen 9"></button>
         </div>
         <div class="showcase-caption">
             <span class="showcase-step-label">Step <span class="showcase-step-num">1</span> of 9</span>
-            <h3 class="showcase-title">{{ showcase_steps.0.title }}</h3>
-            <p class="showcase-blurb">{{ showcase_steps.0.blurb }}</p>
+            <h3 class="showcase-title">Signature Inbox</h3>
+            <p class="showcase-blurb">Every vendor invoice lands here, already read by OCR before anyone opens it.</p>
         </div>
     </div>
 </section>

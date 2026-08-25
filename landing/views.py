@@ -15,7 +15,6 @@ class IndexView(TemplateView):
         context['pillars'] = self.get_pillars()
         context['field_types'] = self.get_field_types()
         context['roles'] = self.get_roles()
-        context['showcase_steps'] = self.get_showcase_steps()
         context['integrations'] = self.get_integrations()
         context['faqs'] = self.get_faqs()
         return context
@@ -69,19 +68,9 @@ class IndexView(TemplateView):
             {'name': 'Assistant', 'desc': 'Fills fields on behalf of another recipient, who then signs'},
         ]
 
-    def get_showcase_steps(self):
-        """The 9-screen 'one invoice, nine screens' walkthrough carousel."""
-        return [
-            {'theme': 'inbox', 'title': 'Signature Inbox', 'blurb': 'Every vendor invoice lands here, already read by OCR before anyone opens it.'},
-            {'theme': 'review', 'title': 'Document Review', 'blurb': 'Extracted data opens beside the original — correct what OCR missed, then send.'},
-            {'theme': 'esign', 'title': 'E-Sign', 'blurb': 'Every document, by state: draft, out for signature, or completed.'},
-            {'theme': 'signing', 'title': 'Signing', 'blurb': "The signer sees this vendor's spend against their limit before they sign."},
-            {'theme': 'sealed', 'title': 'Sealed record', 'blurb': 'Signature, timestamp and reference burned onto the page itself.'},
-            {'theme': 'notify', 'title': 'Notification', 'blurb': 'The signed PDF lands back in the inbox automatically.'},
-            {'theme': 'tracking', 'title': 'Tracking', 'blurb': 'Volume, status and signature ageing, for the whole workspace, live.'},
-            {'theme': 'sla', 'title': 'SLA', 'blurb': 'Turnaround measured against target — internal time separated from end-to-end.'},
-            {'theme': 'reports', 'title': 'Reports', 'blurb': 'Spend by vendor, checked against the limit shown at signing.'},
-        ]
+    # The 9 showcase-carousel panels aren't uniform repeatable cards -- each
+    # is a bespoke mini-screen -- so they're hardcoded directly in
+    # templates/landing/index.html rather than looped from context here.
 
     def get_integrations(self):
         return [
