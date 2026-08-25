@@ -1214,6 +1214,48 @@ input {
 }
 
 /* =============================================================================
+   GO PAPERLESS SECTION
+   ============================================================================= */
+.paperless-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+.paperless-stat {
+    padding: 28px 24px;
+    background: var(--gray-900);
+    border-radius: var(--radius-xl);
+    color: white;
+}
+
+.paperless-stat--accent {
+    background: var(--green-500);
+}
+
+.paperless-stat-value {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.paperless-stat-label {
+    display: block;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.paperless-note {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-align: center;
+    margin-top: 16px;
+}
+
+/* =============================================================================
    CTA SECTION
    ============================================================================= */
 .cta {
@@ -1444,7 +1486,11 @@ input {
     .pricing-grid {
         grid-template-columns: 1fr;
     }
-    
+
+    .paperless-stats {
+        grid-template-columns: 1fr;
+    }
+
     .steps {
         flex-direction: column;
         gap: 16px;
