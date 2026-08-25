@@ -2,7 +2,7 @@ from django.test import TestCase
 
 
 class PricingApiTests(TestCase):
-    def test_pricing_endpoint_returns_five_tiers_with_addons(self):
+    def test_pricing_endpoint_returns_seven_tiers_with_addons(self):
         response = self.client.get('/api/pricing/')
         self.assertEqual(response.status_code, 200)
 
@@ -10,7 +10,8 @@ class PricingApiTests(TestCase):
         self.assertEqual(data['currency'], 'USD')
         tiers = data['tiers']
         self.assertEqual(
-            [t['id'] for t in tiers], ['free', 'individual', 'team', 'business', 'enterprise'],
+            [t['id'] for t in tiers],
+            ['free', 'starter', 'plus', 'pro', 'team', 'business', 'enterprise'],
         )
 
         business = next(t for t in tiers if t['id'] == 'business')

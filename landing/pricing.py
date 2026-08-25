@@ -83,7 +83,12 @@ def _fetch_from_stripe() -> list[PricingTier] | None:
 
     fallback = {t.id: t for t in _fallback_tiers()}
 
-    individual = _apply_price(fallback['individual'], matches(plan='regular'), 'Individual')
+    # 'regular' is the existing live Stripe product (confirmed the hard way --
+    # see PRODUCTION_INCIDENT.md), which was priced at Starter's $15/mo. Also
+    # accept 'starter' going forward once/if the product metadata is renamed.
+    starter = _apply_price(fallback['starter'], matches(plan='starter') or matches(plan='regular'), 'Starter')
+    plus = _apply_price(fallback['plus'], matches(plan='plus'), 'Plus')
+    pro = _apply_price(fallback['pro'], matches(plan='pro'), 'Pro')
 
     business = _apply_price(
         fallback['business'], matches(type='org_seat', tier='BUSINESS'), 'Business',
@@ -94,10 +99,13 @@ def _fetch_from_stripe() -> list[PricingTier] | None:
 
     # TODO(pricing): Team and Enterprise (Shared) aren't wired to Stripe yet -- no
     # confirmed metadata.plan/metadata.type convention exists for them (unlike
-    # personal/individual/business, which were confirmed the hard way -- see
-    # PRODUCTION_INCIDENT.md). Always sourced from fallback until Stripe products
-    # and metadata are set up for these two tiers.
-    return [fallback['free'], individual, fallback['team'], business, fallback['enterprise']]
+    # business, which was confirmed the hard way -- see PRODUCTION_INCIDENT.md).
+    # Plus and Pro are new tiers with no Stripe products yet either. All four are
+    # always sourced from fallback until Stripe products and metadata exist.
+    return [
+        fallback['free'], starter, plus, pro,
+        fallback['team'], business, fallback['enterprise'],
+    ]
 
 
 def _apply_price(tier: PricingTier, price_matches: list[dict], label: str) -> PricingTier:
@@ -141,16 +149,20 @@ def _resolve_interval_prices(price_matches: list[dict]):
 def _fallback_tiers() -> list[PricingTier]:
     """See HubSign-Pricing-Plan.md Section 2 ("Proposed full ladder", "Feature
     differentiation", "Pricing page layout") and Section 4 ("Annual billing") for
-    where these figures and the card copy rules come from. DMS is included in
-    Business, not sold as a per-seat addon -- that was a live-site bug this ladder
-    fixes, not a simplification made here.
+    where the Team/Business/Enterprise figures and the card copy rules come from.
+    DMS is included in Business, not sold as a per-seat addon -- that was a
+    live-site bug this ladder fixes, not a simplification made here.
 
     Card copy follows the doc's "Pricing page layout" rules: allowances first,
     add-on rate last as a muted footnote; user counts shown on every tier; cards
-    kept to 3-4 lines (Business's DMS/API+embedding facts live in the comparison
-    table below the grid -- not yet built -- rather than on the card itself).
-    Enterprise is the exception: it renders as a full-width band, not a card, so
-    it has room to show DMS/API+embedding inline.
+    kept to 3-4 lines.
+
+    Starter/Plus/Pro replace the old single 'individual' $15/mo tier (see the new
+    HubSign Landing Page mockup) -- Starter keeps Individual's old figures
+    exactly, Plus and Pro are new. Their annual prices aren't specified anywhere
+    yet (the mockup only shows monthly): applied the same 20% "acquisition tier"
+    discount HubSign-Pricing-Plan.md Section 4 already uses for Individual/Team.
+    Placeholder until real Stripe annual prices exist for Plus/Pro.
     """
     return [
         PricingTier(
@@ -161,17 +173,40 @@ def _fallback_tiers() -> list[PricingTier]:
             price_monthly=0, price_annually=0, is_free=True,
         ),
         PricingTier(
-            id='individual', name='Individual',
-            description='For one person signing regularly.',
-            features=['1 user', '15 signature requests/mo', '150 pages/mo Smart OCR', 'API access'],
+            id='starter', name='Starter',
+            description='For one person signing occasionally.',
+            features=[
+                '20 signature requests/mo', 'Up to 10 recipients per document',
+                '1 direct signing link', 'Standard support',
+            ],
             featured=False, cta='Get started',
             price_monthly=15, price_annually=12,
         ),
         PricingTier(
-            id='team', name='Team',
-            description='For small teams that outgrew Individual.',
-            features=['Up to 20 users', '50 signature requests/mo', '400 pages/mo Smart OCR'],
+            id='plus', name='Plus',
+            description='For one person signing regularly.',
+            features=[
+                '50 signature requests/mo', 'Up to 50 recipients per document',
+                '5 direct signing links', 'Email support',
+            ],
             featured=True, cta='Get started',
+            price_monthly=35, price_annually=28,
+        ),
+        PricingTier(
+            id='pro', name='Pro',
+            description='For power users who sign at volume.',
+            features=[
+                '100 signature requests/mo', 'Up to 500 recipients per document',
+                '20 direct signing links', 'Priority email support',
+            ],
+            featured=False, cta='Get started',
+            price_monthly=50, price_annually=40,
+        ),
+        PricingTier(
+            id='team', name='Team',
+            description='For a small team centralizing signing, approvals and records in one place.',
+            features=['Up to 20 users', '50 signature requests/mo', '400 pages/mo Smart OCR'],
+            featured=False, cta='Get started',
             price_monthly=59, price_annually=47,
             addons=[
                 PricingAddon(
@@ -182,9 +217,12 @@ def _fallback_tiers() -> list[PricingTier]:
         ),
         PricingTier(
             id='business', name='Business',
-            description='Shared workspace for growing teams.',
-            features=['Unlimited users', '150 signature requests/mo', '1,500 pages/mo Smart OCR'],
-            featured=False, cta='Get started',
+            description='For growing organizations running business rules and workflows at scale.',
+            features=[
+                'Unlimited users', '150 signature requests/mo', '1,500 pages/mo Smart OCR',
+                'Document Manager included', 'API + embedding',
+            ],
+            featured=True, cta='Get started',
             price_monthly=199, price_annually=165,
             addons=[
                 PricingAddon(
@@ -194,8 +232,8 @@ def _fallback_tiers() -> list[PricingTier]:
             ],
         ),
         PricingTier(
-            id='enterprise', name='Enterprise',
-            description='High-volume signing on shared infrastructure.',
+            id='enterprise', name='Enterprise Shared',
+            description='For large organizations sharing infrastructure and records across departments.',
             features=[
                 'Unlimited users', '1,000 signature requests/mo', '10,000 pages/mo Smart OCR',
                 'Document Manager included', 'API + embedding',

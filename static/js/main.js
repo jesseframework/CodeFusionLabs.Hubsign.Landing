@@ -1,56 +1,7 @@
 /**
  * HubSign Landing - Main JavaScript
- * Enterprise E-Signatures Made Simple
+ * Everything that happens around the signature.
  */
-
-// =============================================================================
-// SLIDER
-// =============================================================================
-
-let currentSlide = 0;
-const totalSlides = 3;
-let autoSlideInterval;
-
-function initSlider() {
-    const heroSlides = document.getElementById('heroSlides');
-    const dots = document.querySelectorAll('.slider-dot');
-    
-    if (!heroSlides) return;
-    
-    function updateSlider() {
-        heroSlides.style.transform = `translateX(-${currentSlide * 100}%)`;
-        dots.forEach((dot, i) => dot.classList.toggle('active', i === currentSlide));
-    }
-    
-    window.nextSlide = function() {
-        currentSlide = (currentSlide + 1) % totalSlides;
-        updateSlider();
-        resetAutoSlide();
-    };
-    
-    window.prevSlide = function() {
-        currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
-        updateSlider();
-        resetAutoSlide();
-    };
-    
-    window.goToSlide = function(i) {
-        currentSlide = i;
-        updateSlider();
-        resetAutoSlide();
-    };
-    
-    function startAutoSlide() {
-        autoSlideInterval = setInterval(window.nextSlide, 5000);
-    }
-    
-    function resetAutoSlide() {
-        clearInterval(autoSlideInterval);
-        startAutoSlide();
-    }
-    
-    startAutoSlide();
-}
 
 // =============================================================================
 // MOBILE MENU
@@ -66,8 +17,8 @@ function toggleMobileMenu() {
 // Close mobile menu when clicking outside
 document.addEventListener('click', (e) => {
     const mobileMenu = document.getElementById('mobileMenu');
-    if (mobileMenu?.classList.contains('active') && 
-        !mobileMenu.contains(e.target) && 
+    if (mobileMenu?.classList.contains('active') &&
+        !mobileMenu.contains(e.target) &&
         !e.target.closest('.mobile-menu-btn')) {
         mobileMenu.classList.remove('active');
     }
@@ -82,12 +33,12 @@ function initSmoothScroll() {
         anchor.addEventListener('click', function(e) {
             const href = this.getAttribute('href');
             if (href === '#') return;
-            
+
             e.preventDefault();
             const target = document.querySelector(href);
             if (target) {
                 target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                
+
                 // Close mobile menu if open
                 const mobileMenu = document.getElementById('mobileMenu');
                 if (mobileMenu?.classList.contains('active')) {
@@ -105,7 +56,7 @@ function initSmoothScroll() {
 function initHeaderScroll() {
     const header = document.querySelector('.header');
     if (!header) return;
-    
+
     window.addEventListener('scroll', () => {
         if (window.pageYOffset > 50) {
             header.style.boxShadow = '0 1px 3px rgba(0,0,0,0.1)';
@@ -116,7 +67,56 @@ function initHeaderScroll() {
 }
 
 // =============================================================================
-// PRICING TOGGLE
+// SHOWCASE CAROUSEL
+// =============================================================================
+
+function initShowcase() {
+    const panels = Array.from(document.querySelectorAll('.showcase-panel'));
+    const dots = Array.from(document.querySelectorAll('.showcase-dot'));
+    const prevBtn = document.querySelector('.showcase-nav--prev');
+    const nextBtn = document.querySelector('.showcase-nav--next');
+    const stepNumEl = document.querySelector('.showcase-step-num');
+    const titleEl = document.querySelector('.showcase-title');
+    const blurbEl = document.querySelector('.showcase-blurb');
+    if (!panels.length) return;
+
+    let active = 0;
+
+    function render() {
+        panels.forEach((panel, i) => panel.classList.toggle('active', i === active));
+        dots.forEach((dot, i) => dot.classList.toggle('active', i === active));
+        const panel = panels[active];
+        if (stepNumEl) stepNumEl.textContent = String(active + 1);
+        if (titleEl) titleEl.textContent = panel.dataset.title || '';
+        if (blurbEl) blurbEl.textContent = panel.dataset.blurb || '';
+    }
+
+    function goTo(i) {
+        active = ((i % panels.length) + panels.length) % panels.length;
+        render();
+    }
+
+    dots.forEach((dot, i) => dot.addEventListener('click', () => goTo(i)));
+    if (prevBtn) prevBtn.addEventListener('click', () => goTo(active - 1));
+    if (nextBtn) nextBtn.addEventListener('click', () => goTo(active + 1));
+}
+
+// =============================================================================
+// FAQ ACCORDION
+// =============================================================================
+
+function initFaqAccordion() {
+    document.querySelectorAll('.faq-item').forEach(item => {
+        const question = item.querySelector('.faq-question');
+        if (!question) return;
+        question.addEventListener('click', () => {
+            item.classList.toggle('open');
+        });
+    });
+}
+
+// =============================================================================
+// PRICING: plan-family tab + monthly/annual toggle
 // =============================================================================
 
 function applyPricingTiers(tiers, isAnnual) {
@@ -124,42 +124,34 @@ function applyPricingTiers(tiers, isAnnual) {
         const card = document.querySelector('[data-tier="' + tier.id + '"]');
         if (!card) return;
         const amountEl = card.querySelector('.pricing-amount');
-        const periodEl = card.querySelector('.pricing-period');
-        const billingEl = card.querySelector('.pricing-billing-amount');
-        const saveEl = card.querySelector('.pricing-save');
-        const addonEls = card.querySelectorAll('.pricing-addon-amount');
         if (!amountEl) return;
         const price = isAnnual ? tier.price_annually : tier.price_monthly;
-        if (price === 0) {
-            amountEl.textContent = '$0';
-            if (periodEl) periodEl.textContent = '';
-            if (billingEl) billingEl.textContent = '';
-            if (saveEl) saveEl.textContent = '';
-        } else {
-            amountEl.textContent = '$' + price;
-            if (periodEl) periodEl.textContent = '/mo';
-            if (isAnnual) {
-                if (billingEl) billingEl.textContent = 'Billed $' + (price * 12) + '/yr';
-                const savings = tier.price_monthly > 0
-                    ? Math.round((1 - tier.price_annually / tier.price_monthly) * 100)
-                    : 0;
-                if (saveEl) saveEl.textContent = savings > 0 ? 'Save ' + savings + '%' : '';
-            } else {
-                if (billingEl) billingEl.textContent = '';
-                if (saveEl) saveEl.textContent = '';
-            }
-        }
-        addonEls.forEach((el, i) => {
-            const addon = tier.addons && tier.addons[i];
-            if (!addon) return;
-            const addonPrice = isAnnual ? addon.price_annually : addon.price_monthly;
-            el.textContent = '$' + addonPrice + addon.unit_suffix;
+        amountEl.textContent = '$' + price;
+    });
+}
+
+function initPricingFamilyToggle() {
+    const toggle = document.getElementById('planFamilyToggle');
+    if (!toggle) return;
+
+    const groups = document.querySelectorAll('[data-family-group]');
+
+    toggle.addEventListener('click', (e) => {
+        const btn = e.target.closest('.pill-toggle-btn');
+        if (!btn) return;
+        const family = btn.dataset.family;
+
+        toggle.querySelectorAll('.pill-toggle-btn').forEach(b => {
+            b.classList.toggle('active', b === btn);
+        });
+        groups.forEach(group => {
+            group.hidden = group.dataset.familyGroup !== family;
         });
     });
 }
 
-function initPricingToggle() {
-    const toggle = document.querySelector('.toggle-switch');
+function initBillingToggle() {
+    const toggle = document.getElementById('billingToggle');
     if (!toggle) return;
 
     let pricingTiers = null;
@@ -174,13 +166,13 @@ function initPricingToggle() {
         })
         .catch(() => {});
 
-    toggle.addEventListener('click', function() {
-        this.classList.toggle('annual');
-        const isAnnual = this.classList.contains('annual');
+    toggle.addEventListener('click', (e) => {
+        const btn = e.target.closest('.pill-toggle-btn');
+        if (!btn) return;
+        const isAnnual = btn.dataset.billing === 'annual';
 
-        const labels = document.querySelectorAll('.pricing-toggle span');
-        labels.forEach((label, index) => {
-            label.classList.toggle('active', (index === 0 && !isAnnual) || (index === 1 && isAnnual));
+        toggle.querySelectorAll('.pill-toggle-btn').forEach(b => {
+            b.classList.toggle('active', b === btn);
         });
 
         if (!pricingTiers) return;
@@ -193,8 +185,10 @@ function initPricingToggle() {
 // =============================================================================
 
 document.addEventListener('DOMContentLoaded', () => {
-    initSlider();
     initSmoothScroll();
     initHeaderScroll();
-    initPricingToggle();
+    initShowcase();
+    initFaqAccordion();
+    initPricingFamilyToggle();
+    initBillingToggle();
 });

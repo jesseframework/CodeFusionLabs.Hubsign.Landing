@@ -34,14 +34,20 @@ class PricingFallbackTests(TestCase):
     def test_default_settings_return_fallback_tiers(self):
         tiers = get_pricing_tiers()
         self.assertEqual(
-            [t.id for t in tiers], ['free', 'individual', 'team', 'business', 'enterprise'],
+            [t.id for t in tiers],
+            ['free', 'starter', 'plus', 'pro', 'team', 'business', 'enterprise'],
         )
 
-        free, individual, team, business, enterprise = tiers
+        free, starter, plus, pro, team, business, enterprise = tiers
         self.assertTrue(free.is_free)
         self.assertEqual(free.price_monthly, 0)
-        self.assertEqual(individual.price_monthly, 15)
-        self.assertEqual(individual.price_annually, 12)
+        self.assertEqual(starter.price_monthly, 15)
+        self.assertEqual(starter.price_annually, 12)
+        self.assertEqual(plus.price_monthly, 35)
+        self.assertEqual(plus.price_annually, 28)
+        self.assertTrue(plus.featured)
+        self.assertEqual(pro.price_monthly, 50)
+        self.assertEqual(pro.price_annually, 40)
 
         self.assertEqual(team.price_monthly, 59)
         self.assertEqual(team.price_annually, 47)
@@ -67,19 +73,21 @@ class PricingStripeTests(TestCase):
     @patch('landing.pricing.stripe.Price.search')
     def test_stripe_prices_override_fallback(self, mock_search):
         mock_search.return_value = FakeSearchResult([
-            fake_price(1500, 'month', 'price_ind_m', plan='regular'),
-            fake_price(14400, 'year', 'price_ind_y', plan='regular'),
+            fake_price(1500, 'month', 'price_starter_m', plan='regular'),
+            fake_price(14400, 'year', 'price_starter_y', plan='regular'),
             fake_price(19900, 'month', 'price_biz_m', type='org_seat', tier='BUSINESS'),
             fake_price(4500, 'month', 'price_block_m', type='org_doc_block', tier='BUSINESS'),
         ])
 
         tiers = get_pricing_tiers()
-        free, individual, team, business, enterprise = tiers
+        free, starter, plus, pro, team, business, enterprise = tiers
 
-        self.assertEqual(individual.price_monthly, 15)
-        self.assertEqual(individual.price_annually, 12)
-        self.assertEqual(individual.price_id_monthly, 'price_ind_m')
-        self.assertEqual(individual.price_id_annually, 'price_ind_y')
+        # 'regular' is the existing live Stripe product metadata (see
+        # PRODUCTION_INCIDENT.md) -- still matches Starter for backward compat.
+        self.assertEqual(starter.price_monthly, 15)
+        self.assertEqual(starter.price_annually, 12)
+        self.assertEqual(starter.price_id_monthly, 'price_starter_m')
+        self.assertEqual(starter.price_id_annually, 'price_starter_y')
 
         self.assertEqual(business.price_monthly, 199)
         self.assertEqual(business.price_id_monthly, 'price_biz_m')
@@ -89,10 +97,26 @@ class PricingStripeTests(TestCase):
         self.assertEqual(doc_block.price_id_monthly, 'price_block_m')
 
         # Not wired to Stripe yet -- always fallback values.
+        self.assertEqual(plus.price_monthly, 35)
+        self.assertIsNone(plus.price_id_monthly)
+        self.assertEqual(pro.price_monthly, 50)
+        self.assertIsNone(pro.price_id_monthly)
         self.assertEqual(team.price_monthly, 59)
         self.assertIsNone(team.price_id_monthly)
         self.assertEqual(enterprise.price_monthly, 500)
         self.assertIsNone(enterprise.price_id_monthly)
+
+    @patch('landing.pricing.stripe.Price.search')
+    def test_stripe_starter_metadata_convention_also_matches(self, mock_search):
+        """Once/if the Stripe product metadata is renamed from 'regular' to
+        'starter', it should still resolve to the Starter tier."""
+        mock_search.return_value = FakeSearchResult([
+            fake_price(1500, 'month', 'price_starter_m', plan='starter'),
+        ])
+
+        tiers = get_pricing_tiers()
+        starter = tiers[1]
+        self.assertEqual(starter.price_id_monthly, 'price_starter_m')
 
     @patch('landing.pricing.stripe.Price.search')
     def test_missing_addon_falls_back_independently(self, mock_search):
@@ -105,7 +129,7 @@ class PricingStripeTests(TestCase):
         with self.assertLogs('landing.pricing', level='WARNING') as logs:
             tiers = get_pricing_tiers()
 
-        business = tiers[3]
+        business = tiers[5]
         self.assertEqual(business.price_id_monthly, 'price_biz_m')
         (doc_block,) = business.addons
         self.assertEqual(doc_block.price_monthly, 45)  # fallback placeholder
@@ -120,9 +144,10 @@ class PricingStripeTests(TestCase):
             tiers = get_pricing_tiers()
 
         self.assertEqual(
-            [t.id for t in tiers], ['free', 'individual', 'team', 'business', 'enterprise'],
+            [t.id for t in tiers],
+            ['free', 'starter', 'plus', 'pro', 'team', 'business', 'enterprise'],
         )
-        self.assertEqual(tiers[3].price_monthly, 199)
+        self.assertEqual(tiers[5].price_monthly, 199)
         self.assertIsNone(tiers[1].price_id_monthly)
 
 
@@ -132,21 +157,34 @@ class PricingSSRTests(TestCase):
         self.assertEqual(response.status_code, 200)
         content = response.content.decode()
 
-        self.assertIn('data-tier="free"', content)
-        self.assertIn('data-tier="individual"', content)
+        # Individual tab: Starter/Plus/Pro replace the old single 'individual' card.
+        self.assertIn('data-tier="starter"', content)
+        self.assertIn('data-tier="plus"', content)
+        self.assertIn('data-tier="pro"', content)
+        self.assertIn('50 signature requests/mo', content)  # Plus
+        self.assertIn('Up to 500 recipients per document', content)  # Pro
+
+        # Organization tab: Team/Business/Enterprise Shared, matching the live ladder.
         self.assertIn('data-tier="team"', content)
         self.assertIn('data-tier="business"', content)
         self.assertIn('data-tier="enterprise"', content)
         self.assertIn('$199', content)
-        self.assertIn('150 signature requests/mo', content)
-        self.assertIn('Unlimited users', content)
-        self.assertIn('1,500 pages/mo Smart OCR', content)
-        self.assertIn('Document Manager', content)
-        self.assertIn('Popular', content)
+        self.assertIn('For growing organizations running business rules and workflows at scale.', content)  # Business description
+        self.assertIn('150 signature requests/mo', content)  # Business feature
+        self.assertIn('+$25/mo per 50 requests', content)  # Team's extra-requests addon
+
+        # Free has no card -- the mockup doesn't show one -- but it's not deleted
+        # from the data model (still a real, supported signup slug).
+        self.assertNotIn('data-tier="free"', content)
+
+        self.assertIn('Most popular', content)
         self.assertIn('Get started', content)
 
-        # Enterprise is a full-width band, not a 5th grid card.
-        self.assertIn('pricing-banner', content)
+        # Individual/Organization + Monthly/Annual dual toggle.
+        self.assertIn('data-family-group="individual"', content)
+        self.assertIn('data-family-group="organization"', content)
+        self.assertIn('id="planFamilyToggle"', content)
+        self.assertIn('id="billingToggle"', content)
 
         # Enterprise Dedicated is sales-assisted only -- no card, just the contact line.
         self.assertIn('Need a dedicated instance, custom domain, or SSO?', content)

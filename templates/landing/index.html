@@ -3,7 +3,7 @@
 
 {% block content %}
 <!-- Hero -->
-<section class="hero">
+<section class="hero" id="top">
     <div class="hero-bg">
         <div class="hero-gradient"></div>
         <div class="hero-gradient-2"></div>
@@ -14,51 +14,62 @@
             <!-- Eyebrow badge -->
             <div class="hero-label">
                 <span class="hero-label-dot"></span>
-                E-Signatures &bull; Document Management &bull; ESIGN &amp; eIDAS Compliant
+                Signing is the easy part
             </div>
 
             <!-- Main headline -->
             <h1 class="hero-title">
-                Sign, store, and manage<br>
-                every document<br>
-                <span class="hero-title-accent">in one place.</span>
+                Everything that happens
+                <span class="hero-title-accent">around the signature.</span>
             </h1>
 
             <!-- Subheadline -->
             <p class="hero-subtitle">
-                HubSign combines legally binding e-signatures with a full document management system — filing structures, audit trails, OCR search, version control, and enterprise-grade security, all in one platform.
+                Every e-signature tool gets you a signed PDF. HubSign reads what arrives, checks it against rules you set, routes approvals, and posts the result straight to your systems — nothing re-typed on the way in or out.
             </p>
 
             <!-- CTAs -->
             <div class="hero-actions hero-actions--center">
-                <a href="https://app.hubsign.io/signup" class="btn btn-primary btn-lg">
-                    Start for free
-                    <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M4 10H16M16 10L11 5M16 10L11 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </a>
-                <a href="https://app.hubsign.io/signin" class="btn btn-outline btn-lg">Sign In</a>
+                <a href="https://app.hubsign.io/signup" class="btn btn-primary btn-lg">Get started</a>
+                <a href="#showcase" class="btn btn-outline btn-lg btn-outline--hero">See how it works</a>
             </div>
 
-            <!-- Trust note -->
-            <p class="hero-note hero-note--center">
-                <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M13.3333 4L6 11.3333L2.66667 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                No credit card required &bull; Set up in under 5 minutes
-            </p>
-
-            <!-- Stats bar -->
-            <div class="hero-stats">
-                <div class="hero-stat">
-                    <span class="hero-stat-value">11</span>
-                    <span class="hero-stat-label">Field types</span>
+            <!-- Browser chrome mockup -->
+            <div class="hero-chrome">
+                <div class="hero-chrome-bar">
+                    <div class="hero-chrome-dots">
+                        <span></span><span></span><span></span>
+                    </div>
+                    <div class="hero-chrome-tab">
+                        <span class="hero-chrome-tab-dot"></span>
+                        Signing • HubSign
+                    </div>
                 </div>
-                <div class="hero-stat-divider"></div>
-                <div class="hero-stat">
-                    <span class="hero-stat-value">99.9%</span>
-                    <span class="hero-stat-label">Uptime SLA</span>
+                <div class="hero-chrome-address">
+                    <span class="hero-chrome-address-dot"></span>
+                    <span class="hero-chrome-address-bar">app.hubsign.io/sign/inv-2026-0158</span>
                 </div>
-                <div class="hero-stat-divider"></div>
-                <div class="hero-stat">
-                    <span class="hero-stat-value">5</span>
-                    <span class="hero-stat-label">Recipient roles</span>
+                <div class="hero-chrome-body">
+                    <div class="hero-chrome-doc">
+                        <div class="hero-chrome-doc-header">
+                            <span class="skeleton-bar skeleton-bar--label"></span>
+                            <span class="skeleton-bar skeleton-bar--dark"></span>
+                        </div>
+                        <span class="skeleton-bar"></span>
+                        <span class="skeleton-bar" style="width:65%"></span>
+                        <span class="skeleton-bar" style="width:70%"></span>
+                    </div>
+                    <div class="hero-chrome-side">
+                        <div class="hero-chrome-progress">
+                            <span class="skeleton-bar" style="width:65%"></span>
+                            <div class="progress-track"><div class="progress-fill" style="width:74%"></div></div>
+                        </div>
+                        <div class="hero-chrome-note">
+                            <span class="skeleton-bar" style="width:30%"></span>
+                            <span class="skeleton-bar" style="width:80%"></span>
+                        </div>
+                        <div class="hero-chrome-placeholder"></div>
+                    </div>
                 </div>
             </div>
 
@@ -66,431 +77,294 @@
     </div>
 </section>
 
-<!-- Features Section -->
-<section class="section features" id="features">
+<!-- Stats bar -->
+<section class="stats-bar">
     <div class="container">
-        {% for band in feature_bands %}
-        <div class="features-band">
-            <div class="section-header">
-                <span class="section-label">{{ band.label }}</span>
-                <h2 class="section-title">{{ band.title }}</h2>
+        <div class="stats-row">
+            {% for stat in stats %}
+            <div class="stat">
+                <span class="stat-value">{{ stat.n }}</span>
+                <span class="stat-label">{{ stat.label }}</span>
             </div>
-            <div class="features-grid{% if band.columns == 2 %} features-grid--2col{% endif %}">
-                {% for card in band.cards %}
-                <div class="feature-card{% if card.featured %} featured{% endif %}">
-                    <div class="feature-icon">
-                        {% include "components/icons/"|add:card.icon|add:".svg" %}
-                    </div>
-                    <div class="feature-card-header">
-                        <h3 class="feature-title">{{ card.title }}</h3>
-                        {% if card.badge %}<span class="feature-badge">{{ card.badge }}</span>{% endif %}
-                    </div>
-                    <p class="feature-desc">{{ card.description }}</p>
-                </div>
-                {% endfor %}
-            </div>
-            {% if band.banner %}
-            <div class="features-banner">
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M13.3333 4L6 11.3333L2.66667 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                <p>{{ band.banner }}</p>
-            </div>
-            {% endif %}
-        </div>
-        {% endfor %}
-    </div>
-</section>
-
-<!-- Document Manager Section -->
-<section class="section dms-section" id="doc-manager">
-    <div class="container">
-        <div class="dms-layout">
-
-            <!-- Left: content -->
-            <div class="dms-content">
-                <span class="section-label">Document Manager</span>
-                <h2 class="section-title dms-title">More than e-signatures.<br>A complete DMS.</h2>
-                <p class="dms-desc">
-                    HubSign's built-in Document Management System gives your team a secure, structured home for every file — whether it's been signed or not. Organise, classify, retrieve and audit documents at enterprise scale.
-                </p>
-                <ul class="dms-features-list">
-                    <li class="dms-feature-item">
-                        <div class="dms-feature-icon">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M3 7C3 5.89543 3.89543 5 5 5H9L11 7H19C20.1046 7 21 7.89543 21 9V17C21 18.1046 20.1046 19 19 19H5C3.89543 19 3 18.1046 3 17V7Z" stroke="currentColor" stroke-width="1.8"/></svg>
-                        </div>
-                        <div>
-                            <strong>Filing Structure</strong>
-                            <p>Organise documents into nested cabinets, folders, and sub-folders with customisable locations.</p>
-                        </div>
-                    </li>
-                    <li class="dms-feature-item">
-                        <div class="dms-feature-icon">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.8"/><path d="M20 20L16.65 16.65" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-                        </div>
-                        <div>
-                            <strong>Full-Text Search &amp; Retrieval</strong>
-                            <p>OCR-powered indexing lets you find any document by content, tag, date, or classification instantly.</p>
-                        </div>
-                    </li>
-                    <li class="dms-feature-item">
-                        <div class="dms-feature-icon">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 12L11 14L15 10M12 3L4 7V12C4 16.4183 7.58172 20 12 20C16.4183 20 20 16.4183 20 12V7L12 3Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                        </div>
-                        <div>
-                            <strong>Audit Trail &amp; Version History</strong>
-                            <p>Every view, edit, check-out, and signature is logged with timestamp and user identity.</p>
-                        </div>
-                    </li>
-                    <li class="dms-feature-item">
-                        <div class="dms-feature-icon">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="7" rx="1" stroke="currentColor" stroke-width="1.8"/><rect x="14" y="3" width="7" height="7" rx="1" stroke="currentColor" stroke-width="1.8"/><rect x="3" y="14" width="7" height="7" rx="1" stroke="currentColor" stroke-width="1.8"/><rect x="14" y="14" width="7" height="7" rx="1" stroke="currentColor" stroke-width="1.8"/></svg>
-                        </div>
-                        <div>
-                            <strong>Classification &amp; Tags</strong>
-                            <p>Apply document types, confidentiality levels, and custom tags for precise governance.</p>
-                        </div>
-                    </li>
-                    <li class="dms-feature-item">
-                        <div class="dms-feature-icon">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 15V17M12 7V9M9 9H7C5.89543 9 5 9.89543 5 11V13C5 14.1046 5.89543 15 7 15H9L12 17L15 15H17C18.1046 15 19 14.1046 19 13V11C19 9.89543 18.1046 9 17 9H15L12 7L9 9Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                        </div>
-                        <div>
-                            <strong>Check-out / Check-in</strong>
-                            <p>Lock documents for exclusive editing and prevent conflicting changes in collaborative workflows.</p>
-                        </div>
-                    </li>
-                    <li class="dms-feature-item">
-                        <div class="dms-feature-icon">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 3H5C3.89543 3 3 3.89543 3 5V9M9 21H5C3.89543 21 3 20.1046 3 19V15M15 3H19C20.1046 3 21 3.89543 21 5V9M15 21H19C20.1046 21 21 20.1046 21 19V15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-                        </div>
-                        <div>
-                            <strong>OCR Processing</strong>
-                            <p>Scanned PDFs and images are OCR-processed — with a monthly page allowance included on every plan — so their content becomes searchable.</p>
-                        </div>
-                    </li>
-                </ul>
-                <a href="https://app.hubsign.io/signup" class="btn btn-primary btn-lg dms-cta">
-                    Explore the DMS
-                    <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M4 10H16M16 10L11 5M16 10L11 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </a>
-            </div>
-
-            <!-- Right: UI mockup -->
-            <div class="dms-visual">
-                <div class="dms-mock">
-                    <!-- Sidebar -->
-                    <div class="dms-mock-sidebar">
-                        <div class="dms-mock-sidebar-header">Doc Manager</div>
-                        <div class="dms-mock-nav-item active">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M14 2H6C4.89543 2 4 2.89543 4 4V20C4 21.1046 4.89543 22 6 22H18C19.1046 22 20 21.1046 20 20V8L14 2Z" stroke="currentColor" stroke-width="1.8"/><path d="M14 2V8H20" stroke="currentColor" stroke-width="1.8"/></svg>
-                            Documents
-                        </div>
-                        <div class="dms-mock-nav-item">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.8"/><path d="M20 20L16.65 16.65" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-                            Search
-                        </div>
-                        <div class="dms-mock-nav-item">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M3 7C3 5.89543 3.89543 5 5 5H9L11 7H19C20.1046 7 21 7.89543 21 9V17C21 18.1046 20.1046 19 19 19H5C3.89543 19 3 18.1046 3 17V7Z" stroke="currentColor" stroke-width="1.8"/></svg>
-                            Filing Structure
-                        </div>
-                        <div class="dms-mock-nav-item">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M4 6H20M4 12H20M4 18H12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-                            Retrievals
-                        </div>
-                    </div>
-
-                    <!-- Main panel -->
-                    <div class="dms-mock-main">
-                        <!-- Doc header -->
-                        <div class="dms-mock-doc-header">
-                            <div class="dms-mock-doc-title">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M14 2H6C4.89543 2 4 2.89543 4 4V20C4 21.1046 4.89543 22 6 22H18C19.1046 22 20 21.1046 20 20V8L14 2Z" stroke="currentColor" stroke-width="1.6"/><path d="M14 2V8H20" stroke="currentColor" stroke-width="1.6"/></svg>
-                                <span>Service_Agreement_v3.pdf</span>
-                            </div>
-                            <span class="dms-mock-badge active">ACTIVE</span>
-                        </div>
-
-                        <!-- Meta grid -->
-                        <div class="dms-mock-meta">
-                            <div class="dms-mock-meta-row">
-                                <span class="dms-mock-meta-label">Document Type</span>
-                                <span class="dms-mock-meta-value">Contract</span>
-                            </div>
-                            <div class="dms-mock-meta-row">
-                                <span class="dms-mock-meta-label">Classification</span>
-                                <span class="dms-mock-meta-value">Legal</span>
-                            </div>
-                            <div class="dms-mock-meta-row">
-                                <span class="dms-mock-meta-label">Confidentiality</span>
-                                <span class="dms-mock-meta-value dms-mock-confidential">INTERNAL</span>
-                            </div>
-                            <div class="dms-mock-meta-row">
-                                <span class="dms-mock-meta-label">OCR Processed</span>
-                                <span class="dms-mock-meta-value dms-mock-ocr">
-                                    <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><path d="M13.3333 4L6 11.3333L2.66667 8" stroke="currentColor" stroke-width="2"/></svg>
-                                    Yes
-                                </span>
-                            </div>
-                        </div>
-
-                        <!-- Filing path -->
-                        <div class="dms-mock-filing">
-                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M3 7C3 5.89543 3.89543 5 5 5H9L11 7H19C20.1046 7 21 7.89543 21 9V17C21 18.1046 20.1046 19 19 19H5C3.89543 19 3 18.1046 3 17V7Z" stroke="currentColor" stroke-width="1.8"/></svg>
-                            <span>KGN &rsaquo; Contracts &rsaquo; Legal &rsaquo; 2024</span>
-                        </div>
-
-                        <!-- Tags -->
-                        <div class="dms-mock-tags">
-                            <span class="dms-mock-tag">#contract</span>
-                            <span class="dms-mock-tag">#legal</span>
-                            <span class="dms-mock-tag">#signed</span>
-                        </div>
-
-                        <!-- Tabs -->
-                        <div class="dms-mock-tabs">
-                            <div class="dms-mock-tab active">Audit Trail</div>
-                            <div class="dms-mock-tab">Comments</div>
-                            <div class="dms-mock-tab">Versions</div>
-                        </div>
-
-                        <!-- Audit trail entries -->
-                        <div class="dms-mock-audit">
-                            <div class="dms-mock-audit-entry">
-                                <div class="dms-mock-audit-avatar">JD</div>
-                                <div class="dms-mock-audit-info">
-                                    <span class="dms-mock-audit-action">Document signed</span>
-                                    <span class="dms-mock-audit-meta">Jane Doe &bull; 2 min ago</span>
-                                </div>
-                            </div>
-                            <div class="dms-mock-audit-entry">
-                                <div class="dms-mock-audit-avatar" style="background:#7c3aed22;color:#7c3aed">AM</div>
-                                <div class="dms-mock-audit-info">
-                                    <span class="dms-mock-audit-action">Checked out</span>
-                                    <span class="dms-mock-audit-meta">Alex M. &bull; 14 min ago</span>
-                                </div>
-                            </div>
-                            <div class="dms-mock-audit-entry">
-                                <div class="dms-mock-audit-avatar" style="background:#05966922;color:#059669">TK</div>
-                                <div class="dms-mock-audit-info">
-                                    <span class="dms-mock-audit-action">Filed to Legal / 2024</span>
-                                    <span class="dms-mock-audit-meta">T. Kim &bull; 1 hr ago</span>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div><!-- end dms-mock-main -->
-                </div><!-- end dms-mock -->
-            </div><!-- end dms-visual -->
-
+            {% endfor %}
         </div>
     </div>
 </section>
 
-<!-- How It Works Section -->
-<section class="section" id="how-it-works">
+<!-- Product / Four Capabilities -->
+<section class="section product-section" id="product">
     <div class="container">
         <div class="section-header">
-            <span class="section-label">How It Works</span>
-            <h2 class="section-title">Three steps. That's it.</h2>
+            <span class="section-label">Four capabilities, one platform</span>
+            <h2 class="section-title">Every e-signature vendor sells the middle box.</h2>
+            <p class="section-subtitle">HubSign is the three capabilities around it — intake, control, and records — wired to the systems that need the result.</p>
         </div>
-        <div class="steps">
-            <div class="step">
-                <div class="step-number">1</div>
-                <h3 class="step-title">Upload</h3>
-                <p class="step-desc">Drag and drop your document or use a template.</p>
+        <div class="product-commodity-badge">e-signature — the commodity middle</div>
+        <div class="pillars-grid">
+            {% for pillar in pillars %}
+            <div class="pillar-card">
+                <div class="pillar-icon">
+                    {% include "components/icons/"|add:pillar.icon|add:".svg" %}
+                </div>
+                <h3 class="pillar-title">{{ pillar.title }}</h3>
+                <span class="pillar-subtitle">{{ pillar.subtitle }}</span>
+                <p class="pillar-desc">{{ pillar.description }}</p>
+                <ul class="pillar-tags">
+                    {% for tag in pillar.tags %}
+                    <li><span class="pillar-tag-dot"></span>{{ tag }}</li>
+                    {% endfor %}
+                </ul>
             </div>
-            <div class="step-connector">
-                <svg width="32" height="10" viewBox="0 0 48 12" fill="none">
-                    <path d="M0 6H44M44 6L38 1M44 6L38 11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
+            {% endfor %}
+        </div>
+        <div class="product-quote">
+            <p>&ldquo;An invoice can arrive, read itself, get checked against your rules, route for approval, get signed, and post to your ledger — without being re-keyed once.&rdquo;</p>
+        </div>
+    </div>
+</section>
+
+<!-- Signing depth -->
+<section class="section signing-section" id="signing">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-label">Signing</span>
+            <h2 class="section-title">Depth in the signing experience itself.</h2>
+            <p class="section-subtitle">Ten field types, five recipient roles, and a signing order that can be decided as it runs.</p>
+        </div>
+        <div class="signing-grid">
+            <div class="signing-col">
+                <div class="signing-subhead">Field types</div>
+                <div class="field-types">
+                    {% for field_type in field_types %}
+                    <span class="field-type-pill">{{ field_type }}</span>
+                    {% endfor %}
+                </div>
+                <div class="signing-subhead">Recipient roles</div>
+                <div class="roles-list">
+                    {% for role in roles %}
+                    <div class="role-row">
+                        <span class="role-name">{{ role.name }}</span>
+                        <span class="role-desc">{{ role.desc }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+                <p class="signing-note">With sequential order, a signer can enter the name and email of whoever comes next — at the moment they sign.</p>
             </div>
-            <div class="step">
-                <div class="step-number">2</div>
-                <h3 class="step-title">Sign</h3>
-                <p class="step-desc">Add fields and invite signers from any device.</p>
-            </div>
-            <div class="step-connector">
-                <svg width="32" height="10" viewBox="0 0 48 12" fill="none">
-                    <path d="M0 6H44M44 6L38 1M44 6L38 11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-            </div>
-            <div class="step">
-                <div class="step-number">3</div>
-                <h3 class="step-title">Done</h3>
-                <p class="step-desc">Everyone gets a signed copy with full audit trail.</p>
+            <div class="signing-col">
+                <div class="sealed-visual">
+                    <div class="sealed-visual-doc">
+                        <div class="sealed-visual-doc-header">
+                            <div class="sealed-visual-doc-lines">
+                                <span class="skeleton-bar" style="width:70%"></span>
+                                <span class="skeleton-bar" style="width:50%"></span>
+                                <span class="skeleton-bar" style="width:55%"></span>
+                            </div>
+                            <div class="sealed-visual-stamp">
+                                <span class="skeleton-bar skeleton-bar--stamp" style="width:70%"></span>
+                                <span class="skeleton-bar skeleton-bar--stamp" style="width:50%"></span>
+                            </div>
+                        </div>
+                        <div class="sealed-visual-body">
+                            <span class="skeleton-bar skeleton-bar--dark full"></span>
+                            <span class="skeleton-bar" style="width:45%"></span>
+                            <span class="skeleton-bar" style="width:38%"></span>
+                            <span class="skeleton-bar" style="width:42%"></span>
+                        </div>
+                        <div class="sealed-visual-footer">
+                            <svg width="46" height="16" viewBox="0 0 64 22" fill="none"><path d="M2 16c3-10 6 9 10-3 3-9 6 11 10-2 3-8 6 10 10-3 3-8 6 10 10-2 3-7 6 8 10-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="sealed-points">
+                    <div class="sealed-point">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        <p><strong>Sealing is one-way</strong> — stamps, certificate and field placement are fixed the moment the last recipient signs.</p>
+                    </div>
+                    <div class="sealed-point">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        <p><strong>A Final Audit Report</strong> is appended, recording who signed, when, from where, and the document's integrity hash.</p>
+                    </div>
+                    <div class="sealed-point">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        <p><strong>Verifiable independently</strong> from the QR code and share link printed on the certificate.</p>
+                    </div>
+                    <div class="sealed-point">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        <p><strong>Two downloads, one sealed original</strong> — with the certificate for your archive, or without it for circulating externally.</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Pricing Section -->
+<!-- Showcase carousel -->
+<section class="section showcase-section" id="showcase">
+    <div class="container container--narrow">
+        <div class="section-header">
+            <span class="section-label">See it in action</span>
+            <h2 class="section-title">One invoice, nine screens.</h2>
+            <p class="section-subtitle">The same journey, start to finish — from a vendor's email to a signed, sealed and measured result.</p>
+        </div>
+        <div class="showcase-frame-wrap">
+            <div class="showcase-frame">
+                {% for step in showcase_steps %}
+                <div class="showcase-panel showcase-panel--{{ step.theme }}{% if forloop.first %} active{% endif %}"
+                     data-step="{{ forloop.counter0 }}" data-title="{{ step.title }}" data-blurb="{{ step.blurb }}"></div>
+                {% endfor %}
+            </div>
+            <button type="button" class="showcase-nav showcase-nav--prev" aria-label="Previous screen">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </button>
+            <button type="button" class="showcase-nav showcase-nav--next" aria-label="Next screen">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </button>
+        </div>
+        <div class="showcase-dots">
+            {% for step in showcase_steps %}
+            <button type="button" class="showcase-dot{% if forloop.first %} active{% endif %}" data-step="{{ forloop.counter0 }}" aria-label="Go to screen {{ forloop.counter }}"></button>
+            {% endfor %}
+        </div>
+        <div class="showcase-caption">
+            <span class="showcase-step-label">Step <span class="showcase-step-num">1</span> of 9</span>
+            <h3 class="showcase-title">{{ showcase_steps.0.title }}</h3>
+            <p class="showcase-blurb">{{ showcase_steps.0.blurb }}</p>
+        </div>
+    </div>
+</section>
+
+<!-- Integrations -->
+<section class="section integrations-section" id="integrations">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-label">Connect</span>
+            <h2 class="section-title">Plug into what you already run.</h2>
+            <p class="section-subtitle">Webhooks and a REST API for anything custom; SSO and Teams notifications for how your organization already works.</p>
+        </div>
+        <div class="integrations-grid">
+            {% for integration in integrations %}
+            <div class="integration-card">
+                <div class="integration-icon">
+                    {% include "components/icons/"|add:integration.icon|add:".svg" %}
+                </div>
+                <div class="integration-title">{{ integration.title }}</div>
+                <p class="integration-desc">{{ integration.description }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Pricing -->
 <section class="section pricing" id="pricing">
     <div class="container">
         <div class="section-header">
             <span class="section-label">Pricing</span>
-            <h2 class="section-title">Simple, transparent pricing</h2>
+            <h2 class="section-title">Straightforward, by how much you sign.</h2>
+            <p class="section-subtitle">Individual plans for one signer. Organization plans for a team that needs rules, approvals and records shared.</p>
         </div>
-        <div class="pricing-toggle">
-            <span class="active">Monthly</span>
-            <div class="toggle-switch"></div>
-            <span>Annually</span>
+
+        <div class="pricing-controls">
+            <div class="pill-toggle" id="planFamilyToggle">
+                <button type="button" class="pill-toggle-btn active" data-family="individual">Individual</button>
+                <button type="button" class="pill-toggle-btn" data-family="organization">Organization</button>
+            </div>
+            <div class="pill-toggle pill-toggle--billing" id="billingToggle">
+                <button type="button" class="pill-toggle-btn active" data-billing="monthly">Monthly</button>
+                <button type="button" class="pill-toggle-btn" data-billing="annual">Annual <span class="pill-toggle-badge">Save 20%</span></button>
+            </div>
         </div>
-        <div class="pricing-grid">
-            {% for tier in pricing_tiers|slice:":-1" %}
+
+        {% with individual_tiers=pricing_tiers|slice:"1:4" organization_tiers=pricing_tiers|slice:"4:7" %}
+        <div class="pricing-grid" data-family-group="individual">
+            {% for tier in individual_tiers %}
             <div class="pricing-card{% if tier.featured %} featured{% endif %}" data-tier="{{ tier.id }}">
-                <span class="pricing-tier">{{ tier.name }}{% if tier.featured %} <span class="pricing-badge">Popular</span>{% endif %}</span>
+                {% if tier.featured %}<span class="pricing-badge">Most popular</span>{% endif %}
+                <span class="pricing-tier">{{ tier.name }}</span>
                 <div class="pricing-price">
                     <span class="pricing-amount">${{ tier.price_monthly }}</span>
-                    {% if not tier.is_free %}<span class="pricing-period">/mo</span>{% endif %}
+                    <span class="pricing-period">/ month</span>
                 </div>
-                <div class="pricing-billing">
-                    <span class="pricing-billing-amount"></span>
-                    <span class="pricing-save"></span>
-                </div>
-                <p class="pricing-desc">{{ tier.description }}</p>
                 <ul class="pricing-features">
                     {% for feature in tier.features %}
                     <li>
-                        <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
-                            <path d="M13.3333 4L6 11.3333L2.66667 8" stroke="currentColor" stroke-width="2"/>
-                        </svg>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        {{ feature }}
+                    </li>
+                    {% endfor %}
+                </ul>
+                <a href="https://app.hubsign.io/signup?plan={{ tier.id }}" class="btn {% if tier.featured %}btn-white{% else %}btn-tint{% endif %} btn-full">{{ tier.cta }}</a>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="pricing-grid" data-family-group="organization" hidden>
+            {% for tier in organization_tiers %}
+            <div class="pricing-card pricing-card--plain{% if tier.featured %} featured{% endif %}" data-tier="{{ tier.id }}">
+                {% if tier.featured %}<span class="pricing-badge">Most popular</span>{% endif %}
+                <span class="pricing-tier">{{ tier.name }}</span>
+                <div class="pricing-price">
+                    <span class="pricing-amount">${{ tier.price_monthly }}</span>
+                    <span class="pricing-period">/ month</span>
+                </div>
+                <p class="pricing-desc pricing-desc--intro">{{ tier.description }}</p>
+                <ul class="pricing-features">
+                    {% for feature in tier.features %}
+                    <li>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
                         {{ feature }}
                     </li>
                     {% endfor %}
                     {% for addon in tier.addons %}
                     <li class="pricing-addon">
-                        <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
-                            <path d="M13.3333 4L6 11.3333L2.66667 8" stroke="currentColor" stroke-width="2"/>
-                        </svg>
-                        +<span class="pricing-addon-amount">${{ addon.price_monthly }}{{ addon.unit_suffix }}</span>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        +${{ addon.price_monthly }}{{ addon.unit_suffix }}
                     </li>
                     {% endfor %}
                 </ul>
-                <a href="https://app.hubsign.io/signup?plan={{ tier.id }}" class="btn {% if tier.featured %}btn-primary{% else %}btn-outline{% endif %} btn-full">
-                    {{ tier.cta }}
-                </a>
+                <a href="https://app.hubsign.io/signup?plan={{ tier.id }}" class="btn {% if tier.featured %}btn-white{% else %}btn-tint{% endif %} btn-full">{{ tier.cta }}</a>
             </div>
             {% endfor %}
         </div>
-        {% with tier=pricing_tiers|last %}
-        <div class="pricing-banner" data-tier="{{ tier.id }}">
-            <div class="pricing-banner-intro">
-                <span class="pricing-tier">{{ tier.name }}</span>
-                <div class="pricing-price">
-                    <span class="pricing-amount">${{ tier.price_monthly }}</span>
-                    <span class="pricing-period">/mo</span>
-                </div>
-                <div class="pricing-billing">
-                    <span class="pricing-billing-amount"></span>
-                    <span class="pricing-save"></span>
-                </div>
-                <p class="pricing-desc">{{ tier.description }}</p>
-            </div>
-            <ul class="pricing-features pricing-features--banner">
-                {% for feature in tier.features %}
-                <li>
-                    <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
-                        <path d="M13.3333 4L6 11.3333L2.66667 8" stroke="currentColor" stroke-width="2"/>
-                    </svg>
-                    {{ feature }}
-                </li>
-                {% endfor %}
-                {% for addon in tier.addons %}
-                <li class="pricing-addon">
-                    <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
-                        <path d="M13.3333 4L6 11.3333L2.66667 8" stroke="currentColor" stroke-width="2"/>
-                    </svg>
-                    +<span class="pricing-addon-amount">${{ addon.price_monthly }}{{ addon.unit_suffix }}</span>
-                </li>
-                {% endfor %}
-            </ul>
-            <a href="https://app.hubsign.io/signup?plan={{ tier.id }}" class="btn btn-outline">
-                {{ tier.cta }}
-            </a>
-        </div>
         {% endwith %}
+
         <p class="pricing-contact">Need a dedicated instance, custom domain, or SSO? <a href="mailto:sales@hubsign.io">Talk to sales</a></p>
     </div>
 </section>
 
-<!-- Compliance Section -->
-<section class="section" id="compliance">
-    <div class="container">
-        <div class="compliance-content">
-            <div class="compliance-text">
-                <span class="section-label">Compliance</span>
-                <h2 class="section-title">Fully compliant. Out of the box.</h2>
-                <p class="compliance-desc">Your signatures are legally binding and audit-ready from day one.</p>
-                <div class="compliance-badges">
-                    <div class="compliance-badge">
-                        <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M13.3333 4L6 11.3333L2.66667 8" stroke="currentColor" stroke-width="2"/></svg>
-                        ESIGN Act
-                    </div>
-                    <div class="compliance-badge">
-                        <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M13.3333 4L6 11.3333L2.66667 8" stroke="currentColor" stroke-width="2"/></svg>
-                        UETA
-                    </div>
-                    <div class="compliance-badge">
-                        <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M13.3333 4L6 11.3333L2.66667 8" stroke="currentColor" stroke-width="2"/></svg>
-                        eIDAS
-                    </div>
-                    <div class="compliance-badge">
-                        <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M13.3333 4L6 11.3333L2.66667 8" stroke="currentColor" stroke-width="2"/></svg>
-                        Audit Trails
-                    </div>
-                </div>
-            </div>
-            <div class="compliance-visual">
-                <div class="compliance-card">
-                    <div class="compliance-card-icon">
-                        <svg width="28" height="28" viewBox="0 0 36 36" fill="none">
-                            <path d="M18 3L4.5 9V16.5C4.5 24.825 10.26 32.565 18 34.5C25.74 32.565 31.5 24.825 31.5 16.5V9L18 3Z" stroke="currentColor" stroke-width="2.5"/>
-                            <path d="M12.75 18L16.5 21.75L23.25 15" stroke="currentColor" stroke-width="2.5"/>
-                        </svg>
-                    </div>
-                    <span class="compliance-card-label">Enterprise Security</span>
-                    <span class="compliance-card-value">256-bit Encryption</span>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Go Paperless Section -->
-<section class="section paperless" id="go-paperless">
-    <div class="container">
+<!-- FAQ -->
+<section class="section faq-section" id="faq">
+    <div class="container container--narrow">
         <div class="section-header">
-            <span class="section-label">Sustainability</span>
-            <h2 class="section-title">Go paperless. The savings add up fast.</h2>
-            <p class="section-subtitle">Every document you sign electronically instead of on paper saves money, time, and resources.</p>
+            <span class="section-label">FAQ</span>
+            <h2 class="section-title">Questions worth answering plainly.</h2>
         </div>
-        <div class="paperless-stats">
-            <div class="paperless-stat">
-                <span class="paperless-stat-value">5 min</span>
-                <span class="paperless-stat-label">To sign electronically — vs. about 5 days for a paper document mailed for signature</span>
+        <div class="faq-list">
+            {% for item in faqs %}
+            <div class="faq-item">
+                <button type="button" class="faq-question">
+                    <span>{{ item.q }}</span>
+                    <svg class="faq-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </button>
+                <div class="faq-answer">
+                    <p>{{ item.a }}</p>
+                </div>
             </div>
-            <div class="paperless-stat">
-                <span class="paperless-stat-value">~5g CO2 &amp; 10L water</span>
-                <span class="paperless-stat-label">Saved for every sheet of paper you don't have to print</span>
-            </div>
-            <div class="paperless-stat paperless-stat--accent">
-                <span class="paperless-stat-value">$20</span>
-                <span class="paperless-stat-label">Typically saved per document vs. printing, mailing and filing it on paper</span>
-            </div>
+            {% endfor %}
         </div>
-        <p class="paperless-note">Based on published industry benchmarks for paper-based document processing and standard paper production estimates — actual savings vary by document and process.</p>
     </div>
 </section>
 
-<!-- CTA Section -->
+<!-- Final CTA -->
 <section class="section cta">
     <div class="container">
         <div class="cta-content">
-            <h2 class="cta-title">One platform for signing and managing every document.</h2>
-            <p class="cta-subtitle">E-signatures, document management, audit trails, and OCR search — all in HubSign.</p>
-            <a href="https://app.hubsign.io/signup" class="btn btn-white btn-lg">
-                Get Started Free
-                <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M4 10H16M16 10L11 5M16 10L11 15" stroke="currentColor" stroke-width="2"/></svg>
-            </a>
+            <h2 class="cta-title">See what happens around your next signature.</h2>
+            <p class="cta-subtitle">Start on Starter, Plus or Pro today — or talk to sales about Team, Business or Enterprise Shared.</p>
+            <div class="cta-actions">
+                <a href="https://app.hubsign.io/signup" class="btn btn-white btn-lg">Get started</a>
+                <a href="mailto:sales@hubsign.io" class="btn btn-outline btn-lg btn-outline--hero">Talk to sales</a>
+            </div>
         </div>
     </div>
 </section>

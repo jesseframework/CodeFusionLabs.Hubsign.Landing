@@ -10,8 +10,8 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Montserrat:ital,wght@0,700;0,800;1,700&display=swap" rel="stylesheet">
+
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}">
     <link rel="icon" type="image/svg+xml" href="{% static 'images/favicon.svg' %}">
@@ -30,10 +30,11 @@
                 <img src="{% static 'images/hubsign_logo.png' %}" alt="HubSign">
             </a>
             <div class="nav-links">
-                <a href="#features">Features</a>
-                <a href="#how-it-works">How It Works</a>
+                <a href="#product">Product</a>
+                <a href="#showcase">See it in action</a>
                 <a href="#pricing">Pricing</a>
-                <a href="#compliance">Compliance</a>
+                <a href="#faq">FAQ</a>
+                <a href="https://docs.hubsign.io" target="_blank" rel="noopener">Docs</a>
             </div>
             <div class="nav-actions">
                 <a href="https://app.hubsign.io/signin" class="btn btn-ghost">Sign In</a>
@@ -44,10 +45,11 @@
             </button>
         </nav>
         <div class="mobile-menu" id="mobileMenu">
-            <a href="#features" onclick="toggleMobileMenu()">Features</a>
-            <a href="#how-it-works" onclick="toggleMobileMenu()">How It Works</a>
+            <a href="#product" onclick="toggleMobileMenu()">Product</a>
+            <a href="#showcase" onclick="toggleMobileMenu()">See it in action</a>
             <a href="#pricing" onclick="toggleMobileMenu()">Pricing</a>
-            <a href="#compliance" onclick="toggleMobileMenu()">Compliance</a>
+            <a href="#faq" onclick="toggleMobileMenu()">FAQ</a>
+            <a href="https://docs.hubsign.io" target="_blank" rel="noopener" onclick="toggleMobileMenu()">Docs</a>
             <a href="https://app.hubsign.io/signin" class="btn btn-ghost btn-full">Sign In</a>
             <a href="https://app.hubsign.io/signup" class="btn btn-primary btn-full">Get Started</a>
         </div>
@@ -62,7 +64,7 @@
             <div class="footer-content">
                 <div class="footer-brand">
                     <img src="{% static 'images/hubsign_logo.png' %}" alt="HubSign" class="footer-logo">
-                    <p class="footer-tagline">Enterprise-grade e-signatures made simple.</p>
+                    <p class="footer-tagline">E-signatures, and everything that happens around them.</p>
                     <div class="footer-powered">
                         <span class="footer-powered-text">Powered by</span>
                         <img src="{% static 'images/fepro_logo.png' %}" alt="Future Edge Technology Inc" class="footer-powered-logo">
@@ -70,31 +72,20 @@
                 </div>
                 <div class="footer-column">
                     <h4>Product</h4>
-                    <a href="#features">Features</a>
-                    <a href="#how-it-works">How It Works</a>
+                    <a href="#product">Features</a>
                     <a href="#pricing">Pricing</a>
+                    <a href="#integrations">Integrations</a>
+                    <a href="https://docs.hubsign.io" target="_blank" rel="noopener">Docs</a>
                 </div>
                 <div class="footer-column">
                     <h4>Company</h4>
-                    <a href="mailto:support@hubsign.io">Contact</a>
-                    <a href="#">Privacy</a>
-                    <a href="#">Terms</a>
-                </div>
-                <div class="footer-column">
-                    <h4>Contact</h4>
-                    <div class="footer-contact-item">
-                        {% include "components/icons/phone.svg" %}
-                        +1-810-626-EDGE
-                    </div>
-                    <div class="footer-contact-item">
-                        {% include "components/icons/email.svg" %}
-                        support@hubsign.io
-                    </div>
+                    <a href="mailto:sales@hubsign.io">Contact sales</a>
+                    <span class="footer-static">+1 810-626-EDGE</span>
+                    <a href="https://docs.hubsign.io" target="_blank" rel="noopener">Support</a>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; {% now "Y" %} HubSign. All rights reserved.</p>
-                <p>A product of Future Edge Technology Inc.</p>
+                <p>&copy; {% now "Y" %} Future Edge Technology Inc. HubSign and the HubSign mark are trademarks of Future Edge Technology Inc.</p>
             </div>
         </div>
     </footer>
