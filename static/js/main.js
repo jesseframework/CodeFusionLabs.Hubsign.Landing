@@ -67,6 +67,35 @@ function initHeaderScroll() {
 }
 
 // =============================================================================
+// HERO STORY (auto-playing 3-beat preview: Inbox -> Signed -> Reports)
+// =============================================================================
+
+function initHeroStory() {
+    const frames = Array.from(document.querySelectorAll('.hero-story-frame'));
+    const dots = Array.from(document.querySelectorAll('.hero-story-dot'));
+    const tabTextEl = document.querySelector('.hero-chrome-tab-text');
+    const addressEl = document.querySelector('.hero-chrome-address-bar');
+    if (!frames.length) return;
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    let active = 0;
+
+    function render() {
+        const frame = frames[active];
+        frames.forEach((f, i) => f.classList.toggle('active', i === active));
+        dots.forEach((dot, i) => dot.classList.toggle('active', i === active));
+        if (tabTextEl) tabTextEl.textContent = frame.dataset.tab || '';
+        if (addressEl) addressEl.textContent = frame.dataset.address || '';
+    }
+
+    setInterval(() => {
+        active = (active + 1) % frames.length;
+        render();
+    }, 4000);
+}
+
+// =============================================================================
 // SHOWCASE CAROUSEL
 // =============================================================================
 
@@ -187,6 +216,7 @@ function initBillingToggle() {
 document.addEventListener('DOMContentLoaded', () => {
     initSmoothScroll();
     initHeaderScroll();
+    initHeroStory();
     initShowcase();
     initFaqAccordion();
     initPricingFamilyToggle();
