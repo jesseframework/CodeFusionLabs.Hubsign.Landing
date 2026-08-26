@@ -2,3 +2,4 @@ original-html.txt
 SIGNIN_AND_PLAN_LINKS.md
 __pycache__/
 *.pyc
+*.md
