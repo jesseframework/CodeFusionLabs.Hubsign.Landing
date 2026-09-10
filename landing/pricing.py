@@ -52,6 +52,33 @@ def tiers_as_dicts(tiers: list[PricingTier]) -> list[dict]:
     return [asdict(t) for t in tiers]
 
 
+def annual_saving_percent(tier: PricingTier) -> int:
+    """Whole-percent discount for paying annually, for one tier.
+
+    price_annually is a per-month figure billed yearly, so the comparison is
+    12 x monthly against 12 x annual.
+    """
+    if tier.is_free or not tier.price_monthly:
+        return 0
+    at_monthly = tier.price_monthly * 12
+    at_annual = tier.price_annually * 12
+    return round((at_monthly - at_annual) / at_monthly * 100)
+
+
+def max_annual_saving_percent(tiers: list[PricingTier]) -> int:
+    """Largest annual discount across the tiers, for the "Save up to N%" badge.
+
+    The badge used to read a flat "Save 20%". That is true for Starter, Plus,
+    Pro and Team, but Business saves 17% ($2,388 -> $1,980) and Enterprise
+    Shared 17% ($6,000 -> $4,980). Quoting a fixed 20% overstated the discount
+    on two of the six tiers shown, which is the kind of quantified claim that
+    Ontario's Consumer Protection Act and the federal Competition Act's
+    misleading-representation provisions are concerned with. Deriving the
+    figure keeps the badge honest if any price changes.
+    """
+    return max((annual_saving_percent(t) for t in tiers), default=0)
+
+
 def _fetch_from_stripe() -> list[PricingTier] | None:
     stripe.api_key = settings.STRIPE_API_KEY
     try:

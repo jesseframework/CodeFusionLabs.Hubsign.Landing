@@ -1,69 +1,9 @@
-import logging
-from rest_framework.views import APIView
-from rest_framework.response import Response
+from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework.permissions import AllowAny
-from drf_spectacular.utils import extend_schema, OpenApiResponse
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from landing.pricing import get_pricing_tiers, tiers_as_dicts
-
-from .serializers import (
-    ContactFormSerializer,
-    NewsletterSerializer,
-)
-
-logger = logging.getLogger(__name__)
-
-
-class ContactFormView(APIView):
-    """Handle contact form submissions."""
-    permission_classes = [AllowAny]
-    
-    @extend_schema(
-        request=ContactFormSerializer,
-        responses={
-            200: OpenApiResponse(description="Message sent successfully"),
-            400: OpenApiResponse(description="Invalid form data"),
-        }
-    )
-    def post(self, request):
-        serializer = ContactFormSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        
-        # Process contact form
-        # TODO: Send email, create CRM lead, etc.
-        logger.info(f"Contact form submission: {serializer.validated_data}")
-        
-        return Response({
-            'success': True,
-            'message': 'Thank you for contacting us! We\'ll get back to you soon.',
-        })
-
-
-class NewsletterSignupView(APIView):
-    """Handle newsletter signups."""
-    permission_classes = [AllowAny]
-    
-    @extend_schema(
-        request=NewsletterSerializer,
-        responses={
-            200: OpenApiResponse(description="Subscribed successfully"),
-            400: OpenApiResponse(description="Invalid email"),
-        }
-    )
-    def post(self, request):
-        serializer = NewsletterSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        
-        email = serializer.validated_data['email']
-        
-        # Add to newsletter list
-        # TODO: Integrate with email marketing service
-        logger.info(f"Newsletter signup: {email}")
-        
-        return Response({
-            'success': True,
-            'message': 'You\'re subscribed! Watch your inbox for updates.',
-        })
 
 
 class PricingInfoView(APIView):
@@ -73,6 +13,10 @@ class PricingInfoView(APIView):
     the single source of truth for pricing, shared with the server-rendered
     landing page (landing.views.IndexView). See PRODUCTION_INCIDENT.md for why
     this used to be a second, independently-maintained copy.
+
+    The landing page no longer *depends* on this endpoint to render prices --
+    both the monthly and annual figures are server-rendered into the markup so
+    the billing toggle works with no network round-trip. See landing/views.py.
     """
     permission_classes = [AllowAny]
 
@@ -85,9 +29,15 @@ class PricingInfoView(APIView):
 
 
 class HealthCheckView(APIView):
-    """Health check endpoint for monitoring."""
+    """Health check endpoint for monitoring.
+
+    Referenced by the Dockerfile HEALTHCHECK, docker-compose and nginx. The path
+    is /api/health/ -- several configs used to point at a /api/v1/health/ that
+    never existed.
+    """
     permission_classes = [AllowAny]
-    
+
+    @extend_schema(responses={200: OpenApiResponse(description="Service is healthy")})
     def get(self, request):
         return Response({
             'status': 'healthy',

@@ -4,6 +4,8 @@ Django settings for HubSign Landing project.
 import os
 from pathlib import Path
 
+from csp.constants import NONE, SELF
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -37,7 +39,6 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
     'drf_spectacular',
-    'django_browser_reload',
     # Local apps
     'landing',
     'api',
@@ -46,7 +47,6 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
-    'django_browser_reload.middleware.BrowserReloadMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -55,7 +55,17 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'csp.middleware.CSPMiddleware',
+    'hubsign.middleware.SecurityHeadersMiddleware',
 ]
+
+# django-browser-reload is a development-only tool. It used to be installed
+# unconditionally, which shipped its middleware and app to production.
+if DEBUG:
+    INSTALLED_APPS.append('django_browser_reload')
+    MIDDLEWARE.insert(
+        MIDDLEWARE.index('whitenoise.middleware.WhiteNoiseMiddleware') + 1,
+        'django_browser_reload.middleware.BrowserReloadMiddleware',
+    )
 
 ROOT_URLCONF = 'hubsign.urls'
 
@@ -70,6 +80,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'landing.context_processors.company',
             ],
         },
     },
@@ -121,6 +132,15 @@ CSRF_TRUSTED_ORIGINS = [
     ).split(',')
 ]
 
+# Response security headers
+SECURE_CONTENT_TYPE_NOSNIFF = True
+# Tighter than nginx's previous 'no-referrer-when-downgrade', which leaked the
+# full URL to any same-protocol third party.
+SECURE_REFERRER_POLICY = 'strict-origin-when-cross-origin'
+X_FRAME_OPTIONS = 'DENY'
+# Django has no Permissions-Policy setting; hubsign.middleware adds it.
+PERMISSIONS_POLICY = 'camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()'
+
 # Session security
 SESSION_COOKIE_SECURE = not DEBUG
 SESSION_COOKIE_HTTPONLY = True
@@ -131,11 +151,34 @@ CSRF_COOKIE_SECURE = not DEBUG
 CSRF_COOKIE_HTTPONLY = True
 
 # Content Security Policy
-CSP_DEFAULT_SRC = ("'self'",)
-CSP_STYLE_SRC = ("'self'", "'unsafe-inline'", "https://fonts.googleapis.com")
-CSP_FONT_SRC = ("'self'", "https://fonts.gstatic.com")
-CSP_SCRIPT_SRC = ("'self'", "'unsafe-inline'")  # Needed for inline onclick handlers
-CSP_IMG_SRC = ("'self'", "data:")
+#
+# django-csp 4.x replaced the flat CSP_* settings with this dict. The old
+# CSP_DEFAULT_SRC / CSP_SCRIPT_SRC / ... names are silently IGNORED by 4.x, so
+# the policy this project thought it had was never actually being sent. Keep
+# this in the dict form and keep requirements.txt pinned to >=4,<5.
+#
+# No third-party origins are allowed: fonts are self-hosted from static/fonts/
+# (see templates/base.html) and the site loads no analytics, tag manager, chat
+# widget or CDN script. Adding any of those means editing this policy AND
+# revisiting the cookie policy at /legal/cookies/.
+CONTENT_SECURITY_POLICY = {
+    'DIRECTIVES': {
+        'default-src': [SELF],
+        # No 'unsafe-inline': every handler is bound in static/js/main.js.
+        'script-src': [SELF],
+        # 'unsafe-inline' is required only for per-element style="" attributes on
+        # the CSS mockups (skeleton bar widths in templates/landing/index.html).
+        # The page renders no user-supplied content, so this is not an XSS vector.
+        'style-src': [SELF, "'unsafe-inline'"],
+        'font-src': [SELF],
+        'img-src': [SELF, 'data:'],
+        'connect-src': [SELF],
+        'form-action': [SELF],
+        'base-uri': [SELF],
+        'frame-ancestors': [NONE],
+        'object-src': [NONE],
+    },
+}
 
 # CORS (for API access)
 CORS_ALLOWED_ORIGINS = [
@@ -183,6 +226,8 @@ SPECTACULAR_SETTINGS = {
 # =============================================================================
 # HUBSIGN CONFIGURATION
 # =============================================================================
+
+EXPOSE_API_DOCS = os.environ.get('EXPOSE_API_DOCS', 'False').lower() in ('true', '1', 'yes')
 
 HUBSIGN_API_URL = os.environ.get('HUBSIGN_API_URL', 'https://api.hubsign.io')
 HUBSIGN_API_KEY = os.environ.get('HUBSIGN_API_KEY', '')

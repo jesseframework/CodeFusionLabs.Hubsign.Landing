@@ -1,0 +1,106 @@
+{% extends "legal/_base.html" %}
+
+{% block toc %}
+<li><a href="#short">The short version</a></li>
+<li><a href="#what">What this site sets</a></li>
+<li><a href="#infrastructure">The one infrastructure cookie</a></li>
+<li><a href="#storage">Local storage and similar technologies</a></li>
+<li><a href="#why-no-banner">Why there is no cookie banner</a></li>
+<li><a href="#control">How to control cookies anyway</a></li>
+<li><a href="#app">The HubSign application</a></li>
+<li><a href="#changes">If this changes</a></li>
+{% endblock %}
+
+{% block body %}
+
+<h2 id="short">The short version</h2>
+<p>
+    <strong>This website sets no cookies of its own.</strong> It runs no analytics, no
+    advertising or retargeting pixels, no session recording, no tag manager, no chat widget and
+    no social media embeds. Fonts are served from our own servers rather than from a
+    third-party font network.
+</p>
+<p>
+    The only cookie you may encounter is a strictly necessary one set by the security service
+    that sits in front of this site, described below.
+</p>
+
+<h2 id="what">What this site sets</h2>
+<div class="legal-table-wrap" tabindex="0" role="region" aria-label="Cookie categories used on this website">
+    <table class="legal-table">
+        <thead>
+            <tr>
+                <th scope="col">Category</th>
+                <th scope="col">Used here?</th>
+                <th scope="col">Notes</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>Analytics and measurement</td><td><strong>No</strong></td><td>No Google Analytics, Plausible, Fathom, Matomo or equivalent.</td></tr>
+            <tr><td>Advertising and retargeting</td><td><strong>No</strong></td><td>No advertising pixels of any kind.</td></tr>
+            <tr><td>Session replay and heatmaps</td><td><strong>No</strong></td><td>We do not record your session.</td></tr>
+            <tr><td>Social media embeds</td><td><strong>No</strong></td><td>No embedded posts, videos, maps or share widgets.</td></tr>
+            <tr><td>Third-party fonts</td><td><strong>No</strong></td><td>Fonts are self-hosted, so your IP address is not disclosed to a font provider.</td></tr>
+            <tr><td>Preference cookies</td><td><strong>No</strong></td><td>There is nothing on this site to remember between visits.</td></tr>
+            <tr><td>Strictly necessary</td><td><strong>One, see below</strong></td><td>Set by our security and content-delivery provider.</td></tr>
+        </tbody>
+    </table>
+</div>
+
+<h2 id="infrastructure">The one infrastructure cookie</h2>
+<p>
+    This site is served through a content-delivery and security network. To tell automated
+    traffic apart from real visitors, that provider may set a short-lived cookie on your device
+    &mdash; typically named <code>__cf_bm</code> and expiring after about 30 minutes.
+</p>
+<p>
+    It exists to protect the site from bots and abuse. It does not identify you, is not used
+    for advertising, and is not used to track you across other websites. Under the ePrivacy
+    rules that apply in the UK and EEA, a cookie of this kind is treated as strictly necessary
+    and does not require consent &mdash; but it does require disclosure, which is the purpose
+    of this page.
+</p>
+
+<h2 id="storage">Local storage and similar technologies</h2>
+<p>
+    We do not use <code>localStorage</code>, <code>sessionStorage</code>, IndexedDB, web
+    beacons, tracking pixels or device fingerprinting on this website.
+</p>
+
+<h2 id="why-no-banner">Why there is no cookie banner</h2>
+<p>
+    Consent banners exist because most sites load trackers that legally require your permission
+    before they run. This one does not load any. Since the only cookie involved is strictly
+    necessary for security, there is nothing for you to accept or reject, and a banner asking
+    you to consent to nothing would be noise rather than a protection.
+</p>
+<p>
+    This is a deliberate design decision, not an oversight. If we ever add analytics or any
+    other non-essential technology, we will implement a proper consent mechanism that blocks it
+    until you opt in, and we will update this page first.
+</p>
+
+<h2 id="control">How to control cookies anyway</h2>
+<p>
+    Every major browser lets you view, block and delete cookies through its settings, usually
+    under Privacy or Site Settings. Blocking the strictly necessary cookie described above may
+    mean the security layer challenges your requests more often, but this site will continue to
+    work.
+</p>
+
+<h2 id="app">The HubSign application</h2>
+<p>
+    The HubSign application at {{ company.app_domain }} is a separate service and does use
+    cookies &mdash; at minimum to keep you signed in and to protect forms against cross-site
+    request forgery. Those are described in that service&rsquo;s own documentation and in the
+    agreement covering your account, not here.
+</p>
+
+<h2 id="changes">If this changes</h2>
+<p>
+    Any change to what this site loads will be reflected here, and the date at the top of the
+    page will change with it. See also our
+    <a href="{% url 'landing:privacy' %}">Privacy Policy</a>.
+</p>
+
+{% endblock %}

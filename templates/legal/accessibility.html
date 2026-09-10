@@ -1,0 +1,120 @@
+{% extends "legal/_base.html" %}
+
+{% block toc %}
+<li><a href="#commitment">Our commitment</a></li>
+<li><a href="#standard">The standard we aim for</a></li>
+<li><a href="#done">What we have done</a></li>
+<li><a href="#limitations">Known limitations</a></li>
+<li><a href="#assessment">How this was assessed</a></li>
+<li><a href="#app">The HubSign application</a></li>
+<li><a href="#feedback">Tell us about a barrier</a></li>
+<li><a href="#formats">Alternative formats</a></li>
+{% endblock %}
+
+{% block body %}
+
+<h2 id="commitment">Our commitment</h2>
+<p>
+    {{ company.legal_name }} wants this website to be usable by as many people as possible,
+    including people who navigate by keyboard, use a screen reader or magnifier, need larger
+    text or higher contrast, or prefer reduced motion.
+</p>
+<p>
+    We treat accessibility as part of building the site, not as a later pass. Where we fall
+    short we would like to know, and we will fix it.
+</p>
+
+<h2 id="standard">The standard we aim for</h2>
+<p>
+    This website targets <strong>WCAG 2.1 Level AA</strong>, and we have also adopted the
+    target-size and focus-appearance criteria added in WCAG 2.2.
+</p>
+<p>
+    As an organization based in {{ company.jurisdiction }}, we are subject to the
+    <em>Accessibility for Ontarians with Disabilities Act</em> (AODA). Its web accessibility
+    requirement applies to larger private organizations; we aim to meet the standard whether or
+    not the threshold applies to us, because the point is that people can use the site.
+</p>
+
+<h2 id="done">What we have done</h2>
+<ul>
+    <li>A &ldquo;skip to main content&rdquo; link is the first thing a keyboard user reaches.</li>
+    <li>Every control is a real button or link, reachable and operable by keyboard, with a visible focus indicator.</li>
+    <li>Expandable and selected states are exposed through ARIA, not colour alone, so screen readers report them.</li>
+    <li>The carousel announces each change through a live region, and supports arrow-key navigation.</li>
+    <li>Text meets or exceeds a 4.5:1 contrast ratio, and meaningful graphics 3:1. This is verified by an automated test that runs against our colour tokens, so a future change cannot quietly reintroduce a failure.</li>
+    <li>Interactive targets are at least 24&times;24 CSS pixels.</li>
+    <li>Headings run in order with a single page title, and the page uses proper landmark regions.</li>
+    <li>Decorative illustrations are hidden from assistive technology, so nothing meaningless is read aloud.</li>
+    <li>Nothing moves, flashes or auto-advances on its own. If your system asks for reduced motion, animation and smooth scrolling are switched off.</li>
+    <li>Content reflows to 320px without horizontal scrolling, and remains usable at 200% zoom.</li>
+</ul>
+
+<h2 id="limitations">Known limitations</h2>
+<p>We would rather list these than imply the site is perfect.</p>
+<ul>
+    <li>
+        <strong>The carousel needs JavaScript.</strong> With JavaScript disabled the
+        &ldquo;One invoice, nine screens&rdquo; section shows only the first screen. Every screen
+        is illustrative, and no information appears there that is not also described in text
+        elsewhere on the page.
+    </li>
+    <li>
+        <strong>No formal third-party audit yet.</strong> Our conformance claim is based on our
+        own testing and automated checks, not an independent evaluation. We have not yet
+        completed testing with every screen reader and browser combination in common use.
+    </li>
+    <li>
+        <strong>The product mockups are decorative.</strong> They are deliberately hidden from
+        screen readers rather than described, because they are stylised geometry rather than real
+        screenshots. If you would find described screenshots useful, please tell us.
+    </li>
+</ul>
+
+<h2 id="assessment">How this was assessed</h2>
+<p>
+    This statement reflects a review of the site&rsquo;s markup, keyboard operation, colour
+    contrast and motion behaviour, together with automated tests that run whenever the site is
+    built. It was last reviewed on {{ last_updated|date:"j F Y" }}.
+</p>
+
+<h2 id="app">The HubSign application</h2>
+<p>
+    This statement covers the marketing website at {{ company.site_domain }}. The HubSign
+    application at {{ company.app_domain }}, including the signing experience, is a separate
+    product and is not covered here. If you hit a barrier while signing a document, contact us
+    using the details below and we will help you complete it another way.
+</p>
+
+<h2 id="feedback">Tell us about a barrier</h2>
+<p>
+    If something on this site is difficult or impossible to use, please tell us. Describe what
+    you were trying to do, the page you were on, and the assistive technology or browser you
+    were using, if you know it.
+</p>
+<dl>
+    <dt>Email</dt>
+    <dd><a href="mailto:{{ company.support_email }}">{{ company.support_email }}</a></dd>
+    <dt>Telephone</dt>
+    <dd><a href="tel:{{ company.phone_tel }}">{{ company.phone_display }}</a></dd>
+    <dt>Post</dt>
+    <dd>
+        {{ company.legal_name }}<br>
+        {% if company.registered_address.unresolved %}<span class="needs-confirmation">{{ company.registered_address }}</span>{% else %}{{ company.registered_address|linebreaksbr }}{% endif %}
+    </dd>
+</dl>
+<p>
+    We aim to acknowledge accessibility feedback within five business days and to tell you what
+    we intend to do about it.
+</p>
+
+<h2 id="formats">Alternative formats</h2>
+<p>
+    On request, we will provide the information on this website &mdash; including our
+    <a href="{% url 'landing:privacy' %}">Privacy Policy</a> and
+    <a href="{% url 'landing:terms' %}">Terms</a> &mdash; in an accessible format or with
+    communication support, at no extra cost. Contact us using the details above and we will
+    agree a suitable format with you.
+</p>
+
+{% endblock %}

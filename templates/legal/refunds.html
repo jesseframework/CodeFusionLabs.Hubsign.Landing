@@ -1,0 +1,119 @@
+{% extends "legal/_base.html" %}
+
+{% block toc %}
+<li><a href="#status">Status of this policy</a></li>
+<li><a href="#cancel">How to cancel</a></li>
+<li><a href="#renewal">Billing and renewal</a></li>
+<li><a href="#statutory">Rights you have regardless</a></li>
+<li><a href="#data">Getting your data out</a></li>
+<li><a href="#ask">How to ask about a refund</a></li>
+{% endblock %}
+
+{% block body %}
+
+<h2 id="status">Status of this policy</h2>
+<p>
+    <strong>Our commercial refund terms are being finalised with legal counsel and are not
+    published yet.</strong> We would rather say that plainly than publish terms we might have
+    to change.
+</p>
+<p>
+    Until they are published, refund requests are handled case by case &mdash; write to
+    <a href="mailto:{{ company.sales_email }}">{{ company.sales_email }}</a> and we will tell
+    you where you stand before you commit to anything. Whatever we publish will not reduce the
+    statutory rights described in <a href="#statutory">Rights you have regardless</a>, because
+    those cannot be contracted away.
+</p>
+<p>
+    The terms that actually bind us are the ones in the subscription agreement you accept when
+    you create an account. If this page and that agreement ever disagree, that agreement
+    governs &mdash; and if this page is more generous, we will honour this page.
+</p>
+
+<h2 id="cancel">How to cancel</h2>
+<p>
+    You can cancel a HubSign subscription at any time from your account settings in the
+    application at {{ company.app_domain }}. You do not have to call or email us to cancel, and
+    we do not put a retention step in the way.
+</p>
+<p>
+    On cancellation your plan stays active until the end of the period you have already paid
+    for. After that the subscription does not renew.
+</p>
+
+<h2 id="renewal">Billing and renewal</h2>
+<ul>
+    <li>Monthly plans are charged monthly in advance and renew automatically until cancelled.</li>
+    <li>Annual plans are charged once, in advance, for twelve months, and renew automatically until cancelled.</li>
+    <li>Prices are shown in United States dollars and exclude applicable taxes, which are added at checkout.</li>
+    <li>Annual prices are displayed on our pricing page as a monthly-equivalent figure; the amount charged is that figure multiplied by twelve.</li>
+</ul>
+<p>
+    We will send a renewal reminder before an annual plan renews, with a link that lets you
+    cancel in one step.
+</p>
+
+<h2 id="statutory">Rights you have regardless</h2>
+<p>
+    These apply whatever our commercial policy ends up saying. They are set out here so you can
+    rely on them now.
+</p>
+
+<h3>If you are a consumer in Ontario</h3>
+<p>
+    Ontario&rsquo;s consumer protection legislation regulates automatic renewals, advance notice
+    of renewal, and cancellation rights for consumer agreements, and gives you remedies for
+    unfair practices. Those rights apply to consumer purchases regardless of what any
+    contractual term says.
+</p>
+
+<h3>If you are a consumer in Quebec</h3>
+<p>
+    Quebec&rsquo;s <em>Consumer Protection Act</em> is stricter again, particularly around
+    contracts entered into at a distance, mandatory disclosure before the contract is formed,
+    and cancellation. Those rules cannot be overridden by contract, and this policy does not
+    attempt to.
+</p>
+
+<h3>If you are a consumer in the United Kingdom or the EEA</h3>
+<p>
+    You generally have a statutory right to cancel a distance contract within
+    <strong>14 days</strong> without giving a reason. Where you ask for the service to start
+    immediately within that period, you may be charged for what you have actually used up to
+    the point you cancel. We will not ask you to waive this right.
+</p>
+
+<h3>If you are a consumer in Jamaica</h3>
+<p>
+    Jamaica&rsquo;s <em>Consumer Protection Act</em> applies to our operation in that region,
+    including its provisions on unfair contract terms and on the supply of services.
+</p>
+
+<h3>Business customers</h3>
+<p>
+    Consumer legislation generally does not apply where you buy on behalf of an organization.
+    Your rights are those in your subscription agreement.
+</p>
+
+<h2 id="data">Getting your data out</h2>
+<p>
+    Whatever happens commercially, you can export your documents and records from HubSign
+    before your access ends, and we will not hold your data hostage over a billing dispute. If
+    you need help exporting, contact
+    <a href="mailto:{{ company.support_email }}">{{ company.support_email }}</a> and we will
+    assist.
+</p>
+
+<h2 id="ask">How to ask about a refund</h2>
+<p>
+    Email <a href="mailto:{{ company.sales_email }}">{{ company.sales_email }}</a> with the
+    account name and what you would like to happen. Tell us if you are asking as a consumer
+    rather than on behalf of an organization, and where you are resident, since that determines
+    which of the rights above apply.
+</p>
+<p>
+    If we cannot resolve it between us, a consumer may be able to complain to the consumer
+    protection regulator in their jurisdiction.
+</p>
+
+{% endblock %}

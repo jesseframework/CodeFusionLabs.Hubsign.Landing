@@ -1,0 +1,172 @@
+{% extends "legal/_base.html" %}
+
+{% block toc %}
+<li><a href="#scope">What these terms cover</a></li>
+<li><a href="#who">Who we are</a></li>
+<li><a href="#use">Using this website</a></li>
+<li><a href="#ip">Intellectual property</a></li>
+<li><a href="#thirdparty">Third-party names and links</a></li>
+<li><a href="#info">Accuracy of information</a></li>
+<li><a href="#pricing">Prices shown on this site</a></li>
+<li><a href="#availability">Availability</a></li>
+<li><a href="#liability">Liability</a></li>
+<li><a href="#privacy">Privacy</a></li>
+<li><a href="#law">Governing law</a></li>
+<li><a href="#changes">Changes</a></li>
+<li><a href="#contact">Contact</a></li>
+{% endblock %}
+
+{% block body %}
+
+<h2 id="scope">What these terms cover</h2>
+<p>
+    These terms govern your use of the HubSign marketing website at
+    <strong>{{ company.site_domain }}</strong>. By using this website you agree to them. If you
+    do not agree, please do not use the site.
+</p>
+<p>
+    <strong>These terms are not your subscription agreement.</strong> Your use of the HubSign
+    application at {{ company.app_domain }} &mdash; including any subscription, service levels,
+    support commitments and data processing terms &mdash; is governed by the separate agreement
+    you accept when you create an account. Where that agreement and these terms differ, that
+    agreement governs your use of the application.
+</p>
+
+<h2 id="who">Who we are</h2>
+<p>
+    This website is operated by <strong>{{ company.legal_name }}</strong>, a company
+    incorporated in {{ company.jurisdiction }}.
+</p>
+<dl>
+    <dt>Registered address</dt>
+    <dd>{% if company.registered_address.unresolved %}<span class="needs-confirmation">{{ company.registered_address }}</span>{% else %}{{ company.registered_address|linebreaksbr }}{% endif %}</dd>
+    <dt>Corporation number</dt>
+    <dd>{% if company.corporation_number.unresolved %}<span class="needs-confirmation">{{ company.corporation_number }}</span>{% else %}{{ company.corporation_number }}{% endif %}</dd>
+    <dt>Email</dt>
+    <dd><a href="mailto:{{ company.sales_email }}">{{ company.sales_email }}</a></dd>
+    <dt>Telephone</dt>
+    <dd><a href="tel:{{ company.phone_tel }}">{{ company.phone_display }}</a></dd>
+</dl>
+
+<h2 id="use">Using this website</h2>
+<p>You may read, browse, and print or download pages for your own reference. You may not:</p>
+<ul>
+    <li>use the site in any way that breaks the law or infringes anyone&rsquo;s rights;</li>
+    <li>attempt to gain unauthorised access to the site, its servers, or any connected system;</li>
+    <li>interfere with the site&rsquo;s operation, including by introducing malicious code or by deliberately overloading it; or</li>
+    <li>systematically extract content to build a substitute or competing service.</li>
+</ul>
+<p>
+    Automated crawling for ordinary search-engine indexing is welcome and governed by our
+    <code>robots.txt</code>.
+</p>
+
+<h2 id="ip">Intellectual property</h2>
+<p>
+    The content, design, text and graphics of this website are owned by or licensed to
+    {{ company.legal_name }} and are protected by copyright and other intellectual property
+    laws. <strong>HubSign</strong> and the HubSign mark are trademarks of
+    {{ company.legal_name }}
+</p>
+<p>
+    The typefaces used on this site &mdash; Fraunces, Inter and IBM Plex Mono &mdash; are
+    licensed under the SIL Open Font License 1.1 and remain the property of their respective
+    authors.
+</p>
+
+<h2 id="thirdparty">Third-party names and links</h2>
+<p>
+    We name other products &mdash; such as Microsoft Teams, Exchange Online, Microsoft Entra ID,
+    Google Workspace, Okta and Auth0 &mdash; to describe what HubSign connects to. Those names
+    and marks belong to their respective owners and are used for identification only. Their use
+    does not imply any endorsement, partnership or affiliation unless we say so explicitly.
+</p>
+<p>
+    This site links to external websites we do not control. We are not responsible for their
+    content, and a link is not an endorsement.
+</p>
+
+<h2 id="info">Accuracy of information</h2>
+<p>
+    We aim to keep this site accurate and current, and product descriptions here describe
+    HubSign as we intend it to work. Features may change as the product develops, and nothing
+    on this website forms part of a contract or amounts to a warranty about how the product
+    will perform for you. Please rely on your subscription agreement and our documentation for
+    binding commitments.
+</p>
+
+<h2 id="pricing">Prices shown on this site</h2>
+<p>
+    Prices are shown in <strong>United States dollars</strong> and exclude any applicable sales
+    tax, GST/HST, VAT or other duties, which are added at checkout where they apply. Annual
+    plans are displayed as a monthly-equivalent figure billed once yearly.
+</p>
+<p>
+    We make every effort to display prices correctly, but pricing on this website is an
+    invitation to consider a plan rather than a binding offer. The price that applies is the one
+    shown at checkout and confirmed in your subscription. If a price is displayed with an
+    obvious error, we will not be obliged to supply at that price, and we will tell you before
+    taking payment.
+</p>
+<p>
+    See <a href="{% url 'landing:refunds' %}">Cancellation &amp; Refunds</a> for renewal and
+    cancellation terms.
+</p>
+
+<h2 id="availability">Availability</h2>
+<p>
+    We aim to keep this website available, but we do not guarantee that it will be uninterrupted
+    or error-free, and we may suspend, withdraw or change any part of it without notice. Service
+    levels for the HubSign application, where offered, are set out in your subscription
+    agreement, not here.
+</p>
+
+<h2 id="liability">Liability</h2>
+<p>
+    We do not exclude or limit our liability where it would be unlawful to do so. This includes
+    liability for death or personal injury caused by negligence, for fraud or fraudulent
+    misrepresentation, and any liability that cannot be excluded under applicable consumer
+    protection law &mdash; including, in Ontario, the <em>Consumer Protection Act</em>.
+</p>
+<p>
+    Subject to that, this website is provided on an &ldquo;as is&rdquo; basis, and to the extent
+    permitted by law we are not liable for any indirect or consequential loss, or for loss of
+    profits, revenue, data or goodwill, arising from your use of this website.
+</p>
+<p>
+    <strong>If you are a consumer</strong>, you have statutory rights that these terms do not
+    affect, and nothing here requires you to give them up.
+</p>
+
+<h2 id="privacy">Privacy</h2>
+<p>
+    Our <a href="{% url 'landing:privacy' %}">Privacy Policy</a> explains what this website
+    collects, and our <a href="{% url 'landing:cookies' %}">Cookie Policy</a> explains why you
+    are not shown a cookie banner.
+</p>
+
+<h2 id="law">Governing law</h2>
+<p>
+    These terms are governed by the laws of {{ company.governing_law }}, and the parties submit
+    to the non-exclusive jurisdiction of {{ company.courts }}.
+</p>
+<p>
+    <strong>If you are a consumer resident elsewhere</strong> &mdash; for example in Quebec, the
+    United Kingdom or the European Economic Area &mdash; this choice of law does not deprive you
+    of the protection of mandatory consumer rules in your country of residence, or of the right
+    to bring proceedings in your local courts where the law gives you that right.
+</p>
+
+<h2 id="changes">Changes</h2>
+<p>
+    We may update these terms. The date at the top shows when they last changed, and the version
+    in force is the one published here when you use the site.
+</p>
+
+<h2 id="contact">Contact</h2>
+<p>
+    Questions about these terms:
+    <a href="mailto:{{ company.sales_email }}">{{ company.sales_email }}</a>.
+</p>
+
+{% endblock %}

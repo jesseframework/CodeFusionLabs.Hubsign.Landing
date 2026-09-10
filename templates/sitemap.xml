@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+{% spaceless %}
+{% for path, priority in pages %}
+  <url>
+    <loc>https://{{ request.get_host }}{{ path }}</loc>
+    <changefreq>monthly</changefreq>
+    <priority>{{ priority }}</priority>
+  </url>
+{% endfor %}
+{% endspaceless %}
+</urlset>

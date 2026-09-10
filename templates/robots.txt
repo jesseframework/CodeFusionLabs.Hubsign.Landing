@@ -1,0 +1,7 @@
+# HubSign - {{ request.get_host }}
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+
+Sitemap: https://{{ request.get_host }}/sitemap.xml

@@ -25,6 +25,13 @@ RUN mkdir -p /app/staticfiles
 RUN test -f /app/static/images/hubsign_logo.png || (echo "ERROR: hubsign_logo.png not found in build context" && exit 1)
 RUN test -f /app/static/images/fepro_logo.png   || (echo "ERROR: fepro_logo.png not found in build context" && exit 1)
 
+# Fonts are self-hosted (removing the site's only third-party request). If they
+# go missing the page silently falls back to Georgia/system fonts, so fail the
+# build instead -- same reasoning as the logo guards above.
+RUN test -f /app/static/fonts/inter-400-700.woff2    || (echo "ERROR: inter woff2 not found in build context" && exit 1)
+RUN test -f /app/static/fonts/fraunces-500-700.woff2 || (echo "ERROR: fraunces woff2 not found in build context" && exit 1)
+RUN test -f /app/static/fonts/ibm-plex-mono-500.woff2 || (echo "ERROR: plex mono woff2 not found in build context" && exit 1)
+
 # Set build-time env so collectstatic runs in production mode
 ENV DJANGO_SETTINGS_MODULE=hubsign.settings \
     DEBUG=False \

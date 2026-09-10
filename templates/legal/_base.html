@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% comment %}
+Shared shell for the /legal/ pages.
+
+Each page supplies {% block toc %} (a list of anchors matching its own <h2>s)
+and {% block body %}. Titles, summaries and the last-updated date come from
+landing/legal.py so they cannot drift from the view.
+{% endcomment %}
+
+{% block title %}{{ page_title }} — HubSign{% endblock %}
+{% block meta_description %}{{ page_description }}{% endblock %}
+{% block og_title %}{{ page_title }} — HubSign{% endblock %}
+{% block og_description %}{{ page_description }}{% endblock %}
+
+{% block content %}
+<div class="legal">
+    <div class="container container--narrow">
+
+        <header class="legal-header">
+            <h1>{{ page_title }}</h1>
+            <p class="legal-summary">{{ page_summary }}</p>
+            <p class="legal-meta">Last updated {{ last_updated|date:"j F Y" }}</p>
+        </header>
+
+        {% if review_pending %}
+        <div class="legal-review" role="note">
+            <span aria-hidden="true"><strong>&#9888;</strong></span>
+            <span>
+                <b>Draft pending legal review.</b>
+                This document has been prepared but has not yet been reviewed by qualified
+                counsel in {{ company.jurisdiction }}. It is published for transparency and is
+                not a substitute for legal advice. Where it conflicts with your statutory
+                rights, your statutory rights prevail.
+            </span>
+        </div>
+        {% endif %}
+
+        <nav class="legal-toc" aria-labelledby="toc-heading">
+            <h2 id="toc-heading">On this page</h2>
+            <ol>{% block toc %}{% endblock %}</ol>
+        </nav>
+
+        <div class="legal-body">
+            {% block body %}{% endblock %}
+        </div>
+
+        <nav class="legal-nav" aria-labelledby="legal-nav-heading">
+            <h2 id="legal-nav-heading">Other policies</h2>
+            <ul>
+                {% for page in legal_pages %}
+                <li>
+                    <a href="{% url page.url_name %}"
+                       {% if page.view == current_page %}aria-current="page"{% endif %}>{{ page.title }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </nav>
+
+    </div>
+</div>
+{% endblock %}

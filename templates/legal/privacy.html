@@ -1,0 +1,241 @@
+{% extends "legal/_base.html" %}
+
+{% block toc %}
+<li><a href="#scope">Who this covers</a></li>
+<li><a href="#collect">What this website collects</a></li>
+<li><a href="#cookies">Cookies and tracking</a></li>
+<li><a href="#contact-us">When you contact us</a></li>
+<li><a href="#basis">Why we may process information</a></li>
+<li><a href="#sharing">Who we share information with</a></li>
+<li><a href="#retention">How long we keep it</a></li>
+<li><a href="#security">How we protect it</a></li>
+<li><a href="#rights">Your rights</a></li>
+<li><a href="#regional">Regional information</a></li>
+<li><a href="#children">Children</a></li>
+<li><a href="#changes">Changes to this policy</a></li>
+<li><a href="#officer">How to reach our Privacy Officer</a></li>
+{% endblock %}
+
+{% block body %}
+
+<h2 id="scope">Who this covers</h2>
+<p>
+    This policy explains how <strong>{{ company.legal_name }}</strong> handles personal
+    information in connection with the HubSign marketing website at
+    <strong>{{ company.site_domain }}</strong>.
+</p>
+<p>
+    <strong>It does not cover the HubSign application</strong> at {{ company.app_domain }}.
+    Documents, signatures, audit records and account data you place in the application are
+    governed by the agreement you accept when you create an account, together with any data
+    processing agreement between us and your organization. If you signed a document through
+    HubSign because someone else sent it to you, the organization that sent it is the
+    controller of that document, and you should direct requests about it to them.
+</p>
+<p>
+    {{ company.legal_name }} is incorporated in {{ company.jurisdiction }}, and is subject to
+    Canada&rsquo;s <em>Personal Information Protection and Electronic Documents Act</em>
+    (PIPEDA). Depending on where you live, other laws may also apply to you &mdash; see
+    <a href="#regional">Regional information</a>.
+</p>
+
+<h2 id="collect">What this website collects</h2>
+<p>
+    This website is deliberately built to collect as little as possible. It has
+    <strong>no contact form, no newsletter sign-up, no account area and no analytics</strong>.
+    We do not build a profile of you, and we do not sell, rent or share personal information
+    for advertising.
+</p>
+<p>What we do necessarily receive when you load a page:</p>
+<div class="legal-table-wrap" tabindex="0" role="region" aria-label="What this website receives when you load a page">
+    <table class="legal-table">
+        <thead>
+            <tr><th scope="col">Information</th><th scope="col">Why</th><th scope="col">Kept for</th></tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Your IP address, browser type, requested page, referring page, and the time of the request</td>
+                <td>Written to standard web-server logs. Needed to serve the page, to keep the service available, and to detect abuse such as denial-of-service traffic.</td>
+                <td>A short operational period, then deleted or aggregated</td>
+            </tr>
+            <tr>
+                <td>The same information, seen by our infrastructure providers</td>
+                <td>Our hosting and content-delivery providers process requests on our behalf so the site loads and stays online.</td>
+                <td>Per the provider&rsquo;s own retention schedule</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<p>
+    Fonts are served from our own servers rather than from a third-party font network, so
+    loading this site does not disclose your IP address to a font provider.
+</p>
+
+<h2 id="cookies">Cookies and tracking</h2>
+<p>
+    <strong>This website sets no cookies of its own</strong> and contains no analytics,
+    advertising, session-replay or social-media tracking. There is nothing to consent to,
+    which is why you are not shown a cookie banner.
+</p>
+<p>
+    Our content-delivery and security provider may set a strictly necessary cookie to
+    distinguish automated traffic from human visitors. It is used only for that purpose and
+    not to track you across other websites. The
+    <a href="{% url 'landing:cookies' %}">Cookie Policy</a> sets this out in full.
+</p>
+
+<h2 id="contact-us">When you contact us</h2>
+<p>
+    If you email {{ company.sales_email }} or {{ company.support_email }}, or call us, we
+    receive whatever you choose to include &mdash; typically your name, email address,
+    organization and the substance of your enquiry. We use it to answer you and to keep a
+    record of the conversation.
+</p>
+<p>
+    Please do not send sensitive personal information, or confidential documents, by
+    unsolicited email.
+</p>
+
+<h2 id="basis">Why we may process information</h2>
+<p>
+    Under PIPEDA we rely on your consent, which is <strong>implied</strong> where the purpose
+    is obvious from the circumstances &mdash; loading a web page necessarily discloses your IP
+    address to the server that answers it, and emailing us necessarily discloses what you
+    write. Where a purpose would not be obvious, we ask first.
+</p>
+<p>
+    For visitors in the United Kingdom and the European Economic Area, our legal bases under
+    the UK GDPR and the EU GDPR are:
+</p>
+<ul>
+    <li><strong>Legitimate interests</strong> (Art. 6(1)(f)) &mdash; serving the website securely, keeping server logs, and preventing abuse.</li>
+    <li><strong>Legitimate interests</strong> &mdash; responding to an enquiry you send us.</li>
+    <li><strong>Legal obligation</strong> (Art. 6(1)(c)) &mdash; where we are required to retain or disclose information by law.</li>
+</ul>
+
+<h2 id="sharing">Who we share information with</h2>
+<p>We do not sell personal information. We disclose it only:</p>
+<ul>
+    <li>to service providers who host, deliver and protect this website, acting on our instructions and bound to confidentiality;</li>
+    <li>where required by law, court order, or a lawful request from a public authority; and</li>
+    <li>to a successor entity in the event of a merger, acquisition or sale of assets, subject to this policy continuing to apply.</li>
+</ul>
+<p>
+    Our providers may process data outside {{ company.jurisdiction }}, including in the United
+    States. Where that happens, information may be accessible to courts and authorities in
+    those countries under their local law. We use contractual protections intended to keep the
+    level of protection comparable to that in Canada.
+</p>
+
+<h2 id="retention">How long we keep it</h2>
+<p>
+    Server logs are kept only as long as needed for security and operational troubleshooting,
+    then deleted or aggregated so they no longer identify anyone. Email correspondence is kept
+    for as long as needed to deal with your enquiry and to maintain a reasonable business
+    record, then deleted.
+</p>
+
+<h2 id="security">How we protect it</h2>
+<p>
+    The site is served over HTTPS. We apply access controls, a restrictive content security
+    policy, and rate limiting, and we keep our software patched. No method of transmission or
+    storage is completely secure, so we cannot guarantee absolute security; if a breach creates
+    a real risk of significant harm we will notify affected individuals and the relevant
+    regulator as the law requires.
+</p>
+
+<h2 id="rights">Your rights</h2>
+<p>Under PIPEDA you may:</p>
+<ul>
+    <li>ask whether we hold personal information about you, and request access to it;</li>
+    <li>ask us to correct information that is inaccurate or incomplete;</li>
+    <li>ask how your information has been used and to whom it has been disclosed;</li>
+    <li>withdraw consent, subject to legal and contractual restrictions and reasonable notice; and</li>
+    <li>complain to us, and then to the Office of the Privacy Commissioner of Canada if you are not satisfied.</li>
+</ul>
+<p>
+    We respond to access requests within 30 days where we can, and will tell you if we need
+    longer. We do not charge for a routine request. We may need to verify your identity before
+    acting, and we will only ask for what is necessary to do so.
+</p>
+
+<h2 id="regional">Regional information</h2>
+
+<h3>Quebec</h3>
+<p>
+    If you are in Quebec, Law 25 (the <em>Act respecting the protection of personal information
+    in the private sector</em>, as amended) gives you additional rights, including the right to
+    request that information be de-indexed or deleted in defined circumstances, and, for
+    computerised information collected from you, the right to receive it in a structured,
+    commonly used technological format. Our Privacy Officer is the person responsible for the
+    protection of personal information for these purposes. You may complain to the
+    <em>Commission d&rsquo;acc&egrave;s &agrave; l&rsquo;information du Qu&eacute;bec</em>.
+</p>
+
+<h3>United Kingdom and European Economic Area</h3>
+<p>
+    You have the rights of access, rectification, erasure, restriction, portability and
+    objection, and the right not to be subject to solely automated decisions with legal or
+    similarly significant effects &mdash; we make no such decisions on this website. You may
+    complain to your national supervisory authority, or to the Information Commissioner&rsquo;s
+    Office in the UK.
+</p>
+<p>
+    The European Commission recognises Canada as providing an adequate level of protection for
+    personal information transferred to organisations subject to PIPEDA, so transfers to us do
+    not require additional safeguards on that basis.
+</p>
+
+<h3>Jamaica</h3>
+<p>
+    If you are in Jamaica, the <em>Data Protection Act, 2020</em> applies to our processing in
+    that jurisdiction, including rights of access and correction and the right to complain to
+    the Office of the Information Commissioner.
+</p>
+
+<h3>United States</h3>
+<p>
+    Some US states give residents rights to know, delete, correct and opt out of the sale or
+    sharing of personal information. <strong>We do not sell or share personal information for
+    cross-context behavioural advertising</strong>, and this website runs no advertising
+    trackers. You may still exercise your access and deletion rights by contacting us.
+</p>
+
+<h2 id="children">Children</h2>
+<p>
+    HubSign is a business product. This website is not directed at children, and we do not
+    knowingly collect personal information from them. If you believe a child has provided us
+    with personal information, contact our Privacy Officer and we will delete it.
+</p>
+
+<h2 id="changes">Changes to this policy</h2>
+<p>
+    We update this policy when our practices change. The date at the top shows when it last
+    changed. Material changes will be signposted on this page.
+</p>
+
+<h2 id="officer">How to reach our Privacy Officer</h2>
+<p>
+    PIPEDA requires us to name an individual accountable for our compliance. Write to:
+</p>
+<dl>
+    <dt>Privacy Officer</dt>
+    <dd>
+        {% if company.privacy_officer.unresolved %}<span class="needs-confirmation">{{ company.privacy_officer }}</span>{% else %}{{ company.privacy_officer }}{% endif %}
+    </dd>
+    <dt>Email</dt>
+    <dd>
+        {% if company.privacy_email.unresolved %}<span class="needs-confirmation">{{ company.privacy_email }}</span>{% else %}<a href="mailto:{{ company.privacy_email }}">{{ company.privacy_email }}</a>{% endif %}
+    </dd>
+    <dt>Post</dt>
+    <dd>
+        {{ company.legal_name }}<br>
+        {% if company.registered_address.unresolved %}<span class="needs-confirmation">{{ company.registered_address }}</span>{% else %}{{ company.registered_address|linebreaksbr }}{% endif %}
+    </dd>
+</dl>
+<p>
+    If you are not satisfied with our response, you may complain to the Office of the Privacy
+    Commissioner of Canada, or to the regulator for your region named above.
+</p>
+
+{% endblock %}

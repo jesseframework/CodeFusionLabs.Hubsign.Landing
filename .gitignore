@@ -1,5 +1,22 @@
-original-html.txt
-SIGNIN_AND_PLAN_LINKS.md
+# Local environment
+.env
+.env.*
+!.env.example
+!.env.production.example
+venv/
+.venv/
+
+# Python
 __pycache__/
 *.pyc
-*.md
+
+# Django
+db.sqlite3
+staticfiles/
+
+# OS
+.DS_Store
+
+# Local-only notes
+original-html.txt
+SIGNIN_AND_PLAN_LINKS.md

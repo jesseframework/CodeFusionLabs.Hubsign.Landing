@@ -1,97 +1,131 @@
-{% load static %}
-<!DOCTYPE html>
+{% load static %}<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}HubSign – Enterprise E-Signatures Made Simple{% endblock %}</title>
-    <meta name="description" content="{% block meta_description %}Fully compliant digital signatures for teams and businesses. Fast, secure, and beautifully simple document signing.{% endblock %}">
-    
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Montserrat:ital,wght@0,700;0,800;1,700&display=swap" rel="stylesheet">
 
-    <!-- Favicon -->
+    <title>{% block title %}HubSign — everything that happens around the signature{% endblock %}</title>
+    {# The previous description claimed "Fully compliant digital signatures" without #}
+    {# naming a single standard. Nothing on this site substantiates a compliance    #}
+    {# claim, so it describes what the product does instead.                        #}
+    <meta name="description" content="{% block meta_description %}HubSign reads what arrives, checks it against rules you set, routes approvals, and posts the result to your systems — so nothing is re-typed on the way in or out.{% endblock %}">
+    <link rel="canonical" href="https://{{ company.site_domain }}{{ request.path }}">
+    <meta name="theme-color" content="#fbfaf7">
+
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="HubSign">
+    <meta property="og:title" content="{% block og_title %}HubSign — everything that happens around the signature{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}E-signatures, and the intake, control and records work around them.{% endblock %}">
+    <meta property="og:url" content="https://{{ company.site_domain }}{{ request.path }}">
+    <meta name="twitter:card" content="summary">
+
+    {# Self-hosted (see static/css/main.css). Nothing is fetched from a third   #}
+    {# party, which is why this site needs no cookie banner — /legal/cookies/.  #}
+    <link rel="preload" href="{% static 'fonts/inter-400-700.woff2' %}" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="{% static 'fonts/fraunces-500-700.woff2' %}" as="font" type="font/woff2" crossorigin>
+
     <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}">
     <link rel="icon" type="image/svg+xml" href="{% static 'images/favicon.svg' %}">
 
-    <!-- Styles -->
     <link rel="stylesheet" href="{% static 'css/main.css' %}">
     {% block extra_css %}{% endblock %}
-    
-    <!-- CSRF Token for JavaScript -->
-    <meta name="csrf-token" content="{{ csrf_token }}">
 </head>
 <body>
+    <a class="skip-link" href="#main">Skip to main content</a>
+
     <header class="header">
-        <nav class="nav container">
+        <nav class="nav container" aria-label="Primary">
             <a href="{% url 'landing:index' %}" class="logo">
-                <img src="{% static 'images/hubsign_logo.png' %}" alt="HubSign">
+                <img src="{% static 'images/hubsign_logo.png' %}" alt="HubSign — home" width="270" height="100">
             </a>
             <div class="nav-links">
-                <a href="#product">Product</a>
-                <a href="#showcase">See it in action</a>
-                <a href="#pricing">Pricing</a>
-                <a href="#faq">FAQ</a>
-                <a href="https://docs.hubsign.io" target="_blank" rel="noopener">Docs</a>
+                <a href="/#product">Product</a>
+                <a href="/#showcase">See it in action</a>
+                <a href="/#pricing">Pricing</a>
+                <a href="/#faq">FAQ</a>
+                <a href="{{ company.docs_url }}">Docs</a>
             </div>
             <div class="nav-actions">
-                <a href="https://app.hubsign.io/signin" class="btn btn-ghost">Sign In</a>
-                <a href="https://app.hubsign.io/signup" class="btn btn-primary">Get Started</a>
+                <a href="https://{{ company.app_domain }}/signin" class="btn btn-ghost">Sign in</a>
+                <a href="https://{{ company.app_domain }}/signup" class="btn btn-primary">Get started</a>
             </div>
-            <button class="mobile-menu-btn" aria-label="Menu" onclick="toggleMobileMenu()">
+            <button type="button" class="mobile-menu-btn" id="mobileMenuBtn"
+                    aria-expanded="false" aria-controls="mobileMenu" aria-label="Open menu">
                 <span></span><span></span><span></span>
             </button>
         </nav>
-        <div class="mobile-menu" id="mobileMenu">
-            <a href="#product" onclick="toggleMobileMenu()">Product</a>
-            <a href="#showcase" onclick="toggleMobileMenu()">See it in action</a>
-            <a href="#pricing" onclick="toggleMobileMenu()">Pricing</a>
-            <a href="#faq" onclick="toggleMobileMenu()">FAQ</a>
-            <a href="https://docs.hubsign.io" target="_blank" rel="noopener" onclick="toggleMobileMenu()">Docs</a>
-            <a href="https://app.hubsign.io/signin" class="btn btn-ghost btn-full">Sign In</a>
-            <a href="https://app.hubsign.io/signup" class="btn btn-primary btn-full">Get Started</a>
+        <div class="mobile-menu container" id="mobileMenu">
+            <a href="/#product">Product</a>
+            <a href="/#showcase">See it in action</a>
+            <a href="/#pricing">Pricing</a>
+            <a href="/#faq">FAQ</a>
+            <a href="{{ company.docs_url }}">Docs</a>
+            <a href="https://{{ company.app_domain }}/signin" class="btn btn-outline btn-full">Sign in</a>
+            <a href="https://{{ company.app_domain }}/signup" class="btn btn-primary btn-full">Get started</a>
         </div>
     </header>
 
-    <main>
+    <main id="main">
         {% block content %}{% endblock %}
     </main>
 
     <footer class="footer">
         <div class="container">
-            <div class="footer-content">
-                <div class="footer-brand">
-                    <img src="{% static 'images/hubsign_logo.png' %}" alt="HubSign" class="footer-logo">
+            <div class="footer-grid">
+                <div>
+                    <img src="{% static 'images/hubsign_logo.png' %}" alt="HubSign" class="footer-logo" width="270" height="100">
                     <p class="footer-tagline">E-signatures, and everything that happens around them.</p>
                     <div class="footer-powered">
                         <span class="footer-powered-text">Powered by</span>
-                        <img src="{% static 'images/fepro_logo.png' %}" alt="Future Edge Technology Inc" class="footer-powered-logo">
+                        <img src="{% static 'images/fepro_logo.png' %}" alt="Future Edge Technology" class="footer-powered-logo" width="500" height="144">
                     </div>
                 </div>
-                <div class="footer-column">
-                    <h4>Product</h4>
-                    <a href="#product">Features</a>
-                    <a href="#pricing">Pricing</a>
-                    <a href="#integrations">Integrations</a>
-                    <a href="https://docs.hubsign.io" target="_blank" rel="noopener">Docs</a>
+
+                <div class="footer-col">
+                    <h3>Product</h3>
+                    <ul>
+                        <li><a href="/#product">Features</a></li>
+                        <li><a href="/#pricing">Pricing</a></li>
+                        <li><a href="/#integrations">Integrations</a></li>
+                        <li><a href="{{ company.docs_url }}">Documentation</a></li>
+                    </ul>
                 </div>
-                <div class="footer-column">
-                    <h4>Company</h4>
-                    <a href="mailto:sales@hubsign.io">Contact sales</a>
-                    <span class="footer-static">+1 810-626-EDGE</span>
-                    <a href="https://docs.hubsign.io" target="_blank" rel="noopener">Support</a>
+
+                <div class="footer-col">
+                    <h3>Company</h3>
+                    <ul>
+                        <li><a href="mailto:{{ company.sales_email }}">Contact sales</a></li>
+                        <li><a href="mailto:{{ company.support_email }}">Support</a></li>
+                        <li><a href="tel:{{ company.phone_tel }}">{{ company.phone_display }}</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h3>Legal</h3>
+                    <ul>
+                        {% for page in legal_pages %}
+                        <li><a href="{% url page.url_name %}">{{ page.title }}</a></li>
+                        {% endfor %}
+                    </ul>
                 </div>
             </div>
+
+            <div class="footer-company">
+                <address>
+                    <b>{{ company.legal_name }}</b><br>
+                    {% if company.registered_address.unresolved %}<span class="needs-confirmation">{{ company.registered_address }}</span><br>{% else %}{{ company.registered_address|linebreaksbr }}<br>{% endif %}
+                    Incorporated in {{ company.jurisdiction }}.
+                    {% if company.corporation_number.unresolved %}<span class="needs-confirmation">{{ company.corporation_number }}</span>{% else %}Corporation number {{ company.corporation_number }}.{% endif %}
+                </address>
+            </div>
+
             <div class="footer-bottom">
-                <p>&copy; {% now "Y" %} Future Edge Technology Inc. HubSign and the HubSign mark are trademarks of Future Edge Technology Inc.</p>
+                <p>&copy; {% now "Y" %} {{ company.legal_name }} HubSign and the HubSign mark are trademarks of {{ company.legal_name }} All other product names and marks mentioned are the property of their respective owners and are used for identification only.</p>
             </div>
         </div>
     </footer>
 
-    <!-- Scripts -->
-    <script src="{% static 'js/main.js' %}"></script>
+    <script src="{% static 'js/main.js' %}" defer></script>
     {% block extra_js %}{% endblock %}
 </body>
 </html>

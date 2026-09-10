@@ -1,7 +1,26 @@
-from django.shortcuts import render
+"""Views for the HubSign landing page."""
 from django.views.generic import TemplateView
 
-from .pricing import get_pricing_tiers
+from .pricing import get_pricing_tiers, max_annual_saving_percent
+
+# The product pipeline, in order. Drawn full-size once as the hero diagram and
+# reused as a small position marker on each section, so both always describe the
+# same six steps. `commodity` marks the step every e-signature vendor sells --
+# the one the page argues is the least interesting part.
+PIPELINE = [
+    {'id': 'arrives', 'label': 'Arrives', 'group': 'Intake',
+     'detail': 'A vendor emails the invoice, exactly as they do today.'},
+    {'id': 'reads', 'label': 'Reads', 'group': 'Intake',
+     'detail': 'OCR extracts the data before anyone opens the document.'},
+    {'id': 'checks', 'label': 'Checks', 'group': 'Control',
+     'detail': 'Business rules test the data against the limits you set.'},
+    {'id': 'routes', 'label': 'Routes', 'group': 'Control',
+     'detail': 'Approval chains collect internal sign-off first.'},
+    {'id': 'seals', 'label': 'Seals', 'group': 'Signature', 'commodity': True,
+     'detail': 'The signature itself, with its certificate and audit report.'},
+    {'id': 'posts', 'label': 'Posts', 'group': 'Connect',
+     'detail': 'The result lands in the ERP, in Teams, or in your own systems.'},
+]
 
 
 class IndexView(TemplateView):
@@ -17,6 +36,17 @@ class IndexView(TemplateView):
         context['roles'] = self.get_roles()
         context['integrations'] = self.get_integrations()
         context['faqs'] = self.get_faqs()
+        context['spine'] = PIPELINE
+        # Free is deliberately not shown as a card (asserted in landing/tests.py);
+        # the two visible families are Starter/Plus/Pro and Team/Business/Enterprise.
+        tiers = context['pricing_tiers']
+        context['pricing_groups'] = [
+            ('individual', tiers[1:4]),
+            ('organization', tiers[4:7]),
+        ]
+        # Derived, not hardcoded -- see pricing.max_annual_saving_percent for
+        # why the old flat "Save 20%" badge was inaccurate.
+        context['annual_saving'] = max_annual_saving_percent(context['pricing_tiers'])
         return context
 
     def get_stats(self):
@@ -73,15 +103,45 @@ class IndexView(TemplateView):
     # templates/landing/index.html rather than looped from context here.
 
     def get_integrations(self):
+        """Grouped rather than flat.
+
+        As a single eight-card grid, Azure AD / Google Workspace / Okta / Auth0
+        all rendered with the same generic key icon and the same one-line
+        description, so a quarter of the section read as four identical cards.
+        Grouping says the useful thing once, in the group heading.
+        """
         return [
-            {'icon': 'teams', 'title': 'Microsoft Teams', 'description': 'Power Automate webhook or an Azure bot, per channel'},
-            {'icon': 'intake', 'title': 'Exchange Online', 'description': 'Where the Signature Inbox mailbox lives'},
-            {'icon': 'sso-key', 'title': 'Azure AD', 'description': 'OIDC single sign-on'},
-            {'icon': 'sso-key', 'title': 'Google Workspace', 'description': 'OIDC single sign-on'},
-            {'icon': 'sso-key', 'title': 'Okta', 'description': 'OIDC single sign-on'},
-            {'icon': 'sso-key', 'title': 'Auth0', 'description': 'OIDC single sign-on'},
-            {'icon': 'webhook', 'title': 'Webhooks', 'description': '7 events, delivered immediately on completion'},
-            {'icon': 'rest-api', 'title': 'REST API', 'description': 'v1 stable, v2 in beta'},
+            {
+                'title': 'Microsoft 365',
+                'note': 'where the work already happens',
+                'items': [
+                    {'icon': 'teams', 'title': 'Microsoft Teams',
+                     'description': 'Power Automate webhook or an Azure bot, per channel'},
+                    {'icon': 'intake', 'title': 'Exchange Online',
+                     'description': 'Where the Signature Inbox mailbox lives'},
+                ],
+            },
+            {
+                'title': 'Single sign-on',
+                'note': 'OIDC · 4 providers',
+                'items': [
+                    {'icon': 'sso-key', 'title': 'Microsoft Entra ID',
+                     'description': 'Formerly Azure AD'},
+                    {'icon': 'sso-key', 'title': 'Google Workspace', 'description': ''},
+                    {'icon': 'sso-key', 'title': 'Okta', 'description': ''},
+                    {'icon': 'sso-key', 'title': 'Auth0', 'description': ''},
+                ],
+            },
+            {
+                'title': 'Build your own',
+                'note': 'for anything not listed above',
+                'items': [
+                    {'icon': 'webhook', 'title': 'Webhooks',
+                     'description': '7 events, delivered on completion'},
+                    {'icon': 'rest-api', 'title': 'REST API',
+                     'description': 'v1 stable, v2 in beta'},
+                ],
+            },
         ]
 
     def get_faqs(self):
@@ -115,18 +175,3 @@ class IndexView(TemplateView):
                 'a': 'Yes. Starter is $15/month with no organization rollout required. Move to Plus or Pro as signing volume grows, or contact sales for Team, Business, or Enterprise Shared.',
             },
         ]
-
-
-class PricingView(TemplateView):
-    """Pricing page view."""
-    template_name = 'landing/pricing.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['pricing_tiers'] = get_pricing_tiers()
-        return context
-
-
-class FeaturesView(TemplateView):
-    """Features page view."""
-    template_name = 'landing/features.html'
