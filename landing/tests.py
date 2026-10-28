@@ -1,8 +1,9 @@
+import re
 from unittest.mock import patch
 
 from django.test import TestCase, override_settings
 
-from .pricing import get_pricing_tiers
+from .pricing import _fallback_tiers, get_pricing_tiers
 
 
 class FakePrice:
@@ -189,3 +190,130 @@ class PricingSSRTests(TestCase):
         # Enterprise Dedicated is sales-assisted only -- no card, just the contact line.
         self.assertIn('Need a dedicated instance, custom domain, or SSO?', content)
         self.assertIn('Talk to sales', content)
+
+
+class PricingAnnualLabelTests(TestCase):
+    """Switching to Annual used to change the number but leave the label
+    reading "/ month" -- a visitor would see e.g. $47 and actually be charged
+    twelve times that up front. Both the period text and the real once-a-year
+    charge must be server-rendered so the toggle needs no network call, the
+    same pattern .pricing-amount already uses."""
+
+    def setUp(self):
+        self.html = self.client.get('/').content.decode()
+
+    def test_period_label_has_both_billing_variants(self):
+        periods = re.findall(
+            r'<span class="pricing-period"\s+data-monthly="([^"]*)"\s+data-annual="([^"]*)">',
+            self.html,
+        )
+        # One per visible card (Free has no card): Starter, Plus, Pro, Team,
+        # Business, Enterprise Shared.
+        self.assertEqual(len(periods), 6)
+        for monthly, annual in periods:
+            self.assertEqual(monthly, '/ month')
+            self.assertEqual(annual, '/ month, billed annually')
+
+    def test_annual_total_charged_is_server_rendered_and_hidden_by_default(self):
+        """Hidden (not just visually) so it isn't read out or found by a
+        Monthly-mode reader search before Annual is selected."""
+        notes = re.findall(r'<p class="pricing-annual-total" hidden>\$(\d+) billed yearly</p>', self.html)
+        self.assertEqual(len(notes), 6)
+
+    def test_annual_total_is_the_monthly_equivalent_times_twelve(self):
+        for tier in get_pricing_tiers():
+            if tier.is_free:
+                continue
+            self.assertIn(f'${tier.price_annually * 12} billed yearly', self.html)
+
+    def test_price_annually_total_property_matches_the_advertised_figures(self):
+        """Pins the worked examples from the annual-saving docstring/README --
+        Team $564, Business $1,980, Enterprise Shared $4,980."""
+        by_id = {t.id: t for t in _fallback_tiers()}
+        self.assertEqual(by_id['team'].price_annually_total, 564)
+        self.assertEqual(by_id['business'].price_annually_total, 1980)
+        self.assertEqual(by_id['enterprise'].price_annually_total, 4980)
+
+
+class PricingCapabilityTests(TestCase):
+    """The page spends most of its length on Intake/Control/Records/Connect
+    but previously no card said which plan actually includes them. Facts
+    below come from packages/lib/constants/org-tiers.ts and nav-config.tsx in
+    the app repo -- individual plans are e-signature only; Signature Inbox,
+    business rules, approvals, workflows and Repositories are org-only."""
+
+    def test_individual_tiers_say_e_signature_only(self):
+        tiers = {t.id: t for t in get_pricing_tiers()}
+        for tier_id in ('starter', 'plus', 'pro'):
+            capability = ' '.join(tiers[tier_id].capabilities)
+            self.assertIn('E-signature only', capability)
+            self.assertIn('Repositories', capability)
+
+    def test_team_has_inbox_and_rules_but_not_repositories_or_api(self):
+        team = next(t for t in get_pricing_tiers() if t.id == 'team')
+        capability = ' '.join(team.capabilities)
+        self.assertIn('Signature Inbox', capability)
+        self.assertIn('business rules', capability)
+        self.assertIn('no Repositories, no API', capability)
+
+    def test_business_includes_repositories(self):
+        business = next(t for t in get_pricing_tiers() if t.id == 'business')
+        self.assertIn('Repositories', ' '.join(business.capabilities))
+
+    def test_enterprise_shared_is_positioned_as_everything_business_has(self):
+        """Enterprise Shared's capability set is identical to Business's (both
+        include Repositories) -- it differs only in allowances, so the line
+        says "everything in Business" rather than re-listing Repositories."""
+        enterprise = next(t for t in get_pricing_tiers() if t.id == 'enterprise')
+        self.assertIn('Everything in Business', ' '.join(enterprise.capabilities))
+
+    def test_capability_line_renders_once_per_visible_card(self):
+        html = self.client.get('/').content.decode()
+        self.assertEqual(html.count('class="pricing-capability"'), 6)
+
+    def test_document_manager_has_been_renamed_to_repositories(self):
+        """Business/Enterprise Shared features used to say 'Document Manager
+        included' -- 'Repositories' is the app's actual user-facing name."""
+        html = self.client.get('/').content.decode()
+        self.assertIn('Repositories included', html)
+        self.assertNotIn('Document Manager', html)
+
+
+class PricingSignupSlugTests(TestCase):
+    """The app's /signup?plan= only accepts free|individual|team|business|
+    enterprise (LANDING_PLAN_PARAM_SPEC.md); anything else is silently
+    ignored. Starter is the app's $15/mo "individual" plan under a different
+    local id, so it must send that slug rather than this site's 'starter'."""
+
+    def test_starter_maps_to_the_apps_individual_slug(self):
+        starter = next(t for t in get_pricing_tiers() if t.id == 'starter')
+        self.assertEqual(starter.signup_slug, 'individual')
+
+    def test_team_business_enterprise_have_no_override_because_ids_already_match(self):
+        tiers = {t.id: t for t in get_pricing_tiers()}
+        for tier_id in ('team', 'business', 'enterprise'):
+            self.assertIsNone(tiers[tier_id].signup_slug)
+
+    def test_signup_links_use_the_resolved_slug(self):
+        html = self.client.get('/').content.decode()
+        self.assertIn('/signup?plan=individual"', html)
+        self.assertNotIn('/signup?plan=starter"', html)
+        # Plus/Pro have no app-side slug yet -- still send tier.id verbatim
+        # until the app adds one (see the comments in landing/pricing.py).
+        self.assertIn('/signup?plan=plus"', html)
+        self.assertIn('/signup?plan=pro"', html)
+        self.assertIn('/signup?plan=team"', html)
+        self.assertIn('/signup?plan=business"', html)
+        self.assertIn('/signup?plan=enterprise"', html)
+
+
+class FinalCtaCopyTests(TestCase):
+    """The closing CTA used to say 'talk to sales about Team, Business or
+    Enterprise Shared' directly beside self-serve 'Get started' buttons on
+    those same cards -- a direct contradiction of what the cards actually
+    offer."""
+
+    def test_cta_no_longer_contradicts_the_self_serve_org_cards(self):
+        html = self.client.get('/').content.decode()
+        self.assertIn('Start on any plan today', html)
+        self.assertNotIn('Start on Starter, Plus or Pro today', html)

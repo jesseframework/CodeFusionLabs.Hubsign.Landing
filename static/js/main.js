@@ -221,6 +221,18 @@
                 var value = annual ? el.dataset.annual : el.dataset.monthly;
                 if (value !== undefined) el.textContent = '$' + value;
             });
+            // The period label must say "billed annually" under Annual -- it used to
+            // stay "/ month" next to the annual figure, so a visitor saw e.g. $47 and
+            // was actually charged twelve times that up front.
+            document.querySelectorAll('.pricing-period').forEach(function (el) {
+                var value = annual ? el.dataset.annual : el.dataset.monthly;
+                if (value !== undefined) el.textContent = value;
+            });
+            // The once-a-year total is server-rendered already (no text swap needed,
+            // see the template) -- just reveal it under Annual.
+            document.querySelectorAll('.pricing-annual-total').forEach(function (el) {
+                el.hidden = !annual;
+            });
             // Add-on rates switch with the period too; they used to stay at the
             // monthly figure while the headline price showed the annual one.
             document.querySelectorAll('.pricing-addon-amount').forEach(function (el) {

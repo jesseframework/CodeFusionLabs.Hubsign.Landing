@@ -100,7 +100,7 @@
     <dt>Post</dt>
     <dd>
         {{ company.legal_name }}<br>
-        {% if company.registered_address.unresolved %}<span class="needs-confirmation">{{ company.registered_address }}</span>{% else %}{{ company.registered_address|linebreaksbr }}{% endif %}
+        {% if not company.registered_address.unresolved %}{{ company.registered_address|linebreaksbr }}{% endif %}
     </dd>
 </dl>
 <p>

@@ -12,9 +12,13 @@ Two things to know before editing:
    later only as a small decorative dot marker (.spine-mini) next to a text
    label -- full diagram once, breadcrumb thereafter.
 
-2. Every mockup on this page is CSS geometry, not a screenshot. All of it is
-   aria-hidden: it illustrates, it does not inform. Anything a visitor needs to
-   know is in real text next to it.
+2. The "See it in action" carousel (#showcase) and the signing section's
+   preview (#signing) are real, anonymised product screenshots (see the
+   SHOWCASE list in landing/views.py and static/images/screens/), not CSS
+   skeleton geometry -- they carry real alt text and are informative, not
+   decorative. Everything else on the page that is still drawn geometry
+   (spine markers, icons) stays aria-hidden, with the meaning next to it as
+   real text.
 {% endcomment %}
 
 {% block content %}
@@ -23,6 +27,7 @@ Two things to know before editing:
 <section class="hero" id="top">
     <div class="container">
         <div class="hero-inner">
+            <p class="hero-eyebrow">E-signatures for teams that receive, check and file vendor invoices</p>
             <h1>
                 Everything that happens
                 <span class="hero-accent">around the signature.</span>
@@ -45,6 +50,7 @@ Two things to know before editing:
                 <li class="spine-step{% if step.commodity %} is-commodity{% endif %}">
                     <span class="spine-marker" aria-hidden="true"></span>
                     <span class="spine-label">{{ step.label }}</span>
+                    {% if step.commodity %}<span class="spine-tag">Commodity</span>{% endif %}
                     <span class="spine-detail">{{ step.detail }}</span>
                 </li>
                 {% endfor %}
@@ -60,6 +66,7 @@ Two things to know before editing:
 <!-- ============================================================ STATS -->
 <section class="stats" aria-label="HubSign at a glance">
     <div class="container">
+        <p class="eyebrow"><span>At a glance</span></p>
         <dl class="stats-grid">
             {% for stat in stats %}
             <div class="stat">
@@ -84,7 +91,7 @@ Two things to know before editing:
             <h2>Every e-signature vendor sells the middle box.</h2>
             <p class="lead">
                 HubSign is the three capabilities around it — intake, control, and records —
-                wired to the systems that need the result.
+                plus Connect, which carries the result to the systems that need it.
             </p>
         </div>
 
@@ -155,25 +162,12 @@ Two things to know before editing:
             </div>
 
             <div>
-                <div class="showcase-frame" aria-hidden="true" style="aspect-ratio: 4 / 3; min-height: 0;">
-                    <div class="mock">
-                        <div class="mock-body">
-                            <div class="mock-page">
-                                <span class="mock-bar mock-bar--ink" style="width: 55%;"></span>
-                                <span class="mock-bar" style="width: 90%;"></span>
-                                <span class="mock-bar" style="width: 82%;"></span>
-                                <span class="mock-bar" style="width: 88%;"></span>
-                                <div style="flex: 1;"></div>
-                                <span class="mock-sign">
-                                    <svg viewBox="0 0 54 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
-                                        <path d="M1 14c4-9 7 4 11-3s6 6 10-1 7 3 11-2 6 4 10 0"/>
-                                    </svg>
-                                </span>
-                                <span class="mock-bar mock-bar--accent" style="width: 34%;"></span>
-                                <span class="mock-chip mock-chip--pos" style="align-self: flex-start;">Sealed</span>
-                            </div>
-                        </div>
-                    </div>
+                <div class="signing-shot">
+                    <picture>
+                        <source type="image/webp" srcset="{% static 'images/screens/signing-complete.webp' %}">
+                        <img src="{% static 'images/screens/signing-complete.png' %}" width="790" height="162"
+                             alt="The &quot;Send for signature&quot; panel showing signing complete, with the recipient who signed and the completion timestamp.">
+                    </picture>
                 </div>
 
                 <ul class="sealed-points" style="margin-top: var(--space-6);">
@@ -217,167 +211,17 @@ Two things to know before editing:
         </div>
 
         <div class="showcase-viewport">
-            <div class="showcase-frame" aria-hidden="true">
-                <!-- 1. Signature Inbox -->
-                <div class="showcase-panel is-active" data-title="Signature Inbox"
-                     data-blurb="Every vendor invoice lands here, already read by OCR before anyone opens it.">
-                    <div class="mock">
-                        <div class="mock-rail"><span></span><span></span><span></span><span></span><span></span></div>
-                        <div class="mock-body">
-                            <div class="mock-row is-active">
-                                <div class="mock-stack"><span class="mock-bar mock-bar--ink" style="width:62%"></span><span class="mock-bar" style="width:38%"></span></div>
-                                <span class="mock-chip">Needs review</span>
-                            </div>
-                            <div class="mock-row"><div class="mock-stack"><span class="mock-bar" style="width:54%"></span><span class="mock-bar" style="width:30%"></span></div><span class="mock-chip">Queued</span></div>
-                            <div class="mock-row"><div class="mock-stack"><span class="mock-bar" style="width:48%"></span><span class="mock-bar" style="width:34%"></span></div><span class="mock-chip">Queued</span></div>
-                            <div class="mock-row is-done"><div class="mock-stack"><span class="mock-bar" style="width:58%"></span><span class="mock-bar" style="width:26%"></span></div><span class="mock-chip mock-chip--pos">Done</span></div>
-                        </div>
-                    </div>
+            <div class="showcase-frame">
+                {% for panel in showcase %}
+                <div class="showcase-panel{% if forloop.first %} is-active{% endif %}"
+                     data-title="{{ panel.title }}" data-blurb="{{ panel.blurb }}">
+                    <picture>
+                        <source type="image/webp" srcset="{% static panel.webp %}">
+                        <img src="{% static panel.png %}" width="{{ panel.width }}" height="{{ panel.height }}"
+                             alt="{{ panel.alt }}"{% if not forloop.first %} loading="lazy"{% endif %}>
+                    </picture>
                 </div>
-
-                <!-- 2. Document Review -->
-                <div class="showcase-panel" data-title="Document Review"
-                     data-blurb="Extracted data opens beside the original — correct what OCR missed, then send.">
-                    <div class="mock">
-                        <div class="mock-body">
-                            <div class="mock-split">
-                                <div class="mock-page">
-                                    <span class="mock-bar mock-bar--ink" style="width:50%"></span>
-                                    <span class="mock-bar" style="width:92%"></span><span class="mock-bar" style="width:84%"></span><span class="mock-bar" style="width:88%"></span><span class="mock-bar" style="width:70%"></span>
-                                </div>
-                                <div class="mock-page">
-                                    <span class="mock-chip" style="align-self:flex-start">OCR 98%</span>
-                                    <span class="mock-bar mock-bar--accent" style="width:64%"></span>
-                                    <span class="mock-bar" style="width:80%"></span>
-                                    <span class="mock-chip" style="align-self:flex-start">OCR 71%</span>
-                                    <span class="mock-bar" style="width:56%"></span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 3. E-Sign -->
-                <div class="showcase-panel" data-title="E-Sign"
-                     data-blurb="Every document, by state: draft, out for signature, or completed.">
-                    <div class="mock">
-                        <div class="mock-rail"><span></span><span></span><span></span><span></span></div>
-                        <div class="mock-body">
-                            <div class="mock-row"><div class="mock-stack"><span class="mock-bar" style="width:44%"></span></div><span class="mock-chip">Draft</span></div>
-                            <div class="mock-row is-active"><div class="mock-stack"><span class="mock-bar mock-bar--ink" style="width:66%"></span></div><span class="mock-chip">Out for signature</span></div>
-                            <div class="mock-row is-done"><div class="mock-stack"><span class="mock-bar" style="width:52%"></span></div><span class="mock-chip mock-chip--pos">Completed</span></div>
-                            <div class="mock-row is-done"><div class="mock-stack"><span class="mock-bar" style="width:60%"></span></div><span class="mock-chip mock-chip--pos">Completed</span></div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 4. Signing -->
-                <div class="showcase-panel" data-title="Signing"
-                     data-blurb="The signer sees this vendor's spend against their limit before they sign.">
-                    <div class="mock">
-                        <div class="mock-body">
-                            <div class="mock-split">
-                                <div class="mock-page">
-                                    <span class="mock-bar mock-bar--ink" style="width:48%"></span>
-                                    <span class="mock-bar" style="width:90%"></span><span class="mock-bar" style="width:76%"></span>
-                                    <div style="flex:1"></div>
-                                    <span class="mock-bar mock-bar--accent" style="width:40%"></span>
-                                </div>
-                                <div class="mock-page" style="max-width:38%">
-                                    <span class="mock-chip" style="align-self:flex-start">Limit check</span>
-                                    <span class="mock-bar mock-bar--ink" style="width:70%"></span>
-                                    <span class="mock-bar mock-bar--pos" style="width:52%"></span>
-                                    <span class="mock-bar" style="width:86%"></span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 5. Sealed record -->
-                <div class="showcase-panel" data-title="Sealed record"
-                     data-blurb="Signature, timestamp and reference burned onto the page itself.">
-                    <div class="mock">
-                        <div class="mock-body">
-                            <div class="mock-page" style="align-items:center;justify-content:center">
-                                <span class="mock-sign">
-                                    <svg viewBox="0 0 54 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M1 14c4-9 7 4 11-3s6 6 10-1 7 3 11-2 6 4 10 0"/></svg>
-                                </span>
-                                <span class="mock-bar mock-bar--ink" style="width:40%"></span>
-                                <span class="mock-bar" style="width:30%"></span>
-                                <span class="mock-chip mock-chip--pos">Integrity hash verified</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 6. Notification -->
-                <div class="showcase-panel" data-title="Notification"
-                     data-blurb="The signed PDF lands back in the inbox automatically.">
-                    <div class="mock">
-                        <div class="mock-rail"><span></span><span></span><span></span></div>
-                        <div class="mock-body">
-                            <div class="mock-row is-done">
-                                <div class="mock-stack"><span class="mock-bar mock-bar--ink" style="width:58%"></span><span class="mock-bar" style="width:40%"></span></div>
-                                <span class="mock-chip mock-chip--pos">PDF attached</span>
-                            </div>
-                            <div class="mock-row"><div class="mock-stack"><span class="mock-bar" style="width:46%"></span></div></div>
-                            <div class="mock-row"><div class="mock-stack"><span class="mock-bar" style="width:52%"></span></div></div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 7. Tracking -->
-                <div class="showcase-panel" data-title="Tracking"
-                     data-blurb="Volume, status and signature ageing, for the whole workspace, live.">
-                    <div class="mock">
-                        <div class="mock-body">
-                            <div class="mock-split">
-                                <div class="mock-page"><span class="mock-bar mock-bar--accent" style="width:60%;height:14px"></span><span class="mock-bar" style="width:44%"></span></div>
-                                <div class="mock-page"><span class="mock-bar mock-bar--ink" style="width:52%;height:14px"></span><span class="mock-bar" style="width:40%"></span></div>
-                                <div class="mock-page"><span class="mock-bar mock-bar--pos" style="width:48%;height:14px"></span><span class="mock-bar" style="width:36%"></span></div>
-                            </div>
-                            <div class="mock-row"><div class="mock-stack"><span class="mock-bar" style="width:70%"></span></div><span class="mock-chip">3 days</span></div>
-                            <div class="mock-row"><div class="mock-stack"><span class="mock-bar" style="width:55%"></span></div><span class="mock-chip">1 day</span></div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 8. SLA -->
-                <div class="showcase-panel" data-title="SLA"
-                     data-blurb="Turnaround measured against target — internal time separated from end-to-end.">
-                    <div class="mock">
-                        <div class="mock-body">
-                            <div class="mock-page">
-                                <span class="mock-bar mock-bar--ink" style="width:34%"></span>
-                                <span class="mock-bar mock-bar--pos" style="width:78%;height:12px"></span>
-                                <span class="mock-bar mock-bar--accent" style="width:56%;height:12px"></span>
-                                <span class="mock-bar" style="width:88%;height:12px"></span>
-                                <span class="mock-bar mock-bar--pos" style="width:64%;height:12px"></span>
-                                <span class="mock-chip" style="align-self:flex-start">Target 48h</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 9. Reports -->
-                <div class="showcase-panel" data-title="Reports"
-                     data-blurb="Spend by vendor, checked against the limit shown at signing.">
-                    <div class="mock">
-                        <div class="mock-body">
-                            <div class="mock-page" style="justify-content:flex-end">
-                                <div style="display:flex;align-items:flex-end;gap:10px;height:60%">
-                                    <span class="mock-bar mock-bar--accent" style="width:26px;height:40%"></span>
-                                    <span class="mock-bar mock-bar--accent" style="width:26px;height:72%"></span>
-                                    <span class="mock-bar mock-bar--accent" style="width:26px;height:55%"></span>
-                                    <span class="mock-bar mock-bar--ink" style="width:26px;height:100%"></span>
-                                    <span class="mock-bar mock-bar--accent" style="width:26px;height:62%"></span>
-                                </div>
-                                <span class="mock-bar" style="width:100%;height:1px"></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                {% endfor %}
             </div>
 
             <div class="showcase-controls">
@@ -385,9 +229,9 @@ Two things to know before editing:
                     <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
                 </button>
                 <div class="showcase-dots" role="group" aria-label="Choose a screen">
-                    {% for i in "123456789" %}
+                    {% for panel in showcase %}
                     <button type="button" class="showcase-dot" data-step="{{ forloop.counter0 }}"
-                            aria-label="Screen {{ forloop.counter }} of 9"
+                            aria-label="Screen {{ forloop.counter }} of {{ showcase|length }}"
                             {% if forloop.first %}aria-current="true"{% endif %}></button>
                     {% endfor %}
                 </div>
@@ -398,9 +242,9 @@ Two things to know before editing:
 
             {# The caption is the only thing that tells a non-sighted user the carousel moved. #}
             <div class="showcase-caption" aria-live="polite" aria-atomic="true">
-                <span class="showcase-step-label">Step <span class="showcase-step-num num">1</span> of 9</span>
-                <h3 class="showcase-title">Signature Inbox</h3>
-                <p class="showcase-blurb">Every vendor invoice lands here, already read by OCR before anyone opens it.</p>
+                <span class="showcase-step-label">Step <span class="showcase-step-num num">1</span> of {{ showcase|length }}</span>
+                <h3 class="showcase-title">{{ showcase.0.title }}</h3>
+                <p class="showcase-blurb">{{ showcase.0.blurb }}</p>
             </div>
         </div>
     </div>
@@ -486,6 +330,11 @@ Two things to know before editing:
                 {% if tier.featured %}<span class="pricing-badge">Most popular</span>{% endif %}
                 <h3 class="pricing-tier">{{ tier.name }}</h3>
                 {% if tier.description %}<p class="pricing-desc">{{ tier.description }}</p>{% endif %}
+                {% if tier.capabilities %}
+                {# Which plan this actually is -- Signature Inbox, rules, Repositories, #}
+                {# API -- so a visitor doesn't have to infer it from the feature bullets. #}
+                <p class="pricing-capability">{{ tier.capabilities|join:" " }}</p>
+                {% endif %}
                 {# Both prices are server-rendered, so the billing toggle works with no  #}
                 {# network round-trip. It previously depended on /api/pricing/ and could #}
                 {# leave monthly figures on screen under an "Annual" label if that call  #}
@@ -494,8 +343,14 @@ Two things to know before editing:
                     <span class="pricing-amount num"
                           data-monthly="{{ tier.price_monthly }}"
                           data-annual="{{ tier.price_annually }}">${{ tier.price_monthly }}</span>
-                    <span class="pricing-period">/ month</span>
+                    <span class="pricing-period"
+                          data-monthly="/ month"
+                          data-annual="/ month, billed annually">/ month</span>
                 </p>
+                {# The actual once-a-year charge (monthly-equivalent x 12). Server-rendered #}
+                {# and just shown/hidden by the toggle -- no text swap needed here, unlike  #}
+                {# .pricing-amount/.pricing-period, since the figure itself never changes.  #}
+                <p class="pricing-annual-total" hidden>${{ tier.price_annually_total }} billed yearly</p>
                 <ul class="pricing-features">
                     {% for feature in tier.features %}
                     <li>{% include "components/icons/check.svg" %}<span>{{ feature }}</span></li>
@@ -506,7 +361,10 @@ Two things to know before editing:
                     <li class="pricing-addon">{% include "components/icons/check.svg" %}<span>{{ addon.name }}: <span class="pricing-addon-amount" data-monthly="{{ addon.price_monthly }}" data-annual="{{ addon.price_annually }}" data-suffix="{{ addon.unit_suffix }}">+${{ addon.price_monthly }}{{ addon.unit_suffix }}</span></span></li>
                     {% endfor %}
                 </ul>
-                <a href="https://{{ company.app_domain }}/signup?plan={{ tier.id }}"
+                {# signup_slug covers the gap between this site's ids and the app's #}
+                {# ?plan= contract (see LANDING_PLAN_PARAM_SPEC.md); falls back to  #}
+                {# tier.id where they already match (team/business/enterprise).    #}
+                <a href="https://{{ company.app_domain }}/signup?plan={{ tier.signup_slug|default:tier.id }}"
                    class="btn {% if tier.featured %}btn-primary{% else %}btn-outline{% endif %} btn-full">
                     {{ tier.cta }}<span class="sr-only"> with the {{ tier.name }} plan</span>
                 </a>
@@ -554,8 +412,8 @@ Two things to know before editing:
     <div class="container container--narrow">
         <h2>See what happens around your next signature.</h2>
         <p class="lead">
-            Start on Starter, Plus or Pro today — or talk to sales about Team, Business or
-            Enterprise Shared.
+            Start on any plan today — or talk to sales about a dedicated instance, custom
+            domain or SSO.
         </p>
         <div class="cta-actions">
             <a href="https://{{ company.app_domain }}/signup" class="btn btn-on-deep">Get started</a>

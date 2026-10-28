@@ -17,7 +17,11 @@
     <meta property="og:title" content="{% block og_title %}HubSign — everything that happens around the signature{% endblock %}">
     <meta property="og:description" content="{% block og_description %}E-signatures, and the intake, control and records work around them.{% endblock %}">
     <meta property="og:url" content="https://{{ company.site_domain }}{{ request.path }}">
-    <meta name="twitter:card" content="summary">
+    <meta property="og:image" content="https://{{ company.site_domain }}{% static 'images/og-image.png' %}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="HubSign — everything that happens around the signature.">
+    <meta name="twitter:card" content="summary_large_image">
 
     {# Self-hosted (see static/css/main.css). Nothing is fetched from a third   #}
     {# party, which is why this site needs no cookie banner — /legal/cookies/.  #}
@@ -36,7 +40,7 @@
     <header class="header">
         <nav class="nav container" aria-label="Primary">
             <a href="{% url 'landing:index' %}" class="logo">
-                <img src="{% static 'images/hubsign_logo.png' %}" alt="HubSign — home" width="270" height="100">
+                <img src="{% static 'images/hubsign_wordmark.png' %}" alt="HubSign — home" width="257" height="100">
             </a>
             <div class="nav-links">
                 <a href="/#product">Product</a>
@@ -73,11 +77,11 @@
         <div class="container">
             <div class="footer-grid">
                 <div>
-                    <img src="{% static 'images/hubsign_logo.png' %}" alt="HubSign" class="footer-logo" width="270" height="100">
+                    <img src="{% static 'images/hubsign_wordmark.png' %}" alt="HubSign" class="footer-logo" width="257" height="100">
                     <p class="footer-tagline">E-signatures, and everything that happens around them.</p>
                     <div class="footer-powered">
                         <span class="footer-powered-text">Powered by</span>
-                        <img src="{% static 'images/fepro_logo.png' %}" alt="Future Edge Technology" class="footer-powered-logo" width="500" height="144">
+                        <img src="{% static 'images/fepro_logo.png' %}" alt="Future Edge Technology (FEPRO)" class="footer-powered-logo" width="500" height="144">
                     </div>
                 </div>
 
@@ -113,9 +117,11 @@
             <div class="footer-company">
                 <address>
                     <b>{{ company.legal_name }}</b><br>
-                    {% if company.registered_address.unresolved %}<span class="needs-confirmation">{{ company.registered_address }}</span><br>{% else %}{{ company.registered_address|linebreaksbr }}<br>{% endif %}
+                    {# Unconfirmed details are left out, not shown as a placeholder (preliminary release). #}
+                    {# manage.py check still reports them as landing.W001 until they are filled in.     #}
+                    {% if not company.registered_address.unresolved %}{{ company.registered_address|linebreaksbr }}<br>{% endif %}
                     Incorporated in {{ company.jurisdiction }}.
-                    {% if company.corporation_number.unresolved %}<span class="needs-confirmation">{{ company.corporation_number }}</span>{% else %}Corporation number {{ company.corporation_number }}.{% endif %}
+                    {% if not company.corporation_number.unresolved %}Corporation number {{ company.corporation_number }}.{% endif %}
                 </address>
             </div>
 

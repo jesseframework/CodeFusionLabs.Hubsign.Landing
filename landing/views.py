@@ -23,6 +23,102 @@ PIPELINE = [
 ]
 
 
+# The "See it in action" carousel (section id="showcase"). Real, anonymised
+# screenshots (static/images/screens/, fictional "Meridian Motors" data) --
+# not CSS skeleton geometry -- so each entry carries real alt text as well as
+# the caption shown in the aria-live region. Order follows the page's six-step
+# spine (Arrives/Reads -> inbox, invoice-detail; Checks -> business-rules,
+# duplicate-blocked; Seals -> esign; Posts -> workflows) and then the three
+# measurement screens.
+#
+# Every image is a 2:1 crop of the real screen (no sidebar or header chrome),
+# so the frame can show it edge to edge with nothing empty around it. Two of
+# the screens were too short to fill 2:1 on their own, so they were extended
+# with more of the same: the blocked invoice's timeline gained three events
+# (rule held it, vendor and AP team emailed) and the reports list gained five
+# smaller vendors, with its totals recalculated to match. Workflows is stacked
+# on Email Templates, the other half of the same Automation settings group, and
+# the rules list drops a duplicated rule. Images are only ever scaled down in
+# the browser, never up, so text stays sharp. Approval Templates is not in the
+# carousel: its only content is a heading and one table row.
+SHOWCASE = [
+    {
+        'title': 'Signature Inbox',
+        'blurb': 'Every vendor invoice lands here, already read by OCR before anyone opens it.',
+        'alt': 'The Signature Inbox: six vendor invoices with OCR-read invoice numbers and PO '
+               'references, vendor, amounts, dates and who is responsible -- some overdue, one '
+               'already signed.',
+        'image': 'inbox-crop', 'width': 1600, 'height': 800,
+    },
+    {
+        'title': 'Extracted data',
+        'blurb': 'OCR fields with a confidence score, beside the original -- the attached PO is read too.',
+        'alt': 'An open invoice: extracted OCR fields with confidence percentages on the left; '
+               'on the right, the signing status, the purchase order read from the signer '
+               'attachment, and the start of the activity timeline.',
+        'image': 'invoice-detail-crop', 'width': 1600, 'height': 800,
+    },
+    {
+        'title': 'Business rules',
+        'blurb': 'Rules that refuse a signature outright when the data is wrong.',
+        'alt': 'Business Rules settings: five rules -- low OCR confidence, duplicate invoice, '
+               'missing supporting document, attached PO mismatch and missing PO number -- each '
+               'set to BLOCK with a JSONLogic condition, above a box for testing rules against '
+               'a document.',
+        'image': 'business-rules-crop', 'width': 1309, 'height': 666,
+    },
+    {
+        'title': 'A rule fires',
+        'blurb': 'A duplicate is caught before anyone signs -- the vendor and team are notified automatically.',
+        'alt': 'An invoice held by the duplicate rule: the signing panel with the signer not yet '
+               'signed, and a timeline showing the rule holding the invoice and the vendor and '
+               'AP team being emailed.',
+        'image': 'duplicate-blocked-crop', 'width': 1600, 'height': 800,
+    },
+    {
+        'title': 'Signing',
+        'blurb': 'Every document, by state -- draft, out for signature, or completed.',
+        'alt': 'The E-Sign list: summary cards for total, pending, completed and draft documents '
+               'above a table of documents with their recipients and status.',
+        'image': 'esign-crop', 'width': 1602, 'height': 801,
+    },
+    {
+        'title': 'Automation',
+        'blurb': 'What happens next, triggered by events -- nothing re-keyed.',
+        'alt': 'Automation settings: two enabled workflows, one triggered when a duplicate '
+               'invoice is detected and one when OCR processing completes, above the reusable '
+               'email templates those workflows send.',
+        'image': 'workflows-crop', 'width': 1354, 'height': 676,
+    },
+    {
+        'title': 'Tracking',
+        'blurb': 'Volume, status and signature ageing, for the whole workspace, live.',
+        'alt': 'The dashboard: totals for documents, open approvals, awaiting signature and '
+               'completed, with a document-status donut, monthly trend, signature ageing and '
+               'document source charts.',
+        'image': 'dashboard-crop', 'width': 1602, 'height': 801,
+    },
+    {
+        'title': 'SLA',
+        'blurb': 'Turnaround measured against target -- internal time kept separate from end-to-end.',
+        'alt': 'The SLA page: a health score of 43 marked critical, internal-turnaround versus '
+               'end-to-end on-time percentages, an on-time trend, and invoices overdue and '
+               'still unsent.',
+        'image': 'sla-crop', 'width': 1600, 'height': 800,
+    },
+    {
+        'title': 'Reports',
+        'blurb': 'Spend by vendor, checked against the limit -- overruns highlighted.',
+        'alt': 'The Reports page: total spend against limit, then spend by vendor -- three '
+               'vendors over their limit shown in red, five within it shown in green.',
+        'image': 'reports-crop', 'width': 1600, 'height': 800,
+    },
+]
+for _panel in SHOWCASE:
+    _panel['png'] = 'images/screens/{}.png'.format(_panel['image'])
+    _panel['webp'] = 'images/screens/{}.webp'.format(_panel['image'])
+
+
 class IndexView(TemplateView):
     """Main landing page view."""
     template_name = 'landing/index.html'
@@ -37,6 +133,7 @@ class IndexView(TemplateView):
         context['integrations'] = self.get_integrations()
         context['faqs'] = self.get_faqs()
         context['spine'] = PIPELINE
+        context['showcase'] = SHOWCASE
         # Free is deliberately not shown as a card (asserted in landing/tests.py);
         # the two visible families are Starter/Plus/Pro and Team/Business/Enterprise.
         tiers = context['pricing_tiers']
@@ -50,8 +147,12 @@ class IndexView(TemplateView):
         return context
 
     def get_stats(self):
+        """Kept factual -- these are counts that already exist elsewhere on the
+        page (field types, roles, webhook events, SSO providers) -- but worded
+        as capabilities rather than a spec sheet, with an 'At a glance' eyebrow
+        in the template so the band reads as a summary, not a KPI row."""
         return [
-            {'n': '10', 'label': 'signable field types'},
+            {'n': '10', 'label': 'field types you can place'},
             {'n': '5', 'label': 'recipient roles'},
             {'n': '7', 'label': 'webhook events'},
             {'n': '4', 'label': 'SSO providers'},
@@ -72,7 +173,11 @@ class IndexView(TemplateView):
                 'tags': ['Business Rules (JSONLogic)', 'Approval chains', 'Workflow engine'],
             },
             {
-                'icon': 'records', 'title': 'Records', 'subtitle': 'Filing, retention, retrieval',
+                # Subtitle names the in-app feature (Repositories) rather than
+                # repeating "Records" -- the FAQ and this card used to call the
+                # same feature three different things (Records / Doc Manager /
+                # Document Manager). Repositories is the one name the app uses.
+                'icon': 'records', 'title': 'Records', 'subtitle': 'The Repositories feature',
                 'description': 'Keep what was signed — filed, classified and retained on schedule. For physical files as well as digital.',
                 'tags': ['Filing structure', 'Retention & disposal', 'Retrieval requests'],
             },
@@ -97,10 +202,6 @@ class IndexView(TemplateView):
             {'name': 'CC', 'desc': 'Receives the finished copy only'},
             {'name': 'Assistant', 'desc': 'Fills fields on behalf of another recipient, who then signs'},
         ]
-
-    # The 9 showcase-carousel panels aren't uniform repeatable cards -- each
-    # is a bespoke mini-screen -- so they're hardcoded directly in
-    # templates/landing/index.html rather than looped from context here.
 
     def get_integrations(self):
         """Grouped rather than flat.
@@ -163,7 +264,7 @@ class IndexView(TemplateView):
                 'a': "A Final Audit Report appended to the sealed PDF, recording who signed, when, from where, and the document's integrity hash — verifiable from the QR code and share link on the certificate.",
             },
             {
-                'q': 'Does Doc Manager handle physical, paper records too?',
+                'q': 'Does Repositories handle physical, paper records too?',
                 'a': 'Yes. A record can be digital, physical, or both, with a filing address — location, cabinet, shelf, bin — shared between the scanned copy and the shelf it sits on.',
             },
             {

@@ -187,6 +187,32 @@ class LandingAccessibilityTests(TestCase):
         for dot in dots:
             self.assertTrue(dot.get('aria-label'))
 
+    def test_carousel_panels_are_real_screenshots_with_meaningful_alt_text(self):
+        """The carousel used to be nine hardcoded CSS skeleton panels, every
+        one aria-hidden (a loading-state visitors kept mistaking for one).
+        They're now real product screenshots, so the frame must not be
+        aria-hidden any more, and every image needs alt text that actually
+        describes it -- not empty, not the filename."""
+        frames = [
+            attrs for tag, attrs in self.parser.tags
+            if tag == 'div' and attrs.get('class') == 'showcase-frame'
+        ]
+        self.assertEqual(len(frames), 1)
+        self.assertNotIn('aria-hidden', frames[0])
+
+        panels = re.findall(r'<div class="showcase-panel[^"]*"[^>]*>', self.html)
+        self.assertEqual(len(panels), 9)
+
+        showcase_images = [
+            a for t, a in self.parser.tags
+            if t == 'img' and 'screens/' in a.get('src', '')
+            and 'signing-complete' not in a.get('src', '')
+        ]
+        self.assertEqual(len(showcase_images), 9)
+        for img in showcase_images:
+            self.assertTrue(img.get('alt'), f'missing/empty alt: {img}')
+            self.assertGreater(len(img['alt']), 15)
+
     def test_pricing_toggles_use_the_tabs_pattern(self):
         tabs = [a for t, a in self.parser.tags if a.get('role') == 'tab']
         self.assertEqual(len(tabs), 4)

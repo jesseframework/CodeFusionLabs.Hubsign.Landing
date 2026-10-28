@@ -78,6 +78,8 @@ with licences shipped alongside.
 Colour tokens are at the top of `static/css/main.css`. Every text/background pair used is
 asserted at WCAG AA by `landing/tests_a11y.py::PaletteContrastTests` — add new pairings there.
 
+`static/images/og-image.png` (the Open Graph / Twitter card image) is generated, not hand-made — re-run `node tools/generate_og_image.mjs` after changing the headline, wordmark, or hero screenshot (needs the Playwright Chromium install from the sibling `hubsign_by_documenso` repo).
+
 ## Accessibility
 
 Targets WCAG 2.1 AA plus the WCAG 2.2 target-size criterion. State changes must update ARIA,

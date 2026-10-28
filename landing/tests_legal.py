@@ -151,16 +151,19 @@ class LegalRoutingTests(TestCase):
 
 
 class CompanyDetailTests(TestCase):
-    def test_unresolved_details_render_as_a_visible_marker(self):
-        """An unconfirmed business detail must be obvious, never invented."""
-        html = self.client.get(reverse('landing:privacy')).content.decode()
+    def test_unresolved_details_are_left_out_not_shown_as_markers(self):
+        """Preliminary release: an unconfirmed detail is omitted from public
+        pages (never invented, never printed as a placeholder). The system
+        check still reports it -- see test_placeholder_state_matches_the_system_check."""
         for key in REQUIRED_BEFORE_PUBLISH:
             if isinstance(COMPANY[key], Unknown):
                 break
         else:
             self.skipTest('all details confirmed')
-        self.assertIn('NEEDS CONFIRMATION', html)
-        self.assertIn('needs-confirmation', html)
+        for name in ('landing:index', 'landing:privacy', 'landing:terms', 'landing:accessibility'):
+            html = self.client.get(reverse(name)).content.decode()
+            self.assertNotIn('NEEDS CONFIRMATION', html, name)
+            self.assertNotIn('needs-confirmation', html, name)
 
     def test_placeholder_state_matches_the_system_check(self):
         from landing.checks import check_company_details

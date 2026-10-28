@@ -219,18 +219,19 @@
     PIPEDA requires us to name an individual accountable for our compliance. Write to:
 </p>
 <dl>
+    {% if not company.privacy_officer.unresolved %}
     <dt>Privacy Officer</dt>
-    <dd>
-        {% if company.privacy_officer.unresolved %}<span class="needs-confirmation">{{ company.privacy_officer }}</span>{% else %}{{ company.privacy_officer }}{% endif %}
-    </dd>
+    <dd>{{ company.privacy_officer }}</dd>
+    {% endif %}
     <dt>Email</dt>
     <dd>
-        {% if company.privacy_email.unresolved %}<span class="needs-confirmation">{{ company.privacy_email }}</span>{% else %}<a href="mailto:{{ company.privacy_email }}">{{ company.privacy_email }}</a>{% endif %}
+        {# Until a dedicated privacy address is confirmed, requests go to support. #}
+        {% if company.privacy_email.unresolved %}<a href="mailto:{{ company.support_email }}">{{ company.support_email }}</a>{% else %}<a href="mailto:{{ company.privacy_email }}">{{ company.privacy_email }}</a>{% endif %}
     </dd>
     <dt>Post</dt>
     <dd>
-        {{ company.legal_name }}<br>
-        {% if company.registered_address.unresolved %}<span class="needs-confirmation">{{ company.registered_address }}</span>{% else %}{{ company.registered_address|linebreaksbr }}{% endif %}
+        {{ company.legal_name }}{% if not company.registered_address.unresolved %}<br>
+        {{ company.registered_address|linebreaksbr }}{% endif %}
     </dd>
 </dl>
 <p>

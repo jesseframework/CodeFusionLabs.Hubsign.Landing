@@ -38,10 +38,14 @@
     incorporated in {{ company.jurisdiction }}.
 </p>
 <dl>
+    {% if not company.registered_address.unresolved %}
     <dt>Registered address</dt>
-    <dd>{% if company.registered_address.unresolved %}<span class="needs-confirmation">{{ company.registered_address }}</span>{% else %}{{ company.registered_address|linebreaksbr }}{% endif %}</dd>
+    <dd>{{ company.registered_address|linebreaksbr }}</dd>
+    {% endif %}
+    {% if not company.corporation_number.unresolved %}
     <dt>Corporation number</dt>
-    <dd>{% if company.corporation_number.unresolved %}<span class="needs-confirmation">{{ company.corporation_number }}</span>{% else %}{{ company.corporation_number }}{% endif %}</dd>
+    <dd>{{ company.corporation_number }}</dd>
+    {% endif %}
     <dt>Email</dt>
     <dd><a href="mailto:{{ company.sales_email }}">{{ company.sales_email }}</a></dd>
     <dt>Telephone</dt>

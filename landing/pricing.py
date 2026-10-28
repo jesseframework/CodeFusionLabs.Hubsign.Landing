@@ -33,6 +33,27 @@ class PricingTier:
     price_id_monthly: str | None = None
     price_id_annually: str | None = None
     addons: list[PricingAddon] = field(default_factory=list)
+    # Short, truthful "what's in it" line(s) for the card -- which capabilities
+    # (Signature Inbox, business rules, Repositories, API...) this tier
+    # actually includes, sourced from org-tiers.ts / nav-config.tsx in the app
+    # repo. Default empty: Free isn't shown as a card, so it needs none.
+    capabilities: list[str] = field(default_factory=list)
+    # Slug the app's /signup?plan= actually recognises (see
+    # LANDING_PLAN_PARAM_SPEC.md: free|individual|team|business|enterprise).
+    # None means "tier.id already is a recognised slug" -- true for
+    # team/business/enterprise, which is why only Starter sets this.
+    signup_slug: str | None = None
+
+    @property
+    def price_annually_total(self) -> int:
+        """What actually gets charged, once, when billing annually.
+
+        price_annually is a monthly-equivalent figure (see
+        annual_saving_percent) -- this is that figure x 12, for display next
+        to the "Annual" toggle so a visitor isn't shown a per-month number
+        while actually being charged twelve times that up front.
+        """
+        return self.price_annually * 12
 
 
 def get_pricing_tiers() -> list[PricingTier]:
@@ -173,6 +194,18 @@ def _resolve_interval_prices(price_matches: list[dict]):
     return price_monthly, price_annually, monthly['id'], yearly['id'] if yearly else None
 
 
+# Starter, Plus and Pro are all personal-account plans -- the app hides
+# Signature Inbox, business rules, approvals, workflows and Repositories for
+# personal accounts entirely; those five only ever come from an organization
+# plan (see packages/lib/constants/org-tiers.ts and nav-config.tsx in the app
+# repo). Shared verbatim across all three individual tiers below since the
+# scope is identical regardless of price.
+INDIVIDUAL_CAPABILITY = (
+    'E-signature only -- no Signature Inbox, business rules, approvals, '
+    'workflows or Repositories (those need an organization plan).'
+)
+
+
 def _fallback_tiers() -> list[PricingTier]:
     """See HubSign-Pricing-Plan.md Section 2 ("Proposed full ladder", "Feature
     differentiation", "Pricing page layout") and Section 4 ("Annual billing") for
@@ -206,8 +239,13 @@ def _fallback_tiers() -> list[PricingTier]:
                 '20 signature requests/mo', 'Up to 10 recipients per document',
                 '1 direct signing link', 'Standard support',
             ],
+            capabilities=[INDIVIDUAL_CAPABILITY],
             featured=False, cta='Get started',
             price_monthly=15, price_annually=12,
+            # Starter is the $15/mo plan the app already knows as "individual"
+            # (LANDING_PLAN_PARAM_SPEC.md) -- send that slug, not this site's
+            # local id, so ?plan= actually preselects checkout after signup.
+            signup_slug='individual',
         ),
         PricingTier(
             id='plus', name='Plus',
@@ -216,8 +254,14 @@ def _fallback_tiers() -> list[PricingTier]:
                 '50 signature requests/mo', 'Up to 50 recipients per document',
                 '5 direct signing links', 'Email support',
             ],
+            capabilities=[INDIVIDUAL_CAPABILITY],
             featured=True, cta='Get started',
             price_monthly=35, price_annually=28,
+            # No app-side signup slug exists yet for Plus (LANDING_PLAN_PARAM_SPEC.md
+            # only defines free|individual|team|business|enterprise). Leaving
+            # signup_slug unset falls back to tier.id ('plus'), which the app
+            # silently ignores today -- flagged to the app team, not worked
+            # around here. Update this once the app adds a Plus slug.
         ),
         PricingTier(
             id='pro', name='Pro',
@@ -226,13 +270,19 @@ def _fallback_tiers() -> list[PricingTier]:
                 '100 signature requests/mo', 'Up to 500 recipients per document',
                 '20 direct signing links', 'Priority email support',
             ],
+            capabilities=[INDIVIDUAL_CAPABILITY],
             featured=False, cta='Get started',
             price_monthly=50, price_annually=40,
+            # Same gap as Plus above -- no app-side "pro" slug yet either.
         ),
         PricingTier(
             id='team', name='Team',
             description='For a small team centralizing signing, approvals and records in one place.',
             features=['Up to 20 users', '50 signature requests/mo', '400 pages/mo Smart OCR'],
+            capabilities=[
+                'Adds Signature Inbox with OCR, business rules, approval chains '
+                'and workflows -- no Repositories, no API.',
+            ],
             featured=False, cta='Get started',
             price_monthly=59, price_annually=47,
             addons=[
@@ -247,7 +297,10 @@ def _fallback_tiers() -> list[PricingTier]:
             description='For growing organizations running business rules and workflows at scale.',
             features=[
                 'Unlimited users', '150 signature requests/mo', '1,500 pages/mo Smart OCR',
-                'Document Manager included', 'API + embedding',
+                'Repositories included', 'API + embedding',
+            ],
+            capabilities=[
+                'Everything in Team, plus Repositories and API + embedding included.',
             ],
             featured=True, cta='Get started',
             price_monthly=199, price_annually=165,
@@ -263,7 +316,11 @@ def _fallback_tiers() -> list[PricingTier]:
             description='For large organizations sharing infrastructure and records across departments.',
             features=[
                 'Unlimited users', '1,000 signature requests/mo', '10,000 pages/mo Smart OCR',
-                'Document Manager included', 'API + embedding',
+                'Repositories included', 'API + embedding',
+            ],
+            capabilities=[
+                'Everything in Business, at higher usage allowances '
+                '(1,000 requests/mo, 10,000-page OCR).',
             ],
             featured=False, cta='Get started',
             price_monthly=500, price_annually=415,

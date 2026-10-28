@@ -330,7 +330,9 @@ h3 { font-size: var(--step-3); }
 
 .nav-links { display: flex; align-items: center; gap: var(--space-6); }
 .nav-links a {
-    font-size: var(--step--1);
+    /* 13px read small for primary nav; bumped to 14px (no step token sits
+       between --step--1 and --step-0, so this is set directly). */
+    font-size: 0.875rem;
     font-weight: 500;
     color: var(--ink-2);
     text-decoration: none;
@@ -384,6 +386,16 @@ h3 { font-size: var(--step-3); }
     border-bottom: 1px solid var(--rule);
 }
 .hero-inner { max-width: 780px; }
+/* Names the audience before the headline poses its riddle. Mono to match the
+   page's other system-label type, but sentence case and 13px (not the
+   all-caps 12px .eyebrow) since it is a full sentence, not a short label. */
+.hero-eyebrow {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    font-weight: 500;
+    color: var(--ink-muted);
+    margin-bottom: var(--space-4);
+}
 .hero h1 { margin-bottom: var(--space-5); }
 .hero-accent { display: block; color: var(--accent); font-style: italic; }
 .hero .lead { margin-bottom: var(--space-6); }
@@ -437,11 +449,17 @@ h3 { font-size: var(--step-3); }
     background: var(--paper);
     border: 2px solid var(--accent);
 }
-/* A dashed border on a 13px circle renders as a broken arc, so the commodity
-   step is distinguished by being filled and muted instead of outlined. */
+/* A filled dot reads as "you are here" in every stepper convention, which is
+   backwards for the one step every vendor already sells -- filling it made
+   the commodity step look like the current, most-important one. A dashed
+   border was tried instead, but at 13px it renders as a broken arc rather
+   than a ring. The fix keeps every marker a hollow ring (so nothing reads as
+   "on") and only thins and mutes this one's outline, plus a small text tag
+   underneath -- de-emphasised without inventing a new visual language. */
 .spine-step.is-commodity .spine-marker {
+    border-width: 1px;
     border-color: var(--spine-commodity);
-    background: var(--spine-commodity);
+    background: var(--paper);
 }
 .spine-label {
     display: block;
@@ -451,7 +469,16 @@ h3 { font-size: var(--step-3); }
     color: var(--ink);
     margin-bottom: var(--space-2);
 }
-.spine-step.is-commodity .spine-label { color: var(--spine-commodity); }
+.spine-step.is-commodity .spine-label { color: var(--spine-commodity); margin-bottom: var(--space-1); }
+.spine-tag {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: var(--step--2);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--spine-commodity);
+    margin-bottom: var(--space-2);
+}
 .spine-detail { font-size: var(--step--1); line-height: 1.5; color: var(--ink-muted); }
 .spine-note {
     display: flex;
@@ -483,6 +510,10 @@ h3 { font-size: var(--step-3); }
    STATS
    ============================================================================= */
 .stats { border-bottom: 1px solid var(--rule); background: var(--sunken); }
+/* "At a glance" eyebrow, so the row reads as a summary rather than a KPI
+   spec sheet. Sits above the grid's own padding-block, so it gets a tighter
+   top margin than the default .eyebrow to avoid doubling that space. */
+.stats .eyebrow { margin-top: var(--space-6); margin-bottom: 0; }
 .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); padding-block: var(--space-6); }
 /* column-reverse so the figure reads above its label while <dt> stays
    before <dd> in the markup, as a definition list requires. */
@@ -500,7 +531,7 @@ h3 { font-size: var(--step-3); }
     display: block;
     margin-top: var(--space-2);
     font-family: var(--font-mono);
-    font-size: var(--step--2);
+    font-size: var(--step--1);
     letter-spacing: 0.06em;
     color: var(--ink-muted);
 }
@@ -531,7 +562,7 @@ h3 { font-size: var(--step-3); }
 .pillar-desc { font-size: var(--step--1); line-height: 1.6; color: var(--ink-2); margin-bottom: var(--space-4); }
 .pillar-tags { display: flex; flex-direction: column; gap: var(--space-2); }
 .pillar-tags li {
-    font-size: var(--step--2);
+    font-size: var(--step--1);
     color: var(--ink-muted);
     padding-left: var(--space-4);
     position: relative;
@@ -604,21 +635,54 @@ h3 { font-size: var(--step-3); }
 .sealed-point svg { width: 16px; height: 16px; color: var(--accent); margin-top: 0.3em; }
 .sealed-point b { color: var(--ink); font-weight: 600; }
 
+/* A real crop of the "Send for signature / Signing complete" panel (see
+   landing/views.py-adjacent static/images/screens/signing-complete.*),
+   replacing what used to be CSS skeleton geometry. The crop is already
+   tightly framed, so it is shown at its own aspect ratio -- no forced
+   aspect-ratio box, no cropping needed. */
+.signing-shot {
+    border: 1px solid var(--rule-strong);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+    background: var(--raised);
+}
+.signing-shot img { display: block; width: 100%; height: auto; }
+
 /* =============================================================================
    SHOWCASE CAROUSEL
    ============================================================================= */
 .showcase-viewport { position: relative; }
 .showcase-frame {
-    background: var(--raised);
+    background: var(--sunken);
     border: 1px solid var(--rule-strong);
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-md);
     overflow: hidden;
-    aspect-ratio: 16 / 9;
-    min-height: 300px;
+    /* Every panel image is cut to this same 2:1 shape (a few are within a
+       couple of percent of it), so the screenshot fills the frame edge to
+       edge -- no padding, no mat, no empty bands. Where a real screen was too
+       short to fill 2:1, the image itself is extended with more rows of the
+       same kind (see landing/views.py), rather than letterboxed here. No
+       min-height alongside aspect-ratio: that combination previously forced
+       the frame's WIDTH past the viewport under 400px. */
+    aspect-ratio: 2 / 1;
 }
 .showcase-panel { display: none; height: 100%; }
-.showcase-panel.is-active { display: flex; }
+.showcase-panel.is-active { display: block; }
+.showcase-panel picture { display: block; width: 100%; height: 100%; }
+.showcase-panel img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    /* The images are 2:1 already, so `cover` crops nothing in practice; it
+       only absorbs the sub-3% rounding on the odd panel, trimming from the
+       bottom. All source images are at least as wide as the frame renders,
+       so this only ever scales them down -- never up, which is what made
+       text soft. */
+    object-fit: cover;
+    object-position: top left;
+}
 
 .showcase-controls {
     display: flex;
@@ -692,7 +756,7 @@ h3 { font-size: var(--step-3); }
 .integration { display: grid; grid-template-columns: 22px 1fr; gap: var(--space-3); }
 .integration svg { width: 18px; height: 18px; color: var(--accent); margin-top: 0.25em; }
 .integration h4 { font-size: var(--step-0); margin-bottom: var(--space-1); }
-.integration p { font-size: var(--step--2); color: var(--ink-muted); line-height: 1.5; }
+.integration p { font-size: var(--step--1); color: var(--ink-muted); line-height: 1.5; }
 
 /* =============================================================================
    PRICING
@@ -762,6 +826,10 @@ h3 { font-size: var(--step-3); }
 }
 .pricing-tier { font-size: var(--step-2); margin-bottom: var(--space-2); }
 .pricing-desc { font-size: var(--step--1); color: var(--ink-2); margin-bottom: var(--space-4); }
+/* Which plan this actually is (Signature Inbox, rules, Repositories, API) --
+   answers "which card includes what the rest of the page describes" without
+   forcing a visitor to reverse-engineer it from the numeric feature bullets. */
+.pricing-capability { font-size: var(--step--1); color: var(--ink-2); margin-bottom: var(--space-4); }
 .pricing-price { display: flex; align-items: baseline; gap: var(--space-2); margin-bottom: var(--space-5); }
 .pricing-amount {
     font-family: var(--font-display);
@@ -772,6 +840,13 @@ h3 { font-size: var(--step-3); }
     color: var(--ink);
 }
 .pricing-period { font-size: var(--step--1); color: var(--ink-muted); }
+/* Shown only under Annual (toggled via the hidden attribute, not display, so
+   it stays out of the accessibility tree when off) -- the actual once-a-year
+   charge, so "$47 / month, billed annually" isn't the only number on screen.
+   Negative margin-top pulls it up against .pricing-price without touching
+   that rule's own margin-bottom, so the Monthly view's spacing (this element
+   collapses to nothing while [hidden]) is unaffected either way. */
+.pricing-annual-total { font-size: var(--step--2); color: var(--ink-muted); margin-top: calc(-1 * var(--space-3)); margin-bottom: var(--space-3); }
 .pricing-features { display: flex; flex-direction: column; gap: var(--space-3); margin-bottom: var(--space-6); flex-grow: 1; }
 .pricing-features li { display: grid; grid-template-columns: 18px 1fr; gap: var(--space-3); font-size: var(--step--1); color: var(--ink-2); }
 .pricing-features svg { width: 14px; height: 14px; color: var(--accent); margin-top: 0.35em; }
@@ -827,7 +902,18 @@ h3 { font-size: var(--step-3); }
 .footer-tagline { font-size: var(--step--1); color: var(--on-deep-muted); max-width: 30ch; margin-bottom: var(--space-5); }
 .footer-powered { display: flex; align-items: center; gap: var(--space-3); }
 .footer-powered-text { font-family: var(--font-mono); font-size: var(--step--2); color: var(--on-deep-muted); }
-.footer-powered-logo { height: 26px; width: auto; }
+/* The only FEPRO credit on the page (the header/footer HubSign logo no
+   longer carries its own baked-in "Powered by FEPRO" -- see
+   hubsign_wordmark.png). Its four-colour mark clashes with the rest of the
+   restrained palette, so it runs smaller, greyscale and slightly faded,
+   restored to full colour on hover as a small reward for noticing it. */
+.footer-powered-logo {
+    height: 18px;
+    width: auto;
+    filter: grayscale(1) opacity(0.75);
+    transition: filter var(--transition);
+}
+.footer-powered-logo:hover { filter: grayscale(0) opacity(1); }
 
 .footer-col h3 {
     font-family: var(--font-mono);
@@ -858,7 +944,7 @@ h3 { font-size: var(--step-3); }
     flex-wrap: wrap;
     gap: var(--space-4);
     justify-content: space-between;
-    font-size: var(--step--2);
+    font-size: var(--step--1);
     color: var(--on-deep-muted);
 }
 .footer-bottom p { max-width: 70ch; }
@@ -942,56 +1028,6 @@ h3 { font-size: var(--step-3); }
 .legal-nav [aria-current='page'] { color: var(--ink); font-weight: 600; text-decoration: none; }
 
 /* =============================================================================
-   CSS MOCKUPS (hero preview + showcase panels)
-   Purely decorative skeleton geometry. Every container is aria-hidden in the
-   markup, so none of this is announced.
-   ============================================================================= */
-.mock { display: flex; width: 100%; height: 100%; background: var(--sunken); }
-.mock-rail { width: 64px; flex-shrink: 0; background: var(--deep); padding: var(--space-3); display: flex; flex-direction: column; gap: var(--space-2); }
-.mock-rail span { display: block; height: 5px; border-radius: 2px; background: rgba(255, 255, 255, 0.22); }
-.mock-rail span:first-child { background: var(--on-deep-accent); width: 60%; }
-.mock-body { flex: 1; padding: var(--space-4); display: flex; flex-direction: column; gap: var(--space-3); min-width: 0; }
-.mock-row {
-    display: flex;
-    align-items: center;
-    gap: var(--space-3);
-    padding: var(--space-3);
-    background: var(--raised);
-    border: 1px solid var(--rule);
-    border-radius: var(--radius-sm);
-}
-.mock-row.is-active { border-color: var(--accent); background: var(--accent-soft); }
-.mock-row.is-done { border-color: #bfe3cd; background: var(--positive-soft); }
-.mock-bar { height: 7px; border-radius: 3px; background: var(--rule-strong); }
-.mock-bar--ink { background: var(--ink-2); }
-.mock-bar--accent { background: var(--accent); }
-.mock-bar--pos { background: var(--positive); }
-.mock-stack { display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 0; }
-.mock-page {
-    flex: 1;
-    background: var(--raised);
-    border: 1px solid var(--rule);
-    border-radius: var(--radius-sm);
-    padding: var(--space-5);
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-3);
-}
-.mock-split { display: flex; gap: var(--space-3); flex: 1; min-width: 0; }
-.mock-chip {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    padding: 2px 6px;
-    border-radius: 3px;
-    background: var(--accent-soft);
-    color: var(--accent);
-    white-space: nowrap;
-}
-.mock-chip--pos { background: var(--positive-soft); color: var(--positive); }
-.mock-sign { color: var(--accent); }
-.mock-sign svg { width: 54px; height: 20px; }
-
-/* =============================================================================
    RESPONSIVE
    ============================================================================= */
 @media (max-width: 1000px) {
@@ -1002,11 +1038,22 @@ h3 { font-size: var(--step-3); }
     .integration-list { grid-template-columns: repeat(2, 1fr); }
 }
 
+/* Previously the 3-card grid went straight from 3 columns to a single
+   860px-and-below column, so at tablet width (e.g. 768px) three cards
+   stacked into one ~705px-wide column and read as mostly empty space. Two
+   columns here keeps the cards a sane width; the third (the featured, i.e.
+   middle, card in both groups) is left as an orphan on its own row rather
+   than force-spanning it, which would open gaps on *both* sides instead of
+   one. Scoped to .pricing-grid only -- doesn't touch the max-width: 860px
+   rules below, which are other sections'. */
+@media (max-width: 1000px) and (min-width: 621px) {
+    .pricing-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
 @media (max-width: 860px) {
     .nav-links, .nav-actions { display: none; }
     .mobile-menu-btn { display: flex; }
     .signing-grid { grid-template-columns: 1fr; gap: var(--space-7); }
-    .pricing-grid { grid-template-columns: 1fr; }
     .footer-grid { grid-template-columns: 1fr 1fr; }
 }
 
@@ -1014,27 +1061,29 @@ h3 { font-size: var(--step-3); }
     :root { --space-9: 3.5rem; --space-8: 2.5rem; }
     .stats-grid { grid-template-columns: repeat(2, 1fr); gap: var(--space-5); }
     .stat { padding-inline: 0; border-left: 0; }
-    .spine-track { grid-template-columns: 1fr; row-gap: var(--space-5); }
+    /* The hero plus spine ran to ~1.7 screens on a 375px phone. The spine
+       wrapper's own top space, the gap between steps, the step indent and
+       the detail copy's measure are tightened together so six full steps
+       fit in noticeably less height -- nothing is hidden or truncated. */
+    .spine { margin-top: var(--space-6); padding-top: var(--space-5); }
+    .spine-track { grid-template-columns: 1fr; row-gap: var(--space-3); }
     /* Vertical rail on narrow screens. */
-    .spine-step { padding-top: 0; padding-left: var(--space-6); }
+    .spine-step { padding-top: 0; padding-left: var(--space-5); }
     .spine-step::before {
-        top: 6px; bottom: calc(-1 * var(--space-5));
+        top: 6px; bottom: calc(-1 * var(--space-3));
         left: 6px; right: auto;
         width: 1px; height: auto;
     }
     .spine-step:last-child::before { bottom: auto; height: 0; }
     .spine-marker { top: 0; left: 0; }
+    .spine-note { margin-top: var(--space-5); padding-top: var(--space-3); }
     .pillars { grid-template-columns: 1fr; }
     .pillar { border-left: 0; padding-left: 0; border-top: 1px solid var(--rule); }
     .pillar:first-child { border-top: 0; }
     .integration-list { grid-template-columns: 1fr; }
     .role { grid-template-columns: 1fr; gap: var(--space-1); }
+    .pricing-grid { grid-template-columns: 1fr; }
     .footer-grid { grid-template-columns: 1fr; }
-    /* min-height plus aspect-ratio makes the frame derive its WIDTH from its
-       height (300 x 4/3 = 400px), which overflowed viewports under 400px.
-       Clearing it lets the height follow the width instead. */
-    .showcase-frame { aspect-ratio: 4 / 3; min-height: 0; }
-    .mock-rail { width: 44px; }
 }
 
 /* =============================================================================
