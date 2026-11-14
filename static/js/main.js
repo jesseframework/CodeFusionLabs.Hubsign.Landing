@@ -111,6 +111,32 @@
     }
 
     // =========================================================================
+    // SPINE DRAW-ON
+    // The hero pipeline inks in once, when it first scrolls into view (~2.7s,
+    // well under the 5s WCAG 2.2.2 threshold, and it stops: it is not a loop).
+    // Skipped entirely under prefers-reduced-motion, and without JS the spine
+    // is simply fully drawn -- .js-draw is only ever added here.
+    // =========================================================================
+    function initSpineDraw() {
+        var spine = document.querySelector('.spine');
+        if (!spine || reduceMotion.matches || !('IntersectionObserver' in window)) return;
+
+        spine.classList.add('js-draw');
+        var io = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+                if (!entry.isIntersecting) return;
+                // Two frames, so the hidden starting state is painted before the
+                // class change gives the transitions something to run from.
+                requestAnimationFrame(function () {
+                    requestAnimationFrame(function () { spine.classList.add('is-drawn'); });
+                });
+                io.disconnect();
+            });
+        }, { threshold: 0.1 });
+        io.observe(spine);
+    }
+
+    // =========================================================================
     // SHOWCASE WALKTHROUGH
     // Tabs pattern: aria-selected on the tab, `hidden` on the inactive panels,
     // a roving tabindex, and arrow keys / Home / End. It opens on the second
@@ -246,6 +272,7 @@
         initMobileMenu();
         initInPageLinks();
         initFaq();
+        initSpineDraw();
         initWalkthrough();
         initPricing();
     });

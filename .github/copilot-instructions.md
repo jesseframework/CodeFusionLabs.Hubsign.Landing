@@ -55,7 +55,7 @@ Four typefaces, one job each — never mix them up:
 
 | Token | Family | Used for |
 |---|---|---|
-| `--font-display` | Fraunces | `h1`–`h3` only |
+| `--font-display` | Fraunces | `h1`–`h3` only. Shipped as `fraunces-wonk.woff2`: SOFT=50 and WONK=1 are baked in (only weight and optical size stay variable) |
 | `--font-body` | Inter | body, UI, tabular figures |
 | `--font-mono` | IBM Plex Mono | small system labels only — field types, code-ish chips |
 | `--font-hand` | Caveat | the "pen" marks only — margin notes, stamps, the Commodity tag. Never body text or headings |

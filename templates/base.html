@@ -26,7 +26,7 @@
     {# Self-hosted (see static/css/main.css). Nothing is fetched from a third   #}
     {# party, which is why this site needs no cookie banner — /legal/cookies/.  #}
     <link rel="preload" href="{% static 'fonts/inter-400-700.woff2' %}" as="font" type="font/woff2" crossorigin>
-    <link rel="preload" href="{% static 'fonts/fraunces-500-700.woff2' %}" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="{% static 'fonts/fraunces-wonk.woff2' %}" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="{% static 'fonts/caveat-500-700.woff2' %}" as="font" type="font/woff2" crossorigin>
 
     <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}">
@@ -116,6 +116,7 @@
             </div>
 
             <div class="footer-company">
+                {% include "components/icons/seal.svg" %}
                 <address>
                     <b>{{ company.legal_name }}</b><br>
                     {# Unconfirmed details are left out, not shown as a placeholder (preliminary release). #}

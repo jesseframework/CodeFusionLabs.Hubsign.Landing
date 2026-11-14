@@ -80,7 +80,7 @@ class ThirdPartyOriginTests(TestCase):
 
     def test_font_files_and_their_licences_are_present(self):
         fonts = ROOT / 'static' / 'fonts'
-        for name in ('inter-400-700', 'fraunces-500-700', 'ibm-plex-mono-500'):
+        for name in ('inter-400-700', 'fraunces-wonk', 'ibm-plex-mono-500'):
             self.assertTrue((fonts / f'{name}.woff2').exists(), f'missing {name}.woff2')
         # All three families are OFL 1.1; redistribution requires shipping the licence.
         for licence in ('OFL-inter.txt', 'OFL-fraunces.txt', 'OFL-ibm-plex-mono.txt'):
