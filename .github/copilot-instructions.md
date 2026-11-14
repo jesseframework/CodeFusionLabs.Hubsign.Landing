@@ -51,13 +51,14 @@ are `Unknown` instances that render a visible `[[NEEDS CONFIRMATION]]` marker an
 Editorial layout, warm paper ground (`--paper`), deep navy ink, purple as an accent rather than
 a wash. Hairline rules instead of boxes-in-boxes.
 
-Three typefaces, one job each — never mix them up:
+Four typefaces, one job each — never mix them up:
 
 | Token | Family | Used for |
 |---|---|---|
 | `--font-display` | Fraunces | `h1`–`h3` only |
 | `--font-body` | Inter | body, UI, tabular figures |
-| `--font-mono` | IBM Plex Mono | small system labels only — eyebrows, step counters, field types |
+| `--font-mono` | IBM Plex Mono | small system labels only — field types, code-ish chips |
+| `--font-hand` | Caveat | the "pen" marks only — margin notes, stamps, the Commodity tag. Never body text or headings |
 
 All self-hosted from `static/fonts/`, all SIL OFL 1.1 with licences shipped. Do not add a
 Google Fonts `<link>`.

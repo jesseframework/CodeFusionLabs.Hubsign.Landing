@@ -111,59 +111,58 @@
     }
 
     // =========================================================================
-    // SHOWCASE CAROUSEL
+    // SHOWCASE WALKTHROUGH
+    // Tabs pattern: aria-selected on the tab, `hidden` on the inactive panels,
+    // a roving tabindex, and arrow keys / Home / End. It opens on the second
+    // screen (set in the template) because the hero already shows the first.
     // =========================================================================
-    function initShowcase() {
-        var panels = Array.prototype.slice.call(document.querySelectorAll('.showcase-panel'));
-        var dots = Array.prototype.slice.call(document.querySelectorAll('.showcase-dot'));
-        var prev = document.querySelector('[data-showcase="prev"]');
-        var next = document.querySelector('[data-showcase="next"]');
-        var stepNum = document.querySelector('.showcase-step-num');
-        var title = document.querySelector('.showcase-title');
-        var blurb = document.querySelector('.showcase-blurb');
-        if (!panels.length) return;
+    function initWalkthrough() {
+        var list = document.querySelector('.walk-tabs');
+        if (!list) return;
+        var tabs = Array.prototype.slice.call(list.querySelectorAll('[role="tab"]'));
+        if (!tabs.length) return;
 
-        var active = 0;
-
-        function render() {
-            panels.forEach(function (panel, i) {
-                panel.classList.toggle('is-active', i === active);
+        function select(tab, focus) {
+            tabs.forEach(function (t) {
+                var on = t === tab;
+                t.setAttribute('aria-selected', String(on));
+                t.tabIndex = on ? 0 : -1;
+                var panel = document.getElementById(t.getAttribute('aria-controls'));
+                if (panel) panel.hidden = !on;
             });
-            dots.forEach(function (dot, i) {
-                if (i === active) dot.setAttribute('aria-current', 'true');
-                else dot.removeAttribute('aria-current');
-            });
-
-            var panel = panels[active];
-            // The caption sits in an aria-live region, so rewriting it is what
-            // announces the change. Without this the arrows are silent.
-            if (stepNum) stepNum.textContent = String(active + 1);
-            if (title) title.textContent = panel.dataset.title || '';
-            if (blurb) blurb.textContent = panel.dataset.blurb || '';
+            if (focus) tab.focus();
         }
 
-        function goTo(i) {
-            active = ((i % panels.length) + panels.length) % panels.length;
-            render();
-        }
-
-        dots.forEach(function (dot, i) {
-            dot.addEventListener('click', function () { goTo(i); });
+        tabs.forEach(function (tab) {
+            tab.tabIndex = tab.getAttribute('aria-selected') === 'true' ? 0 : -1;
+            tab.addEventListener('click', function () { select(tab, false); });
         });
-        if (prev) prev.addEventListener('click', function () { goTo(active - 1); });
-        if (next) next.addEventListener('click', function () { goTo(active + 1); });
 
-        // Arrow keys, so the 9 dots do not have to be tabbed through one by one.
-        var dotGroup = document.querySelector('.showcase-dots');
-        if (dotGroup) {
-            dotGroup.addEventListener('keydown', function (e) {
-                var delta = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
-                if (!delta) return;
-                e.preventDefault();
-                goTo(active + delta);
-                dots[active].focus();
-            });
-        }
+        // "Next: ..." under each screen. The clicked button's panel is about to
+        // be hidden, so focus moves to the new panel's own Next button -- a
+        // keyboard user can keep stepping through without hunting for the tabs.
+        document.addEventListener('click', function (e) {
+            var btn = e.target.closest('[data-walk-next]');
+            if (!btn) return;
+            var to = Number(btn.getAttribute('data-walk-next')) % tabs.length;
+            select(tabs[to], false);
+            var panel = document.getElementById(tabs[to].getAttribute('aria-controls'));
+            var nextBtn = panel && panel.querySelector('[data-walk-next]');
+            if (nextBtn) nextBtn.focus({ preventScroll: true });
+        });
+
+        list.addEventListener('keydown', function (e) {
+            var i = tabs.indexOf(document.activeElement);
+            if (i < 0) return;
+            var n = tabs.length, to = -1;
+            if (e.key === 'ArrowDown' || e.key === 'ArrowRight') to = (i + 1) % n;
+            else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') to = (i - 1 + n) % n;
+            else if (e.key === 'Home') to = 0;
+            else if (e.key === 'End') to = n - 1;
+            if (to < 0) return;
+            e.preventDefault();
+            select(tabs[to], true);
+        });
     }
 
     // =========================================================================
@@ -247,7 +246,7 @@
         initMobileMenu();
         initInPageLinks();
         initFaq();
-        initShowcase();
+        initWalkthrough();
         initPricing();
     });
 })();

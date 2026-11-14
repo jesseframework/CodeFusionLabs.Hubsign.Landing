@@ -46,13 +46,13 @@ SHOWCASE = [
         'title': 'Signature Inbox',
         'blurb': 'Every vendor invoice lands here, already read by OCR before anyone opens it.',
         'alt': 'The Signature Inbox: six vendor invoices with OCR-read invoice numbers and PO '
-               'references, vendor, amounts, dates and who is responsible -- some overdue, one '
+               'references, vendor, amounts, dates and who is responsible — some overdue, one '
                'already signed.',
         'image': 'inbox-crop', 'width': 1600, 'height': 800,
     },
     {
         'title': 'Extracted data',
-        'blurb': 'OCR fields with a confidence score, beside the original -- the attached PO is read too.',
+        'blurb': 'OCR fields with a confidence score, beside the original — the attached PO is read too.',
         'alt': 'An open invoice: extracted OCR fields with confidence percentages on the left; '
                'on the right, the signing status, the purchase order read from the signer '
                'attachment, and the start of the activity timeline.',
@@ -61,15 +61,15 @@ SHOWCASE = [
     {
         'title': 'Business rules',
         'blurb': 'Rules that refuse a signature outright when the data is wrong.',
-        'alt': 'Business Rules settings: five rules -- low OCR confidence, duplicate invoice, '
-               'missing supporting document, attached PO mismatch and missing PO number -- each '
+        'alt': 'Business Rules settings: five rules — low OCR confidence, duplicate invoice, '
+               'missing supporting document, attached PO mismatch and missing PO number — each '
                'set to BLOCK with a JSONLogic condition, above a box for testing rules against '
                'a document.',
         'image': 'business-rules-crop', 'width': 1309, 'height': 666,
     },
     {
         'title': 'A rule fires',
-        'blurb': 'A duplicate is caught before anyone signs -- the vendor and team are notified automatically.',
+        'blurb': 'A duplicate is caught before anyone signs — the vendor and team are notified automatically.',
         'alt': 'An invoice held by the duplicate rule: the signing panel with the signer not yet '
                'signed, and a timeline showing the rule holding the invoice and the vendor and '
                'AP team being emailed.',
@@ -77,14 +77,14 @@ SHOWCASE = [
     },
     {
         'title': 'Signing',
-        'blurb': 'Every document, by state -- draft, out for signature, or completed.',
+        'blurb': 'Every document, by state — draft, out for signature, or completed.',
         'alt': 'The E-Sign list: summary cards for total, pending, completed and draft documents '
                'above a table of documents with their recipients and status.',
         'image': 'esign-crop', 'width': 1602, 'height': 801,
     },
     {
         'title': 'Automation',
-        'blurb': 'What happens next, triggered by events -- nothing re-keyed.',
+        'blurb': 'What happens next, triggered by events — nothing re-keyed.',
         'alt': 'Automation settings: two enabled workflows, one triggered when a duplicate '
                'invoice is detected and one when OCR processing completes, above the reusable '
                'email templates those workflows send.',
@@ -100,7 +100,7 @@ SHOWCASE = [
     },
     {
         'title': 'SLA',
-        'blurb': 'Turnaround measured against target -- internal time kept separate from end-to-end.',
+        'blurb': 'Turnaround measured against target — internal time kept separate from end-to-end.',
         'alt': 'The SLA page: a health score of 43 marked critical, internal-turnaround versus '
                'end-to-end on-time percentages, an on-time trend, and invoices overdue and '
                'still unsent.',
@@ -108,8 +108,8 @@ SHOWCASE = [
     },
     {
         'title': 'Reports',
-        'blurb': 'Spend by vendor, checked against the limit -- overruns highlighted.',
-        'alt': 'The Reports page: total spend against limit, then spend by vendor -- three '
+        'blurb': 'Spend by vendor, checked against the limit — overruns highlighted.',
+        'alt': 'The Reports page: total spend against limit, then spend by vendor — three '
                'vendors over their limit shown in red, five within it shown in green.',
         'image': 'reports-crop', 'width': 1600, 'height': 800,
     },
@@ -117,6 +117,10 @@ SHOWCASE = [
 for _panel in SHOWCASE:
     _panel['png'] = 'images/screens/{}.png'.format(_panel['image'])
     _panel['webp'] = 'images/screens/{}.webp'.format(_panel['image'])
+# Each panel's "Next: ..." prompt names the following screen; the last one
+# wraps back to the first.
+for _i, _panel in enumerate(SHOWCASE):
+    _panel['next_title'] = SHOWCASE[(_i + 1) % len(SHOWCASE)]['title']
 
 
 class IndexView(TemplateView):

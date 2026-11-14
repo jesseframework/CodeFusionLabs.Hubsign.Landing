@@ -9,8 +9,11 @@ Two things to know before editing:
 1. The hero "spine" is the page's one diagram. It is a real <ol>, driven by
    PIPELINE in landing/views.py, so screen readers get the sequence as an
    ordered list with no parallel hidden description. The same six steps appear
-   later only as a small decorative dot marker (.spine-mini) next to a text
-   label -- full diagram once, breadcrumb thereafter.
+   nowhere else -- full diagram once, in the hero.
+
+   The hero also reuses the first showcase screen (class hero-shot-img).
+   The hand-drawn marks (squiggle, ring, arrow, CTA seal) are inline SVG, all
+   aria-hidden; the meaning they underline is always in the adjacent text.
 
 2. The "See it in action" carousel (#showcase) and the signing section's
    preview (#signing) are real, anonymised product screenshots (see the
@@ -26,81 +29,78 @@ Two things to know before editing:
 <!-- ============================================================ HERO -->
 <section class="hero" id="top">
     <div class="container">
-        <div class="hero-inner">
-            <p class="hero-eyebrow">E-signatures for teams that receive, check and file vendor invoices</p>
-            <h1>
-                Everything that happens
-                <span class="hero-accent">around the signature.</span>
-            </h1>
-            <p class="lead">
-                Every e-signature tool gets you a signed PDF. HubSign reads what arrives,
-                checks it against rules you set, routes approvals, and posts the result
-                straight to your systems — nothing re-typed on the way in or out.
-            </p>
-            <div class="hero-actions">
-                <a href="https://{{ company.app_domain }}/signup" class="btn btn-primary">Get started</a>
-                <a href="#showcase" class="btn btn-outline">See how it works</a>
+        <div class="hero-grid">
+            <div class="hero-inner">
+                <p class="hero-eyebrow">For teams that receive, check and file vendor invoices</p>
+                <h1>
+                    Everything that happens
+                    <span class="hero-accent">around the signature.<svg class="squiggle" aria-hidden="true" focusable="false" viewBox="0 0 320 14" preserveAspectRatio="none"><path d="M3 8 C 22 1, 38 14, 58 7 S 96 1, 116 8 S 154 14, 175 6 S 214 2, 236 9 S 280 13, 317 5" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"/></svg></span>
+                </h1>
+                <p class="lead">
+                    Plenty of tools will give you a signed PDF. HubSign deals with the rest: it reads
+                    the invoice when it lands, checks it against your rules, gets the right people to
+                    approve it, and sends the result to your systems. Nobody retypes a thing.
+                </p>
+                <div class="hero-actions">
+                    <a href="https://{{ company.app_domain }}/signup" class="btn btn-primary">Get started</a>
+                    <a href="#showcase" class="btn btn-outline">Take a look inside</a>
+                </div>
             </div>
+
+            <figure class="hero-shot">
+                <div class="hero-shot-frame">
+                    <picture>
+                        <source type="image/webp" srcset="{% static showcase.0.webp %}">
+                        <img class="hero-shot-img" src="{% static showcase.0.png %}" width="{{ showcase.0.width }}" height="{{ showcase.0.height }}"
+                             alt="{{ showcase.0.alt }}">
+                    </picture>
+                </div>
+                <figcaption class="note note--hero">
+                    <svg class="note-arrow" aria-hidden="true" focusable="false" viewBox="0 0 64 46"><path d="M60 4 C 40 2, 14 10, 8 36 M8 36 L 4 22 M8 36 L 21 31" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <span>Invoices arrive already read. Nobody opens a PDF to find the PO number.</span>
+                </figcaption>
+            </figure>
         </div>
 
         <div class="spine">
-            <p class="spine-caption" id="spine-caption">One invoice, end to end</p>
+            <p class="spine-caption" id="spine-caption">One invoice, start to finish</p>
             <ol class="spine-track" aria-labelledby="spine-caption">
                 {% for step in spine %}
                 <li class="spine-step{% if step.commodity %} is-commodity{% endif %}">
                     <span class="spine-marker" aria-hidden="true"></span>
-                    <span class="spine-label">{{ step.label }}</span>
+                    <span class="spine-label">{{ step.label }}{% if step.commodity %}<svg class="ring" aria-hidden="true" focusable="false" viewBox="0 0 120 44" preserveAspectRatio="none"><path d="M60 3 C 24 1, 3 11, 5 23 C 7 37, 40 43, 70 41 C 104 39, 119 28, 114 15 C 109 5, 80 1, 46 4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>{% endif %}</span>
                     {% if step.commodity %}<span class="spine-tag">Commodity</span>{% endif %}
                     <span class="spine-detail">{{ step.detail }}</span>
                 </li>
                 {% endfor %}
             </ol>
             <p class="spine-note">
-                <b>Step five is the whole product, everywhere else.</b>
-                Every e-signature vendor sells the sealing step. HubSign is the five around it.
+                <b>Step five is the one every vendor already sells.</b>
+                HubSign is the other five.
             </p>
         </div>
     </div>
-</section>
-
-<!-- ============================================================ STATS -->
-<section class="stats" aria-label="HubSign at a glance">
-    <div class="container">
-        <p class="eyebrow"><span>At a glance</span></p>
-        <dl class="stats-grid">
-            {% for stat in stats %}
-            <div class="stat">
-                <dt class="stat-label">{{ stat.label }}</dt>
-                <dd class="stat-n num">{{ stat.n }}</dd>
-            </div>
-            {% endfor %}
-        </dl>
-    </div>
+    <svg class="wobble" aria-hidden="true" focusable="false" preserveAspectRatio="none" viewBox="0 0 1200 8"><path d="M0 4 C 60 1, 100 7, 160 4 S 260 1, 320 4 S 420 7, 480 4 S 580 1, 640 4 S 740 7, 800 4 S 900 1, 960 4 S 1100 7, 1200 4" fill="none" stroke="currentColor" stroke-width="1.6" vector-effect="non-scaling-stroke"/></svg>
 </section>
 
 <!-- ============================================================ PRODUCT -->
 <section class="section" id="product">
     <div class="container">
         <div class="section-head">
-            <p class="eyebrow">
-                <span class="spine-mini" aria-hidden="true">
-                    <span class="spine-mini-dot is-on"></span><span class="spine-mini-dot is-on"></span><span class="spine-mini-dot is-on"></span><span class="spine-mini-dot is-on"></span><span class="spine-mini-dot"></span><span class="spine-mini-dot is-on"></span>
-                </span>
-                <span>Four capabilities, one platform</span>
-            </p>
-            <h2>Every e-signature vendor sells the middle box.</h2>
+            <h2>The signature is the <span class="mark">easy part.</span></h2>
             <p class="lead">
-                HubSign is the three capabilities around it — intake, control, and records —
-                plus Connect, which carries the result to the systems that need it.
+                Most tools stop there. HubSign covers what comes before it (intake and control),
+                what comes after (records), and the hand-off to everything else you run (Connect).
             </p>
         </div>
 
         <div class="pillars">
             {% for pillar in pillars %}
             <div class="pillar">
-                <span class="pillar-icon">{% include "components/icons/"|add:pillar.icon|add:".svg" %}</span>
-                <h3>{{ pillar.title }}</h3>
-                <p class="pillar-sub">{{ pillar.subtitle }}</p>
+                <div class="pillar-head">
+                    <h3>{{ pillar.title }}</h3>
+                    <p class="pillar-sub">{{ pillar.subtitle }}</p>
+                </div>
                 <p class="pillar-desc">{{ pillar.description }}</p>
                 <ul class="pillar-tags">
                     {% for tag in pillar.tags %}<li>{{ tag }}</li>{% endfor %}
@@ -112,7 +112,8 @@ Two things to know before editing:
         <blockquote class="pull-quote">
             <p>
                 An invoice can arrive, read itself, get checked against your rules, route for
-                approval, get signed, and post to your ledger — without being re-keyed once.
+                approval, get signed, and post to your ledger &mdash;
+                <span class="mark">without being re-keyed once.</span>
             </p>
         </blockquote>
     </div>
@@ -122,16 +123,10 @@ Two things to know before editing:
 <section class="section section--sunken" id="signing">
     <div class="container">
         <div class="section-head">
-            <p class="eyebrow">
-                <span class="spine-mini" aria-hidden="true">
-                    <span class="spine-mini-dot"></span><span class="spine-mini-dot"></span><span class="spine-mini-dot"></span><span class="spine-mini-dot"></span><span class="spine-mini-dot is-on"></span><span class="spine-mini-dot"></span>
-                </span>
-                <span>Seals</span>
-            </p>
-            <h2>Depth in the signing experience itself.</h2>
+            <h2>And yes, the signing itself is done properly.</h2>
             <p class="lead">
                 Ten field types, five recipient roles, and a signing order that can be decided
-                as it runs.
+                while the document is out.
             </p>
         </div>
 
@@ -196,55 +191,47 @@ Two things to know before editing:
 <!-- ============================================================ SHOWCASE -->
 <section class="section" id="showcase">
     <div class="container">
-        <div class="section-head section-head--center">
-            <p class="eyebrow">
-                <span class="spine-mini" aria-hidden="true">
-                    <span class="spine-mini-dot is-on"></span><span class="spine-mini-dot is-on"></span><span class="spine-mini-dot is-on"></span><span class="spine-mini-dot is-on"></span><span class="spine-mini-dot is-on"></span><span class="spine-mini-dot is-on"></span>
-                </span>
-                <span>The whole spine</span>
-            </p>
+        <div class="section-head">
             <h2>One invoice, nine screens.</h2>
             <p class="lead">
-                The same journey, start to finish — from a vendor&rsquo;s email to a signed, sealed
-                and measured result.
+                Follow a single invoice from a vendor&rsquo;s email to a signed, sealed and
+                measured result. These are real screens from the product.
             </p>
         </div>
 
-        <div class="showcase-viewport">
-            <div class="showcase-frame">
+        {# A tabs widget, not a carousel: every screen is one click away and the #}
+        {# list itself shows what the nine are. The hero already shows panel 1,  #}
+        {# so the walkthrough opens on panel 2 (see initWalkthrough in main.js). #}
+        <div class="walk">
+            <div class="walk-tabs" role="tablist" aria-label="Screens, in the order an invoice meets them" aria-orientation="vertical">
                 {% for panel in showcase %}
-                <div class="showcase-panel{% if forloop.first %} is-active{% endif %}"
-                     data-title="{{ panel.title }}" data-blurb="{{ panel.blurb }}">
-                    <picture>
-                        <source type="image/webp" srcset="{% static panel.webp %}">
-                        <img src="{% static panel.png %}" width="{{ panel.width }}" height="{{ panel.height }}"
-                             alt="{{ panel.alt }}"{% if not forloop.first %} loading="lazy"{% endif %}>
-                    </picture>
-                </div>
+                <button type="button" class="walk-tab" role="tab" id="walk-tab-{{ forloop.counter }}"
+                        aria-controls="walk-panel-{{ forloop.counter }}"
+                        aria-selected="{% if forloop.counter0 == 1 %}true{% else %}false{% endif %}">
+                    <span class="walk-n num" aria-hidden="true">{{ forloop.counter }}</span>
+                    <span class="walk-t">{{ panel.title }}</span>
+                </button>
                 {% endfor %}
             </div>
 
-            <div class="showcase-controls">
-                <button type="button" class="showcase-nav" data-showcase="prev" aria-label="Previous screen">
-                    <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-                </button>
-                <div class="showcase-dots" role="group" aria-label="Choose a screen">
-                    {% for panel in showcase %}
-                    <button type="button" class="showcase-dot" data-step="{{ forloop.counter0 }}"
-                            aria-label="Screen {{ forloop.counter }} of {{ showcase|length }}"
-                            {% if forloop.first %}aria-current="true"{% endif %}></button>
-                    {% endfor %}
+            <div class="walk-stage">
+                {% for panel in showcase %}
+                <div class="walk-panel" role="tabpanel" id="walk-panel-{{ forloop.counter }}"
+                     aria-labelledby="walk-tab-{{ forloop.counter }}"{% if forloop.counter0 != 1 %} hidden{% endif %}>
+                    <div class="showcase-frame">
+                        <picture>
+                            <source type="image/webp" srcset="{% static panel.webp %}">
+                            <img src="{% static panel.png %}" width="{{ panel.width }}" height="{{ panel.height }}"
+                                 alt="{{ panel.alt }}"{% if forloop.counter0 != 1 %} loading="lazy"{% endif %}>
+                        </picture>
+                    </div>
+                    <p class="note walk-note">{{ panel.blurb }}</p>
+                    <button type="button" class="walk-next" data-walk-next="{{ forloop.counter }}">
+                        <span>{% if forloop.last %}Back to the start: {% else %}Next: {% endif %}{{ panel.next_title }}</span>
+                        <svg aria-hidden="true" focusable="false" viewBox="0 0 36 16"><path d="M2 9 C 10 6, 20 11, 32 8 M25 2 L 33 8 L 24 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </button>
                 </div>
-                <button type="button" class="showcase-nav" data-showcase="next" aria-label="Next screen">
-                    <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-                </button>
-            </div>
-
-            {# The caption is the only thing that tells a non-sighted user the carousel moved. #}
-            <div class="showcase-caption" aria-live="polite" aria-atomic="true">
-                <span class="showcase-step-label">Step <span class="showcase-step-num num">1</span> of {{ showcase|length }}</span>
-                <h3 class="showcase-title">{{ showcase.0.title }}</h3>
-                <p class="showcase-blurb">{{ showcase.0.blurb }}</p>
+                {% endfor %}
             </div>
         </div>
     </div>
@@ -254,16 +241,10 @@ Two things to know before editing:
 <section class="section section--sunken" id="integrations">
     <div class="container">
         <div class="section-head">
-            <p class="eyebrow">
-                <span class="spine-mini" aria-hidden="true">
-                    <span class="spine-mini-dot"></span><span class="spine-mini-dot"></span><span class="spine-mini-dot"></span><span class="spine-mini-dot"></span><span class="spine-mini-dot"></span><span class="spine-mini-dot is-on"></span>
-                </span>
-                <span>Posts</span>
-            </p>
-            <h2>Plug into what you already run.</h2>
+            <h2>Works with what you already run.</h2>
             <p class="lead">
-                Webhooks and a REST API for anything custom; SSO and Teams notifications for how
-                your organization already works.
+                Webhooks and a REST API for anything custom. SSO and Teams notifications for the
+                way your team already works.
             </p>
         </div>
 
@@ -293,11 +274,10 @@ Two things to know before editing:
 <section class="section" id="pricing">
     <div class="container">
         <div class="section-head section-head--center">
-            <p class="eyebrow"><span>Pricing</span></p>
-            <h2>Straightforward, by how much you sign.</h2>
+            <h2>Pay for how much you sign.</h2>
             <p class="lead">
-                Individual plans for one signer. Organization plans for a team that needs rules,
-                approvals and records shared.
+                Individual plans are for one person signing. Organization plans are for teams that
+                need rules, approvals and records they can share.
             </p>
         </div>
 
@@ -384,8 +364,7 @@ Two things to know before editing:
 <section class="section section--sunken" id="faq">
     <div class="container container--narrow">
         <div class="section-head section-head--center">
-            <p class="eyebrow"><span>FAQ</span></p>
-            <h2>Questions worth answering plainly.</h2>
+            <h2>Things people ask us.</h2>
         </div>
         <div class="faq-list">
             {% for item in faqs %}
@@ -409,10 +388,17 @@ Two things to know before editing:
 
 <!-- ============================================================ CTA -->
 <section class="section section--deep cta">
-    <div class="container container--narrow">
-        <h2>See what happens around your next signature.</h2>
+    <div class="container container--narrow cta-inner">
+        <svg class="cta-seal" aria-hidden="true" focusable="false" viewBox="0 0 120 120">
+            <defs><path id="sealArc" d="M60 60 m-41 0 a41 41 0 1 1 82 0 a41 41 0 1 1 -82 0"/></defs>
+            <circle cx="60" cy="60" r="56" fill="none" stroke="currentColor" stroke-width="2.5"/>
+            <circle cx="60" cy="60" r="30" fill="none" stroke="currentColor" stroke-width="1.5"/>
+            <text font-size="12" letter-spacing="2.6" fill="currentColor" font-weight="600"><textPath href="#sealArc">SEALED &#183; SIGNED &#183; SEALED &#183; SIGNED &#183;</textPath></text>
+            <path d="M44 61 l11 11 l21 -23" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <h2>Try it on your next invoice.</h2>
         <p class="lead">
-            Start on any plan today — or talk to sales about a dedicated instance, custom
+            Start on any plan today, or talk to us about a dedicated instance, custom
             domain or SSO.
         </p>
         <div class="cta-actions">

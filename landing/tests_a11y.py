@@ -76,11 +76,17 @@ class PaletteContrastTests(TestCase):
         ('--on-deep-2', '--deep', 4.5, 'CTA lead copy'),
         ('--on-deep-muted', '--deep', 4.5, 'footer labels'),
         ('--on-deep-2', '--deep-2', 4.5, 'footer links'),
+        ('--seal', '--paper', 4.5, 'margin notes, commodity tag'),
+        ('--seal', '--sunken', 4.5, 'margin notes on sunken sections'),
+        ('--seal', '--raised', 4.5, 'pricing badge'),
+        ('--ink', '--highlight', 4.5, 'marker-pen phrase'),
+        ('--ink-2', '--paper', 4.5, 'spine note on paper'),
         ('--on-deep-muted', '--deep-2', 4.5, 'footer meta and copyright'),
     ]
 
     #: Graphics that carry meaning need 3:1 (WCAG 1.4.11).
     NON_TEXT = [
+        ('--seal-on-deep', '--deep', 3.0, 'wax seal on the CTA'),
         ('--spine-idle', '--paper', 3.0, 'the spine rail and inactive dots'),
         ('--spine-commodity', '--paper', 3.0, 'the commodity step marker'),
         ('--accent', '--paper', 3.0, 'active spine marker, carousel dot'),
@@ -174,39 +180,46 @@ class LandingAccessibilityTests(TestCase):
         for answer in answers:
             self.assertIn('hidden', answer)
 
-    def test_carousel_caption_is_a_live_region(self):
-        self.assertIn('class="showcase-caption" aria-live="polite"', self.html)
+    def test_walkthrough_uses_the_tabs_pattern(self):
+        """The nine screens are a tabs widget: one selected tab, a panel per
+        tab, every panel labelled by its tab, and every inactive panel hidden
+        so it leaves the accessibility tree."""
+        tabs = [a for t, a in self.parser.tags if t == 'button' and 'walk-tab' in a.get('class', '')]
+        self.assertEqual(len(tabs), 9)
+        self.assertEqual(sum(a.get('aria-selected') == 'true' for a in tabs), 1)
+        for tab in tabs:
+            self.assertEqual(tab.get('role'), 'tab')
+            self.assertIn(tab.get('aria-selected'), ('true', 'false'))
+            self.assertIn(f'id="{tab["aria-controls"]}"', self.html)
 
-    def test_carousel_dots_have_names_and_current_state(self):
-        dots = [
-            attrs for tag, attrs in self.parser.tags
-            if tag == 'button' and 'showcase-dot' in attrs.get('class', '')
-        ]
-        self.assertEqual(len(dots), 9)
-        self.assertEqual(sum('aria-current' in d for d in dots), 1)
-        for dot in dots:
-            self.assertTrue(dot.get('aria-label'))
+        panels = [a for t, a in self.parser.tags if a.get('role') == 'tabpanel' and 'walk-panel' in a.get('class', '')]
+        self.assertEqual(len(panels), 9)
+        self.assertEqual(sum('hidden' not in p for p in panels), 1)
+        for panel in panels:
+            self.assertTrue(panel.get('aria-labelledby'))
 
-    def test_carousel_panels_are_real_screenshots_with_meaningful_alt_text(self):
-        """The carousel used to be nine hardcoded CSS skeleton panels, every
-        one aria-hidden (a loading-state visitors kept mistaking for one).
-        They're now real product screenshots, so the frame must not be
-        aria-hidden any more, and every image needs alt text that actually
-        describes it -- not empty, not the filename."""
+    def test_walkthrough_next_prompts_are_buttons_and_page_does_not_move_itself(self):
+        nexts = [a for t, a in self.parser.tags if t == 'button' and 'data-walk-next' in a]
+        self.assertEqual(len(nexts), 9)
+        self.assertIn('Back to the start: Signature Inbox', self.html)
+
+    def test_walkthrough_panels_are_real_screenshots_with_meaningful_alt_text(self):
+        """The screens are real product screenshots, so the frames must not be
+        aria-hidden, and every image needs alt text that actually describes it
+        -- not empty, not the filename."""
         frames = [
             attrs for tag, attrs in self.parser.tags
             if tag == 'div' and attrs.get('class') == 'showcase-frame'
         ]
-        self.assertEqual(len(frames), 1)
-        self.assertNotIn('aria-hidden', frames[0])
-
-        panels = re.findall(r'<div class="showcase-panel[^"]*"[^>]*>', self.html)
-        self.assertEqual(len(panels), 9)
+        self.assertEqual(len(frames), 9)
+        for frame in frames:
+            self.assertNotIn('aria-hidden', frame)
 
         showcase_images = [
             a for t, a in self.parser.tags
             if t == 'img' and 'screens/' in a.get('src', '')
             and 'signing-complete' not in a.get('src', '')
+            and 'hero-shot-img' not in a.get('class', '')   # hero reuses panel 1
         ]
         self.assertEqual(len(showcase_images), 9)
         for img in showcase_images:
@@ -214,7 +227,8 @@ class LandingAccessibilityTests(TestCase):
             self.assertGreater(len(img['alt']), 15)
 
     def test_pricing_toggles_use_the_tabs_pattern(self):
-        tabs = [a for t, a in self.parser.tags if a.get('role') == 'tab']
+        tabs = [a for t, a in self.parser.tags
+                if a.get('role') == 'tab' and 'walk-tab' not in a.get('class', '')]
         self.assertEqual(len(tabs), 4)
         for tab in tabs:
             self.assertIn(tab.get('aria-selected'), ('true', 'false'))
@@ -227,7 +241,7 @@ class LandingAccessibilityTests(TestCase):
 
     def test_icon_only_controls_have_accessible_names(self):
         for tag, attrs in self.parser.tags:
-            if tag == 'button' and 'showcase-nav' in attrs.get('class', ''):
+            if tag == 'button' and 'mobile-menu-btn' in attrs.get('class', ''):
                 self.assertTrue(attrs.get('aria-label'))
 
     def test_images_have_alt_and_dimensions(self):

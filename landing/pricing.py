@@ -201,7 +201,7 @@ def _resolve_interval_prices(price_matches: list[dict]):
 # repo). Shared verbatim across all three individual tiers below since the
 # scope is identical regardless of price.
 INDIVIDUAL_CAPABILITY = (
-    'E-signature only -- no Signature Inbox, business rules, approvals, '
+    'E-signature only: no Signature Inbox, business rules, approvals, '
     'workflows or Repositories (those need an organization plan).'
 )
 
@@ -281,7 +281,7 @@ def _fallback_tiers() -> list[PricingTier]:
             features=['Up to 20 users', '50 signature requests/mo', '400 pages/mo Smart OCR'],
             capabilities=[
                 'Adds Signature Inbox with OCR, business rules, approval chains '
-                'and workflows -- no Repositories, no API.',
+                'and workflows — no Repositories, no API.',
             ],
             featured=False, cta='Get started',
             price_monthly=59, price_annually=47,
